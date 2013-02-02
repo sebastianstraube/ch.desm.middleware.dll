@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm5="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner"
+  dslVersion="1.0.0.0"
+  Id="47714c18-6010-43e1-8476-18107c4533a2"
+  name="Schnittsttellen" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
+  <packagedElements>
+    <packageHasNamedElement>
+      <Interface
+        Id="08e293ee-168b-43c3-a9bb-637ffb9b245f"
+        name="Simulator Train"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="79819c21-8bc5-462c-803f-28ffd1d446bc">
+            <classMoniker
+              Id="762115bf-a23e-40e1-9c95-fbb19a9c97ce"
+              LastKnownName="Locsim"
+              LastKnownLocation="Package_1449.uml" />
+          </dependency>
+          <dependency
+            Id="6f0d65f1-8b39-44f4-b562-0d96e1eb488e">
+            <classMoniker
+              Id="807b2869-8532-4333-9bad-3f813d7db1c9"
+              LastKnownName="CommuniactionController"
+              LastKnownLocation="Package_1435.uml" />
+          </dependency>
+        </suppliersInternal>
+      </Interface>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="c3c08767-a616-4485-ba5b-aa0f60152422"
+        name="Interlocking"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="6f703cde-1062-4a53-969c-9b381c2c2687">
+            <classMoniker
+              Id="762115bf-a23e-40e1-9c95-fbb19a9c97ce"
+              LastKnownName="Locsim"
+              LastKnownLocation="Package_1449.uml" />
+          </dependency>
+          <dependency
+            Id="1b0fddc6-df51-4933-bdd8-05ef98cb82ff">
+            <classMoniker
+              Id="807b2869-8532-4333-9bad-3f813d7db1c9"
+              LastKnownName="CommuniactionController"
+              LastKnownLocation="Package_1435.uml" />
+          </dependency>
+        </suppliersInternal>
+      </Interface>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="6e8cc63f-1515-465d-9ded-9baacea69a53"
+        name="Simulator Environment"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="81f9fbe7-289a-4777-9e74-8285444bf397">
+            <classMoniker
+              Id="762115bf-a23e-40e1-9c95-fbb19a9c97ce"
+              LastKnownName="Locsim"
+              LastKnownLocation="Package_1449.uml" />
+          </dependency>
+          <dependency
+            Id="a8204b95-0a0c-4e0f-af26-ba1bbbd24656">
+            <classMoniker
+              Id="807b2869-8532-4333-9bad-3f813d7db1c9"
+              LastKnownName="CommuniactionController"
+              LastKnownLocation="Package_1435.uml" />
+          </dependency>
+        </suppliersInternal>
+      </Interface>
+    </packageHasNamedElement>
+  </packagedElements>
+</package>
