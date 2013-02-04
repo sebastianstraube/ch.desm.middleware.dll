@@ -1,3 +1,12 @@
 /Tools
 /UBW32
 Dokumentation
+*.suo
+obj
+Service References
+bin
+Release
+Debug
+ipch
+*.sdf
+*.sdf
