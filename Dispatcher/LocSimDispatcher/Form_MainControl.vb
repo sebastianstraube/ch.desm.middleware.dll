@@ -2,12 +2,12 @@
 
     Public guiController As New GUIController
 
-    Declare Sub stw_initialize Lib "LocSimDispatcherPlugin.dll" Alias "initialize" ()
+    Declare Sub stw_initialize Lib "LocsimDesmMiddlewarePlugin.dll" Alias "initialize" ()
 
     Private Sub Form_MainControl_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
 
         REM *DLL CALL*
-        REM Call stw_initialize()
+        Call stw_initialize()
 
     End Sub
 

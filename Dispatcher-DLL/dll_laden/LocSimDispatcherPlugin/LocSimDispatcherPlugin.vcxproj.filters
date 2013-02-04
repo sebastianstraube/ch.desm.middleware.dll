@@ -10,11 +10,5 @@
     <ClCompile Include="main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="winsocket_server.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="winsocket_client.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

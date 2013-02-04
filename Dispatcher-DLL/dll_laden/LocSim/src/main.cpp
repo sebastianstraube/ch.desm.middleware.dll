@@ -15,7 +15,7 @@ private: // lifetime
   Plugin()
     : m_pDll(0)
     , m_pApiGetName(0)
-    , m_pApiGetVersion(0)
+    , m_pApiStw_getVersion(0)
     , m_pApiGetDescription(0)
     , m_pApiInitialize(0)
     , m_pApiRelease(0)
@@ -43,7 +43,7 @@ public: // dll stuff
     pPlugin->m_pDll = pDll;
 
     pPlugin->m_pApiGetName = (tApiGetName)GetProcAddress(pDll, "getName");
-    pPlugin->m_pApiGetVersion = (tApiGetVersion)GetProcAddress(pDll, "getVersion");
+    pPlugin->m_pApiStw_getVersion = (tApiStw_getVersion)GetProcAddress(pDll, "stw_getVersion");
     pPlugin->m_pApiGetDescription = (tApiGetDescription)GetProcAddress(pDll, "getDescription");
     pPlugin->m_pApiInitialize = (tApiInitialize)GetProcAddress(pDll, "initialize");
     pPlugin->m_pApiRelease = (tApiRelease)GetProcAddress(pDll, "release");
@@ -51,6 +51,7 @@ public: // dll stuff
     if(!pPlugin->isValid())
     {
       std::cerr << "unable to find all methods in dll" << std::endl;
+	  system("PAUSE");
       return NULL;
     }
 
@@ -61,7 +62,7 @@ public: // validity
   bool isValid() const
   {
     return m_pApiGetName
-      && m_pApiGetVersion
+      && m_pApiStw_getVersion
       && m_pApiGetDescription
       && m_pApiInitialize
       && m_pApiRelease;
@@ -77,7 +78,7 @@ public: // interface
   std::string getVersion() const
   {
     if(!isValid()) throw "invalid plugin";
-    return std::string(m_pApiGetVersion());
+    return std::string(m_pApiStw_getVersion());
   }
 
   std::string getDescription() const
@@ -86,22 +87,22 @@ public: // interface
     return std::string(m_pApiGetDescription());
   }
 
-  bool initialize() const
+  int initialize() const
   {
     if(!isValid()) throw "invalid plugin";
-    return m_pApiInitialize();
+	return m_pApiInitialize();
   }
 
-  void release() const
+  int release() const
   {
     if(!isValid()) throw "invalid plugin";
-    m_pApiRelease();
+    return m_pApiRelease();
   }
 
 private: // members
   HMODULE m_pDll;
   tApiGetName m_pApiGetName;
-  tApiGetVersion m_pApiGetVersion;
+  tApiStw_getVersion m_pApiStw_getVersion;
   tApiGetDescription m_pApiGetDescription;
   tApiInitialize m_pApiInitialize;
   tApiRelease m_pApiRelease;
@@ -114,9 +115,10 @@ private: // members
 
 int main(int argc, char* argv[])
 {
-  std::string pluginDllFileName = "dispatcher.dll";
-  if(argc >= 2)
-  {
+	
+	std::string pluginDllFileName = "LocsimDesmMiddlewarePlugin.dll";
+
+  if(argc >= 2) {
     pluginDllFileName = std::string(argv[1]);
   }
 
@@ -126,12 +128,14 @@ int main(int argc, char* argv[])
   if(!pPlugin)
   {
     std::cerr << "error loading plugin " << pluginDllFileName << std::endl;
+	system("PAUSE");
     return 1;
   }
 
-  if(!pPlugin->initialize())
+  if(pPlugin->initialize())
   {
     std::cerr << "unable to initialize the plugin" << std::endl;
+	system("PAUSE");
     return 1;
   }
 
@@ -142,6 +146,8 @@ int main(int argc, char* argv[])
   pPlugin->release();
   delete pPlugin;
   pPlugin = 0;
+
+  system("PAUSE");
 
   return 0;
 }
