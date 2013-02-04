@@ -10,3 +10,5 @@ Debug
 ipch
 *.sdf
 *.sdf
+
+*.opensdf
