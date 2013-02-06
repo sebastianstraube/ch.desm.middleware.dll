@@ -111,6 +111,13 @@ extern "C" {
 	* Funktion: Locsim fragt DLL, welche events vom Stellwerk vorhanden sind (DLL cached)
 	* jedes Event führt zum Aufruf einer der nachstehenden Funktionen
 	* stw_get_event(3, typeList(1,1,2), idList(63, 32 , 765) )
+	*
+	* Beispiel:
+	*	int num;
+	*	int* type_list;
+	*	int* id_list;
+	*	stw_getEvents(&number, &type_list, &id_list);
+	*
 	**/	
 	__declspec(dllexport) int stw_getEvents(int* number, int** type_list, int** id_list){
 		std::cout << "stw_getEvents(int* number, int** type_list, int** id_list)" << std::endl;

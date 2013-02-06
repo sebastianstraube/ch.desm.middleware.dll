@@ -5,6 +5,11 @@
 #define DEFAULT_PORT "27015"
 #define DEFAULT_BUFLEN 512
 
+/**
+static const std::string DEFAULT_SERVER_IP = "127.0.0.1";
+static const char* DEFAULT_SERVER_IP = "127.0.0.1";
+**/
+
 struct addrinfo *result = NULL, *ptr = NULL, hints;
 
 CommunicationController::CommunicationController(){
