@@ -1,3 +1,16 @@
+#include "stdafx.h"
+
+/**
+* 
+**/
+#ifndef WIN32_LEAN_AND_MEAN
+	#define WIN32_LEAN_AND_MEAN
+#endif
+
+#include <windows.h>
+#include <ws2tcpip.h>
+#include <iphlpapi.h>
+
 #include "CommunicationController.h"
 
 #define DEFAULT_SERVER_IP "0.0.0.0"
