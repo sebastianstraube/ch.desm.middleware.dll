@@ -152,10 +152,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\CommunicationController.h" />
+    <ClInclude Include="src\CriticalSection.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\Thread.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CommunicationController.cpp" />
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
