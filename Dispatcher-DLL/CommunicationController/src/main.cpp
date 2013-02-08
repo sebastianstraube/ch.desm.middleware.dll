@@ -4,6 +4,8 @@
 
 static const USHORT DEFAULT_PORT = 27015;
 
+using namespace desm;
+
 int _tmain(int argc, _TCHAR* argv[]) {
 	std::string data;
 	try {
