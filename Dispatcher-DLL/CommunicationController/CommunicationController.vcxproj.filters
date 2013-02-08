@@ -21,15 +21,15 @@
     <ClInclude Include="src\CommunicationController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Thread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CommunicationController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

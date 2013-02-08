@@ -1,18 +1,13 @@
 // main.cpp : Defines the entry point for the console application.
 #include "stdafx.h"
+
+#include "Thread.h"
 #include "CommunicationController.h"
-
-#include <tchar.h>
-#include <strsafe.h>
-
-#include <cassert>
-
-
-
-using namespace std;
 
 #define MAX_THREADS 2
 #define BUF_SIZE 255
+
+using namespace std;
 
 DWORD WINAPI MyThreadFunctionStartServer( LPVOID lpParam );
 DWORD WINAPI MyThreadFunctionStartClient( LPVOID lpParam );
@@ -128,7 +123,42 @@ int startThreadTest(){
 	return 0;
 }
 
+class HelloWorld
+{
+public:
+    DWORD print ()
+    {
+        std::cout << "Hello World!" << std::endl;
+        return 0;
+    }
+};
+
+const char* CommunicationController::initialize::DEFAULT_CLIENT_IP = "127.0.0.1";
+
 int _tmain(int argc, _TCHAR* argv[]){
 
+	/*
 	startThreadTest();
+	*/
+
+	// Random object with DWORD method (void)
+    CommunicationController cc;
+
+    // thread should call print method of world.
+	Thread<CommunicationController> thread_server(&cc, &CommunicationController::startServer);
+    if (thread_server.start()){
+		std::cout << "Thread start()" << std::endl;
+	}
+	
+    // thread should call print method of world.
+	Thread<CommunicationController> thread_client(&cc, &CommunicationController::startClient);
+    if (thread_client.start()){
+		std::cout << "Thread start()" << std::endl;
+	}
+
+	thread_server.join(); // wait for thread
+	thread_client.join(); // wait for thread
+
+	system("pause");
+    return 0;
 }
