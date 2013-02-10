@@ -2,22 +2,22 @@
 #include <Windows.h> // Sleep()
 #include "CommunicationController.h"
 
-static const USHORT DEFAULT_PORT = 27015;
-
 using namespace desm;
 
 int _tmain(int argc, _TCHAR* argv[]) {
 	std::string data;
 	try {
-		CommunicationController *cc_server = new CommunicationController(CommunicationController::MODE_SERVER, "127.0.0.1", 27017);
-		CommunicationController *cc_client = new CommunicationController(CommunicationController::MODE_CLIENT, "127.0.0.1", 27017);
+		CommunicationController *cc_server = new CommunicationController(CommunicationController::MODE_SERVER, "127.0.0.1", "", 27017);
+		CommunicationController *cc_client = new CommunicationController(CommunicationController::MODE_CLIENT, "127.0.0.1", "127.0.0.1", 27017);
+		
 		// send a string once - will be bounced back and forth in the loop
 		cc_client->send("muh");
+
 		for(int i = 0; i < 5; ++i) {
 			// server send+receiver
 			while(cc_server->receive(data)) {
 				std::cout << "server got data: " << data << std::endl;
-				cc_server->send(data + "[server]");
+				//cc_server->send(data + "[server]");
 			}
 			// client send+receiver
 			while(cc_client->receive(data)) {
