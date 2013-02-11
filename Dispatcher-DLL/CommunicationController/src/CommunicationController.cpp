@@ -63,16 +63,16 @@ namespace desm {
 			// setup main threads
 			DWORD (Impl::*fct)(void) = NULL;
 			switch(mode) {
-			case MODE_SERVER:
-				callFrom = "Server";
-				fct = &Impl::startServer;
-				break;
-			case MODE_CLIENT:
-				callFrom = "Client";
-				fct = &Impl::startClient;
-				break;
-			default:
-				throw std::bad_alloc("invalid mode");
+				case MODE_SERVER:
+					callFrom = "Server";
+					fct = &Impl::startServer;
+					break;
+				case MODE_CLIENT:
+					callFrom = "Client";
+					fct = &Impl::startClient;
+					break;
+				default:
+					throw std::bad_alloc("invalid mode");
 			};
 			m_thread = new tThread(this, fct);
 			if(!m_thread) {
@@ -105,14 +105,18 @@ namespace desm {
 		~Impl() {
 			m_threadStop = true;
 			if(m_socket != INVALID_SOCKET) {
-				int iResult = shutdown(m_socket, SD_BOTH);
-				if (iResult == SOCKET_ERROR) {
-					//printf("shutdown failed with error: %d\n", WSAGetLastError());
+				int m_socketResult = shutdown(m_socket, SD_BOTH);
+				if (m_socketResult == SOCKET_ERROR) {
+					printf("m_socket shutdown failed with error: %d\n", WSAGetLastError());
 					closesocket(m_socket);
-					WSACleanup();
+				}
+
+				int m_clientSocketResult = shutdown(m_clientSocket, SD_BOTH);
+				if (m_clientSocketResult == SOCKET_ERROR) {
+					printf("m_clientSocketResult shutdown failed with error: %d\n", WSAGetLastError());
+					closesocket(m_clientSocketResult);
 				}
 			}
-
 			clearQueue(m_queue, m_CSH);
 			WSACleanup();
 
@@ -154,9 +158,9 @@ namespace desm {
 			/*Another thread can be stopped and this trys to receive data from
 			* a dead connection.
 			*/
-			//printf("\n%s -> receive data:", callFrom);
+			printf("\n%s -> receive data:", callFrom);
 			while(rc != SOCKET_ERROR && !m_threadStop) {
-				//printf("%s -> .\n", callFrom);
+				printf("%s -> .\n", callFrom);
 				if(!m_threadStop){
 					// when call as Server then need to receive from m_clientSocket
 					// when call as Client then need to receive from m_socket
@@ -171,18 +175,18 @@ namespace desm {
 				}
 
 				if(rc == 0) {
-					//printf("%s -> Verbindung getrennt ...\n", callFrom);
+					printf("%s -> Verbindung getrennt ...\n", callFrom);
 					break;
 				}
 
 				if(rc == SOCKET_ERROR) {
-					//printf(" -> Fehler: recv, fehler code: %d\n", callFrom, WSAGetLastError());
+					printf(" -> Fehler: recv, fehler code: %d\n", callFrom, WSAGetLastError());
 					break;
 				}
 
 				// TODO: stitch buffer together until NULL byte received?
 				buf[rc]='\0';
-				//printf("%s -> [Receive] %s\n", callFrom, buf);
+				printf("%s -> [Receive] %s\n", callFrom, buf);
 				pushQueue(m_queue, std::string(buf), m_CSH);
 			}
 			return 0;
@@ -195,13 +199,19 @@ namespace desm {
 			std::string data;
 			while(rc != SOCKET_ERROR && !m_threadStop) {
 				if(popQueue(m_queue, data, m_CSH)) {
-					//printf("[Sending] %s\n", data.c_str());
+					printf("[Sending] %s\n", data.c_str());
 
 					/*Another thread can be stopped and this trys to send data
 					* to a dead connection.
 					*/
 					if(!m_threadStop){
-						rc = ::send(m_socket, data.c_str(), data.length(), 0);
+
+						do {
+							if ((rc = ::send(m_socket, data.c_str(), data.length(), 0)) != SOCKET_ERROR) {
+								break;
+							}
+						}
+						while (WSAGetLastError() == WSAEWOULDBLOCK);
 					}
 
 					if(rc == SOCKET_ERROR) {
@@ -223,10 +233,10 @@ namespace desm {
 			// Socket erstellen
 			m_socket = ::socket(AF_INET, SOCK_STREAM, 0);
 			if(m_socket == INVALID_SOCKET) {
-				//printf("Server -> Fehler: Der Socket konnte nicht erstellt werden, fehler code: %d\n", WSAGetLastError());
+				printf("Server -> Fehler: Der Socket konnte nicht erstellt werden, fehler code: %d\n", WSAGetLastError());
 				return 1;
 			} else {
-				//printf("Server -> Socket erstellt!\n");
+				printf("Server -> Socket erstellt!\n");
 			}
 
 			// Socket binden
@@ -236,38 +246,76 @@ namespace desm {
 			addr.sin_addr.s_addr = ADDR_ANY;
 			rc = ::bind(m_socket, (SOCKADDR*)&addr, sizeof(SOCKADDR_IN));
 			if(rc == SOCKET_ERROR) {
-				//printf("Server -> Fehler: bind, fehler code: %d\n", WSAGetLastError());
+				printf("Server -> Fehler: bind, fehler code: %d\n", WSAGetLastError());
 				return 1;
 			} else {
-				//printf("Server -> Socket an port gebunden ...\n");
+				printf("Server -> Socket an port gebunden ...\n");
 			}
 
 			// In den listen Modus
 			rc = ::listen(m_socket, 10);
 			if(rc == SOCKET_ERROR) {
-				//printf("Server -> Fehler: listen, fehler code: %d\n",WSAGetLastError());
+				printf("Server -> Fehler: listen, fehler code: %d\n",WSAGetLastError());
 				return 1;
 			} else {
-				//printf("Server -> listen Modus...\n");
+				printf("Server -> listen Modus ...\n");
 			}
 
 			// Max: now it may get a bit confusing with the socket names...
-			// Basti: yeahh got this ;-)  - we shall need to use only one socket in this class ...
+			// Basti: yeahh got this ;-)  - we shall use only one socket in this class ...
 
 			/*
 			* need improvement
 			*
-			/* Verbindung annehmen */
-			m_clientSocket = ::accept(m_socket, NULL, NULL);
+			/* Verbindung annehmen, wenn gefordert*/
+			//m_clientSocket = ::accept(m_socket, NULL, NULL);
+			printf("Server -> Waiting for connections ...\n");
+
+			// the implementation should handle more than one connect,
+			// cause of network error or disconnected client
+			// when not, u have to restart the whole simulation to start the server again
+			m_clientSocket = accept(m_socket, NULL, NULL);
+
+			//// AcceptConnections /////////////////////////////////////////////////
+			// Spins forever waiting for connections.  For each one that comes in, 
+			// we create a thread to handle it and go back to waiting for
+			// connections.  If an error occurs, we return.
+			/*
+			 while (1) {
+				 sockaddr_in sinRemote;
+					int nAddrSize = sizeof(sinRemote);
+
+					while (1) {
+						SOCKET sd = accept(ListeningSocket, (sockaddr*)&sinRemote,
+								&nAddrSize);
+						if (sd != INVALID_SOCKET) {
+							cout << "Accepted connection from " <<
+									inet_ntoa(sinRemote.sin_addr) << ":" <<
+									ntohs(sinRemote.sin_port) << "." <<
+									endl;
+
+							DWORD nThreadID;
+							CreateThread(0, 0, EchoHandler, (void*)sd, 0, &nThreadID);
+						}
+						else {
+							cerr << WSAGetLastErrorMessage("accept() failed") << 
+									endl;
+							return;
+						}
+					}
+				}
+					
+			*/
+
 			if(m_clientSocket == INVALID_SOCKET) {
-				//printf(stderr, "Server -> Fehler: accept, fehler code: %d\n",WSAGetLastError());
+				printf("Server -> Fehler: accept, fehler code: %d\n",WSAGetLastError());
 				return 1;
 			} else {
-				//printf(stderr, "Server -> Neue Verbindung wurde akzeptiert ...\n");
+				printf("Server -> Neue Verbindung wurde akzeptiert ...\n");
 			}
 
 			if(!startReceiveThread()) {
-				//printf(stderr, "Server -> unable to start receiving thread");
+				printf("Server -> unable to start receiving thread");
 				return 1;
 			}
 
@@ -287,10 +335,10 @@ namespace desm {
 			// Socket erstellen
 			m_socket = ::socket(AF_INET, SOCK_STREAM, 0);
 			if(m_socket == INVALID_SOCKET) {
-				//printf(stderr, "Client -> Fehler: Der Socket konnte nicht erstellt werden, fehler code: %d\n", WSAGetLastError());
+				printf("Client -> Fehler: Der Socket konnte nicht erstellt werden, fehler code: %d\n", WSAGetLastError());
 				return 1;
 			} else {
-				//printf("Client -> Socket erstellt!\n");
+				printf("Client -> Socket erstellt!\n");
 			}
 
 			int iOptVal = 0;
@@ -302,15 +350,15 @@ namespace desm {
 			// source: http://msdn.microsoft.com/en-us/library/windows/desktop/ee470551(v=vs.85).aspx
 			int iResult = setsockopt(m_socket, SOL_SOCKET, SO_KEEPALIVE, (char *) &bOptVal, bOptLen);
 			if (iResult == SOCKET_ERROR) {
-				//printf("Client -> setsockopt for SO_KEEPALIVE failed with error: %u\n", WSAGetLastError());
+				printf("Client -> setsockopt for SO_KEEPALIVE failed with error: %u\n", WSAGetLastError());
 			} else
-				//printf("Client -> Set SO_KEEPALIVE: ON\n");
+				printf("Client -> Set SO_KEEPALIVE: ON\n");
 
 			iResult = getsockopt(m_socket, SOL_SOCKET, SO_KEEPALIVE, (char *) &iOptVal, &iOptLen);
 			if (iResult == SOCKET_ERROR) {
-				//printf("Client -> getsockopt for SO_KEEPALIVE failed with error: %u\n", WSAGetLastError());
+				printf("Client -> getsockopt for SO_KEEPALIVE failed with error: %u\n", WSAGetLastError());
 			} else
-				//printf("Client -> SO_KEEPALIVE Value: %ld\n", iOptVal);
+				printf("Client -> SO_KEEPALIVE Value: %ld\n", iOptVal);
 
 			// Verbinden
 			memset(&addr, 0, sizeof(SOCKADDR_IN)); // zuerst alles auf 0 setzten
@@ -321,16 +369,16 @@ namespace desm {
 			rc = ::connect(m_socket, (SOCKADDR*)&addr, sizeof(SOCKADDR));
 			if(rc == SOCKET_ERROR) {
 				m_socket = INVALID_SOCKET;
-				//printf("Client -> Fehler: connect gescheitert, fehler code: %d\n", WSAGetLastError());
+				printf("Client -> Fehler: connect gescheitert, fehler code: %d\n", WSAGetLastError());
 				return 1;
 			} else {
-				//printf("Client -> verbunden mit Server ...\n");
+				printf("Client -> verbunden mit Server ...\n");
 			}
 
 			// again that confusin socket stuff -> needs to be improved
 			// m_clientSocket = m_serverSocket;
 			if(!startReceiveThread()) {
-				//printf(stderr, "Client -> unable to start receiving thread");
+				printf("Client -> unable to start receiving thread");
 				return 1;
 			}
 
@@ -348,7 +396,7 @@ namespace desm {
 
 	/*
 	* need improvement
-	*
+	* http://tangentsoft.net/wskfaq/glossary.html#non-blocking
 	*/
 	bool CommunicationController::receive(std::string& data){
 		return pimpl->popQueue(pimpl->m_queue, data, pimpl->m_CSH);
