@@ -152,61 +152,60 @@ namespace desm {
 		}
 
 		DWORD receiveData() {
+			printf("[%s] starting receiveDataThread\n", callFrom);
+
 			long rc = 0;
 			char buf[DEFAULT_BUFLEN];
-			SOCKET scopeSocket;
 			// Set the socket I/O mode: In this case FIONBIO
 			// enables or disables the blocking mode for the 
 			// socket based on the numerical value of iMode.
 			// If iMode = 0, blocking is enabled; 
 			// If iMode != 0, non-blocking mode is enabled.
-			u_long iMode = 1;
-
-			printf("[%s] - [receiveDataTHREAD] starting receive data\n", callFrom);
+			u_long iMode = 0;
+			
 			while(rc != SOCKET_ERROR && !m_threadStop) {
 				if(!m_threadStop){
 
 					switch(m_mode) {
 						case MODE_SERVER:
-							printf("[%s] receiveData scopeSocket = m_serverDataSocket\n", callFrom);
-							scopeSocket = m_serverDataSocket;
+							printf("[%s] receiveData m_serverDataSocket\n", callFrom);
+							rc = ioctlsocket(m_serverDataSocket, FIONBIO, &iMode);
+								if (WSAGetLastError() != NO_ERROR){
+									printf("[%s] failed set iMode on ioctlsocket with error: %ld\n", callFrom, WSAGetLastError());
+									break;
+								}
+							rc = ::recv(m_serverDataSocket, buf, DEFAULT_BUFLEN, 0);
+							if (WSAGetLastError() != NO_ERROR){
+									printf("[%s] failed recv with error: %ld\n", callFrom, WSAGetLastError());
+									break;
+							}
 							break;
 						case MODE_CLIENT:
-							printf("[%s] receiveData scopeSocket = m_commonSocket\n", callFrom);
-							scopeSocket = m_commonSocket;
+							printf("[%s] receiveData m_commonSocket\n", callFrom);
+							rc = ioctlsocket(m_commonSocket, FIONBIO, &iMode);
+								if (WSAGetLastError() != NO_ERROR){
+									printf("[%s] failed set iMode on ioctlsocket with error: %ld\n", callFrom, WSAGetLastError());
+									break;
+								}
+							rc = ::recv(m_commonSocket, buf, DEFAULT_BUFLEN, 0);
+								if (WSAGetLastError() != NO_ERROR){
+									printf("[%s] failed recv with error: %ld\n", callFrom, WSAGetLastError());
+									break;
+							}
 							break;
 						default:
 							throw std::bad_alloc("invalid mode");
 					};
-
-					rc = ioctlsocket(scopeSocket, FIONBIO, &iMode);
-					if (rc != NO_ERROR){
-						printf("[%s] failed set iMode on ioctlsocket with error: %ld\n", callFrom, WSAGetLastError());
-						break;
-					}
-					rc = ::recv(scopeSocket, buf, DEFAULT_BUFLEN, 0);
-					if (rc != NO_ERROR){
-						printf("[%s] failed recv with error: %ld\n", callFrom, WSAGetLastError());
-						break;
-					}
 				}
 
-				if(rc == 0) {
+				if(rc == NO_ERROR) {
 					printf("[%s] Verbindung getrennt ...\n", callFrom);
 					break;
 				}
 
-				// Shutdown our socket
-				printf("[%s] shutdown scopeSocket!\r\n", callFrom);
-				rc = shutdown(scopeSocket,SD_RECEIVE);
-
-				// Close our socket entirely
-				printf("[%s] close scopeSocket!\r\n", callFrom);
-				rc = closesocket(scopeSocket);
-
 				// TODO: stitch buffer together until NULL byte received?
 				buf[rc]='\0';
-				printf("[%s] [Receive] %d\n", callFrom, buf);
+				printf("[%s] buffer: %d\n", callFrom, buf);
 				pushQueue(m_queue, std::string(buf), m_CSH);
 			}
 			// All data left us, so need to shutdown the connection - till sending next time data.
@@ -218,7 +217,7 @@ namespace desm {
 
 		DWORD sendData() {
 			long rc = 0;
-			SOCKET scopeSocket;
+
 			// Daten austauschen
 			std::string data;
 			while(rc != SOCKET_ERROR && !m_threadStop && (WSAGetLastError() != WSAEWOULDBLOCK)) {
@@ -226,24 +225,23 @@ namespace desm {
 					
 					switch(m_mode) {
 						case MODE_SERVER:
-							printf("[%s] sendData scopeSocket = m_serverDataSocket\n", callFrom);
-							scopeSocket = m_serverDataSocket;
+							printf("[%s] sendData m_serverDataSocket\n", callFrom);
+							if(!m_threadStop){
+								printf("[%s] Sending Data: %s\n", callFrom, data.c_str());
+								rc = ::send(m_serverDataSocket, data.c_str(), data.length(), 0);
+							}
+
 							break;
 						case MODE_CLIENT:
-							printf("[%s] sendData scopeSocket = m_commonSocket\n", callFrom);
-							scopeSocket = m_commonSocket;
+							printf("[%s] sendData m_commonSocket\n", callFrom);
+							if(!m_threadStop){
+								printf("[%s] Sending Data: %s\n", callFrom, data.c_str());
+								rc = ::send(m_commonSocket, data.c_str(), data.length(), 0);
+							}
 							break;
 						default:
 							throw std::bad_alloc("invalid mode");
 					};
-
-					/*Another thread can be stopped and this trys to send data
-					* to a dead connection.
-					*/
-					if(!m_threadStop){
-						printf("[%s] Sending Data: %s\n", callFrom, data.c_str());
-						rc = ::send(scopeSocket, data.c_str(), data.length(), 0);
-					}
 
 					if(WSAGetLastError() == WSAEWOULDBLOCK){
 						printf("[%s] !!!!WSAEWOULDBLOCK!!!! \n", callFrom);
@@ -258,24 +256,31 @@ namespace desm {
 					Sleep(50);
 				}
 			}
-			// All data left us, so need to shutdown the connection - till sending next time data.
-			printf("[%s] shutdown m_commonSocket!\r\n", callFrom);
-			
 
 			switch(m_mode) {
 				case MODE_SERVER:
-					printf("[%s] shutdown scopeSocket = m_serverDataSocket\n", callFrom);
+					printf("[%s] sendData scopeSocket = m_serverDataSocket\n", callFrom);
+					// shutdown our socket entirely
+					printf("[%s] close scopeSocket!\r\n", callFrom);
 					rc = shutdown(m_serverDataSocket, SD_SEND);
+
+					// Close our socket entirely
+					printf("[%s] close scopeSocket!\r\n", callFrom);
+					rc = closesocket(m_serverDataSocket);
 					break;
 				case MODE_CLIENT:
-					printf("[%s] shutdown scopeSocket = m_commonSocket\n", callFrom);
+					printf("[%s] sendData scopeSocket = m_commonSocket\n", callFrom);
+					// shutdown our socket entirely
+					printf("[%s] close scopeSocket!\r\n", callFrom);
 					rc = shutdown(m_commonSocket, SD_SEND);
+
+					// Close our socket entirely
+					printf("[%s] close scopeSocket!\r\n", callFrom);
+					rc = closesocket(m_commonSocket);
 					break;
 				default:
 					throw std::bad_alloc("invalid mode");
 			};
-
-			rc = shutdown(scopeSocket, SD_SEND);
 
 			return (rc == NO_ERROR) ? 0 : 1;
 		}
@@ -368,6 +373,7 @@ namespace desm {
 				printf("[%s] Neue Verbindung wurde akzeptiert ...\n", callFrom);
 			}
 
+
 			if(!startReceiveThread()) {
 				printf("[%s] unable to start receiving thread", callFrom);
 				return 1;
@@ -436,10 +442,12 @@ namespace desm {
 			
 
 			// again that confusin socket stuff -> needs to be improved
+			/*
 			if(!startReceiveThread()) {
 				printf("[%s] unable to start receiving thread", callFrom);
 				return 1;
 			}
+			*/
 
 			return sendData();
 		}
