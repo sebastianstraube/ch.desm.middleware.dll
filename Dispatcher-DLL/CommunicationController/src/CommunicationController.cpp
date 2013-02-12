@@ -42,8 +42,9 @@ namespace desm {
 
 		tThread*               m_thread;
 		bool                   m_threadStop;
-		SOCKET                 m_socket;
-		SOCKET                 m_clientSocket;
+		SOCKET                 m_commonSocket;
+		SOCKET                 m_serverDataSocket;
+		SOCKET                 m_listenSocket;
 
 		Impl(eMode mode, const std::string& host,  const std::string& client, unsigned short port)
 			: m_mode(mode)
@@ -54,7 +55,7 @@ namespace desm {
 			, m_CSH()
 			, m_thread(NULL)
 			, m_threadStop(false)
-			, m_socket(INVALID_SOCKET)
+			, m_commonSocket(INVALID_SOCKET)
 		{
 			WSADATA wsa;
 			if(WSAStartup(MAKEWORD(2,0), &wsa) != 0) {
@@ -104,17 +105,17 @@ namespace desm {
 		*/
 		~Impl() {
 			m_threadStop = true;
-			if(m_socket != INVALID_SOCKET) {
-				int m_socketResult = shutdown(m_socket, SD_BOTH);
-				if (m_socketResult == SOCKET_ERROR) {
-					printf("m_socket shutdown failed with error: %d\n", WSAGetLastError());
-					closesocket(m_socket);
+			if(m_commonSocket != INVALID_SOCKET) {
+				int m_commonSocketResult = shutdown(m_commonSocket, SD_BOTH);
+				if (m_commonSocketResult == SOCKET_ERROR) {
+					printf("[%s] m_commonSocket shutdown failed with error: %d\n", callFrom, WSAGetLastError());
+					closesocket(m_commonSocket);
 				}
 
-				int m_clientSocketResult = shutdown(m_clientSocket, SD_BOTH);
-				if (m_clientSocketResult == SOCKET_ERROR) {
-					printf("m_clientSocketResult shutdown failed with error: %d\n", WSAGetLastError());
-					closesocket(m_clientSocketResult);
+				int m_serverDataSocketResult = shutdown(m_serverDataSocket, SD_BOTH);
+				if (m_serverDataSocketResult == SOCKET_ERROR) {
+					printf("[%s] m_serverDataSocketResult shutdown failed with error: %d\n", callFrom, WSAGetLastError());
+					closesocket(m_serverDataSocketResult);
 				}
 			}
 			clearQueue(m_queue, m_CSH);
@@ -153,65 +154,99 @@ namespace desm {
 		DWORD receiveData() {
 			long rc = 0;
 			char buf[DEFAULT_BUFLEN];
+			SOCKET scopeSocket;
+			// Set the socket I/O mode: In this case FIONBIO
+			// enables or disables the blocking mode for the 
+			// socket based on the numerical value of iMode.
+			// If iMode = 0, blocking is enabled; 
+			// If iMode != 0, non-blocking mode is enabled.
+			u_long iMode = 1;
 
-
-			/*Another thread can be stopped and this trys to receive data from
-			* a dead connection.
-			*/
-			printf("\n%s -> receive data:", callFrom);
+			printf("[%s] - [receiveDataTHREAD] starting receive data\n", callFrom);
 			while(rc != SOCKET_ERROR && !m_threadStop) {
-				printf("%s -> .\n", callFrom);
 				if(!m_threadStop){
-					// when call as Server then need to receive from m_clientSocket
-					// when call as Client then need to receive from m_socket
+
 					switch(m_mode) {
 						case MODE_SERVER:
-							rc = ::recv(m_clientSocket, buf, DEFAULT_BUFLEN, 0);
+							printf("[%s] receiveData scopeSocket = m_serverDataSocket\n", callFrom);
+							scopeSocket = m_serverDataSocket;
 							break;
 						case MODE_CLIENT:
-							rc = ::recv(m_socket, buf, DEFAULT_BUFLEN, 0);
+							printf("[%s] receiveData scopeSocket = m_commonSocket\n", callFrom);
+							scopeSocket = m_commonSocket;
 							break;
+						default:
+							throw std::bad_alloc("invalid mode");
 					};
+
+					rc = ioctlsocket(scopeSocket, FIONBIO, &iMode);
+					if (rc != NO_ERROR){
+						printf("[%s] failed set iMode on ioctlsocket with error: %ld\n", callFrom, WSAGetLastError());
+						break;
+					}
+					rc = ::recv(scopeSocket, buf, DEFAULT_BUFLEN, 0);
+					if (rc != NO_ERROR){
+						printf("[%s] failed recv with error: %ld\n", callFrom, WSAGetLastError());
+						break;
+					}
 				}
 
 				if(rc == 0) {
-					printf("%s -> Verbindung getrennt ...\n", callFrom);
+					printf("[%s] Verbindung getrennt ...\n", callFrom);
 					break;
 				}
 
-				if(rc == SOCKET_ERROR) {
-					printf(" -> Fehler: recv, fehler code: %d\n", callFrom, WSAGetLastError());
-					break;
-				}
+				// Shutdown our socket
+				printf("[%s] shutdown scopeSocket!\r\n", callFrom);
+				rc = shutdown(scopeSocket,SD_RECEIVE);
+
+				// Close our socket entirely
+				printf("[%s] close scopeSocket!\r\n", callFrom);
+				rc = closesocket(scopeSocket);
 
 				// TODO: stitch buffer together until NULL byte received?
 				buf[rc]='\0';
-				printf("%s -> [Receive] %s\n", callFrom, buf);
+				printf("[%s] [Receive] %d\n", callFrom, buf);
 				pushQueue(m_queue, std::string(buf), m_CSH);
 			}
-			return 0;
+			// All data left us, so need to shutdown the connection - till sending next time data.
+			//printf("[%s] shutdown scopeSocket ...\n", callFrom);
+			//int m_commonSocketResult = shutdown(scopeSocket, SD_SEND);
+
+			return rc == NO_ERROR? sendData() : 0;
 		}
 
 		DWORD sendData() {
 			long rc = 0;
-
+			SOCKET scopeSocket;
 			// Daten austauschen
 			std::string data;
-			while(rc != SOCKET_ERROR && !m_threadStop) {
+			while(rc != SOCKET_ERROR && !m_threadStop && (WSAGetLastError() != WSAEWOULDBLOCK)) {
 				if(popQueue(m_queue, data, m_CSH)) {
-					printf("[Sending] %s\n", data.c_str());
+					
+					switch(m_mode) {
+						case MODE_SERVER:
+							printf("[%s] sendData scopeSocket = m_serverDataSocket\n", callFrom);
+							scopeSocket = m_serverDataSocket;
+							break;
+						case MODE_CLIENT:
+							printf("[%s] sendData scopeSocket = m_commonSocket\n", callFrom);
+							scopeSocket = m_commonSocket;
+							break;
+						default:
+							throw std::bad_alloc("invalid mode");
+					};
 
 					/*Another thread can be stopped and this trys to send data
 					* to a dead connection.
 					*/
 					if(!m_threadStop){
+						printf("[%s] Sending Data: %s\n", callFrom, data.c_str());
+						rc = ::send(scopeSocket, data.c_str(), data.length(), 0);
+					}
 
-						do {
-							if ((rc = ::send(m_socket, data.c_str(), data.length(), 0)) != SOCKET_ERROR) {
-								break;
-							}
-						}
-						while (WSAGetLastError() == WSAEWOULDBLOCK);
+					if(WSAGetLastError() == WSAEWOULDBLOCK){
+						printf("[%s] !!!!WSAEWOULDBLOCK!!!! \n", callFrom);
 					}
 
 					if(rc == SOCKET_ERROR) {
@@ -223,7 +258,26 @@ namespace desm {
 					Sleep(50);
 				}
 			}
-			return (rc == SOCKET_ERROR) ? 1 : 0;
+			// All data left us, so need to shutdown the connection - till sending next time data.
+			printf("[%s] shutdown m_commonSocket!\r\n", callFrom);
+			
+
+			switch(m_mode) {
+				case MODE_SERVER:
+					printf("[%s] shutdown scopeSocket = m_serverDataSocket\n", callFrom);
+					rc = shutdown(m_serverDataSocket, SD_SEND);
+					break;
+				case MODE_CLIENT:
+					printf("[%s] shutdown scopeSocket = m_commonSocket\n", callFrom);
+					rc = shutdown(m_commonSocket, SD_SEND);
+					break;
+				default:
+					throw std::bad_alloc("invalid mode");
+			};
+
+			rc = shutdown(scopeSocket, SD_SEND);
+
+			return (rc == NO_ERROR) ? 0 : 1;
 		}
 
 		DWORD startServer(){
@@ -231,12 +285,12 @@ namespace desm {
 			SOCKADDR_IN addr;
 
 			// Socket erstellen
-			m_socket = ::socket(AF_INET, SOCK_STREAM, 0);
-			if(m_socket == INVALID_SOCKET) {
-				printf("Server -> Fehler: Der Socket konnte nicht erstellt werden, fehler code: %d\n", WSAGetLastError());
+			m_commonSocket = ::socket(AF_INET, SOCK_STREAM, 0);
+			if(m_commonSocket == INVALID_SOCKET) {
+				printf("[%s] Fehler: Der Socket konnte nicht erstellt werden, fehler code: %d\n", callFrom, WSAGetLastError());
 				return 1;
 			} else {
-				printf("Server -> Socket erstellt!\n");
+				printf("[%s] Socket erstellt!\n", callFrom);
 			}
 
 			// Socket binden
@@ -244,21 +298,21 @@ namespace desm {
 			addr.sin_family = AF_INET;
 			addr.sin_port = m_port;
 			addr.sin_addr.s_addr = ADDR_ANY;
-			rc = ::bind(m_socket, (SOCKADDR*)&addr, sizeof(SOCKADDR_IN));
+			rc = ::bind(m_commonSocket, (SOCKADDR*)&addr, sizeof(SOCKADDR_IN));
 			if(rc == SOCKET_ERROR) {
-				printf("Server -> Fehler: bind, fehler code: %d\n", WSAGetLastError());
+				printf("[%s] Fehler: bind, fehler code: %d\n", callFrom, WSAGetLastError());
 				return 1;
 			} else {
-				printf("Server -> Socket an port gebunden ...\n");
+				printf("[%s] Socket an port gebunden ...\n", callFrom);
 			}
 
 			// In den listen Modus
-			rc = ::listen(m_socket, 10);
+			rc = ::listen(m_commonSocket, 10);
 			if(rc == SOCKET_ERROR) {
-				printf("Server -> Fehler: listen, fehler code: %d\n",WSAGetLastError());
+				printf("[%s] Fehler: listen, fehler code: %d\n", callFrom, WSAGetLastError());
 				return 1;
 			} else {
-				printf("Server -> listen Modus ...\n");
+				printf("[%s] listen Modus ...\n", callFrom);
 			}
 
 			// Max: now it may get a bit confusing with the socket names...
@@ -268,13 +322,13 @@ namespace desm {
 			* need improvement
 			*
 			/* Verbindung annehmen, wenn gefordert*/
-			//m_clientSocket = ::accept(m_socket, NULL, NULL);
-			printf("Server -> Waiting for connections ...\n");
+			//m_serverDataSocket = ::accept(m_commonSocket, NULL, NULL);
+			printf("[%s] Waiting for accepting connections ...\n", callFrom);
 
 			// the implementation should handle more than one connect,
 			// cause of network error or disconnected client
 			// when not, u have to restart the whole simulation to start the server again
-			m_clientSocket = accept(m_socket, NULL, NULL);
+			m_serverDataSocket = accept(m_commonSocket, NULL, NULL);
 
 			//// AcceptConnections /////////////////////////////////////////////////
 			// Spins forever waiting for connections.  For each one that comes in, 
@@ -307,20 +361,20 @@ namespace desm {
 					
 			*/
 
-			if(m_clientSocket == INVALID_SOCKET) {
-				printf("Server -> Fehler: accept, fehler code: %d\n",WSAGetLastError());
+			if(m_serverDataSocket == INVALID_SOCKET) {
+				printf("[%s] Fehler: accept, fehler code: %d\n", callFrom,WSAGetLastError());
 				return 1;
 			} else {
-				printf("Server -> Neue Verbindung wurde akzeptiert ...\n");
+				printf("[%s] Neue Verbindung wurde akzeptiert ...\n", callFrom);
 			}
 
 			if(!startReceiveThread()) {
-				printf("Server -> unable to start receiving thread");
+				printf("[%s] unable to start receiving thread", callFrom);
 				return 1;
 			}
 
 			//if u want only a one shot connection, the socket can be shutdown here ...
-			//shutdown(m_clientSocket, SD_BOTH);
+			//shutdown(m_serverDataSocket, SD_BOTH);
 
 			return sendData();
 		}
@@ -333,12 +387,12 @@ namespace desm {
 			SOCKADDR_IN addr;
 
 			// Socket erstellen
-			m_socket = ::socket(AF_INET, SOCK_STREAM, 0);
-			if(m_socket == INVALID_SOCKET) {
-				printf("Client -> Fehler: Der Socket konnte nicht erstellt werden, fehler code: %d\n", WSAGetLastError());
+			m_commonSocket = ::socket(AF_INET, SOCK_STREAM, 0);
+			if(m_commonSocket == INVALID_SOCKET) {
+				printf("[%s] Fehler: Der Socket konnte nicht erstellt werden, fehler code: %d\n", callFrom, WSAGetLastError());
 				return 1;
 			} else {
-				printf("Client -> Socket erstellt!\n");
+				printf("[%s] Socket erstellt!\n", callFrom);
 			}
 
 			int iOptVal = 0;
@@ -348,17 +402,18 @@ namespace desm {
 			int bOptLen = sizeof (BOOL);
 
 			// source: http://msdn.microsoft.com/en-us/library/windows/desktop/ee470551(v=vs.85).aspx
-			int iResult = setsockopt(m_socket, SOL_SOCKET, SO_KEEPALIVE, (char *) &bOptVal, bOptLen);
-			if (iResult == SOCKET_ERROR) {
-				printf("Client -> setsockopt for SO_KEEPALIVE failed with error: %u\n", WSAGetLastError());
-			} else
-				printf("Client -> Set SO_KEEPALIVE: ON\n");
+			int iResult = setsockopt(m_commonSocket, SOL_SOCKET, SO_KEEPALIVE, (char *) &bOptVal, bOptLen);
 
-			iResult = getsockopt(m_socket, SOL_SOCKET, SO_KEEPALIVE, (char *) &iOptVal, &iOptLen);
 			if (iResult == SOCKET_ERROR) {
-				printf("Client -> getsockopt for SO_KEEPALIVE failed with error: %u\n", WSAGetLastError());
+				printf("[%s] setsockopt for SO_KEEPALIVE failed with error: %u\n", callFrom, WSAGetLastError());
 			} else
-				printf("Client -> SO_KEEPALIVE Value: %ld\n", iOptVal);
+				printf("[%s] Set SO_KEEPALIVE: ON\n", callFrom);
+
+			iResult = getsockopt(m_commonSocket, SOL_SOCKET, SO_KEEPALIVE, (char *) &iOptVal, &iOptLen);
+			if (iResult == SOCKET_ERROR) {
+				printf("[%s] getsockopt for SO_KEEPALIVE failed with error: %u\n", callFrom, WSAGetLastError());
+			} else
+				printf("[%s] SO_KEEPALIVE Value: %ld\n", callFrom, iOptVal);
 
 			// Verbinden
 			memset(&addr, 0, sizeof(SOCKADDR_IN)); // zuerst alles auf 0 setzten
@@ -366,19 +421,23 @@ namespace desm {
 			addr.sin_port = m_port;
 			addr.sin_addr.s_addr = inet_addr(m_ip_client.c_str()); // zielrechner ist unser eigener
 
-			rc = ::connect(m_socket, (SOCKADDR*)&addr, sizeof(SOCKADDR));
-			if(rc == SOCKET_ERROR) {
-				m_socket = INVALID_SOCKET;
-				printf("Client -> Fehler: connect gescheitert, fehler code: %d\n", WSAGetLastError());
-				return 1;
-			} else {
-				printf("Client -> verbunden mit Server ...\n");
-			}
+			do{
+				rc = ::connect(m_commonSocket, (SOCKADDR*)&addr, sizeof(SOCKADDR));
+				
+				if(rc == SOCKET_ERROR) {
+					printf("[%s] Warning: connect gescheitert, fehler code: %d, trying again ...\n", callFrom, WSAGetLastError());
+					Sleep(100);
+
+				} else {
+					printf("[%s] verbunden mit Server ...\n", callFrom);
+				}
+
+			}while(rc == SOCKET_ERROR);
+			
 
 			// again that confusin socket stuff -> needs to be improved
-			// m_clientSocket = m_serverSocket;
 			if(!startReceiveThread()) {
-				printf("Client -> unable to start receiving thread");
+				printf("[%s] unable to start receiving thread", callFrom);
 				return 1;
 			}
 
