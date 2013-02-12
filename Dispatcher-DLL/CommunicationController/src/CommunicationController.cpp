@@ -156,12 +156,7 @@ namespace desm {
 
 			long rc = 0;
 			char buf[DEFAULT_BUFLEN];
-			// Set the socket I/O mode: In this case FIONBIO
-			// enables or disables the blocking mode for the 
-			// socket based on the numerical value of iMode.
-			// If iMode = 0, blocking is enabled; 
-			// If iMode != 0, non-blocking mode is enabled.
-			u_long iMode = 0;
+
 			
 			while(rc != SOCKET_ERROR && !m_threadStop) {
 				if(!m_threadStop){
@@ -169,11 +164,10 @@ namespace desm {
 					switch(m_mode) {
 						case MODE_SERVER:
 							printf("[%s] receiveData m_serverDataSocket\n", callFrom);
-							rc = ioctlsocket(m_serverDataSocket, FIONBIO, &iMode);
-								if (WSAGetLastError() != NO_ERROR){
-									printf("[%s] failed set iMode on ioctlsocket with error: %ld\n", callFrom, WSAGetLastError());
-									break;
-								}
+							if (WSAGetLastError() != NO_ERROR){
+								printf("[%s] failed set iMode on ioctlsocket with error: %ld\n", callFrom, WSAGetLastError());
+								break;
+							}
 							rc = ::recv(m_serverDataSocket, buf, DEFAULT_BUFLEN, 0);
 							if (WSAGetLastError() != NO_ERROR){
 									printf("[%s] failed recv with error: %ld\n", callFrom, WSAGetLastError());
@@ -182,11 +176,10 @@ namespace desm {
 							break;
 						case MODE_CLIENT:
 							printf("[%s] receiveData m_commonSocket\n", callFrom);
-							rc = ioctlsocket(m_commonSocket, FIONBIO, &iMode);
-								if (WSAGetLastError() != NO_ERROR){
-									printf("[%s] failed set iMode on ioctlsocket with error: %ld\n", callFrom, WSAGetLastError());
-									break;
-								}
+							if (WSAGetLastError() != NO_ERROR){
+								printf("[%s] failed set iMode on ioctlsocket with error: %ld\n", callFrom, WSAGetLastError());
+								break;
+							}
 							rc = ::recv(m_commonSocket, buf, DEFAULT_BUFLEN, 0);
 								if (WSAGetLastError() != NO_ERROR){
 									printf("[%s] failed recv with error: %ld\n", callFrom, WSAGetLastError());
@@ -204,13 +197,10 @@ namespace desm {
 				}
 
 				// TODO: stitch buffer together until NULL byte received?
-				buf[rc]='\0';
+				//buf[rc]='\0';
 				printf("[%s] buffer: %d\n", callFrom, buf);
 				pushQueue(m_queue, std::string(buf), m_CSH);
 			}
-			// All data left us, so need to shutdown the connection - till sending next time data.
-			//printf("[%s] shutdown scopeSocket ...\n", callFrom);
-			//int m_commonSocketResult = shutdown(scopeSocket, SD_SEND);
 
 			return rc == NO_ERROR? sendData() : 0;
 		}
@@ -259,23 +249,21 @@ namespace desm {
 
 			switch(m_mode) {
 				case MODE_SERVER:
-					printf("[%s] sendData scopeSocket = m_serverDataSocket\n", callFrom);
 					// shutdown our socket entirely
-					printf("[%s] close scopeSocket!\r\n", callFrom);
+					printf("[%s] shutdown m_serverDataSocket!\r\n", callFrom);
 					rc = shutdown(m_serverDataSocket, SD_SEND);
 
 					// Close our socket entirely
-					printf("[%s] close scopeSocket!\r\n", callFrom);
+					printf("[%s] close m_serverDataSocket!\r\n", callFrom);
 					rc = closesocket(m_serverDataSocket);
 					break;
 				case MODE_CLIENT:
-					printf("[%s] sendData scopeSocket = m_commonSocket\n", callFrom);
 					// shutdown our socket entirely
-					printf("[%s] close scopeSocket!\r\n", callFrom);
+					printf("[%s] shutdown m_commonSocket!\r\n", callFrom);
 					rc = shutdown(m_commonSocket, SD_SEND);
 
 					// Close our socket entirely
-					printf("[%s] close scopeSocket!\r\n", callFrom);
+					printf("[%s] close m_commonSocket!\r\n", callFrom);
 					rc = closesocket(m_commonSocket);
 					break;
 				default:
