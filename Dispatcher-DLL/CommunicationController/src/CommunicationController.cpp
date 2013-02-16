@@ -147,24 +147,34 @@ namespace desm {
 		}
 
 		bool startReceiveThread() {
+			
 			m_thread = new tThread(this, &Impl::receiveData);
+
+			//need improvement, start thread only when data waiting in queue
 			return m_thread && m_thread->start();
 		}
 
 		DWORD receiveData() {
 			printf("[%s] starting receiveDataThread\n", callFrom);
 
-			long rc = 0;
+			// Set the socket I/O mode: In this case FIONBIO
+			// enables or disables the blocking mode for the 
+			// socket based on the numerical value of iMode.
+			// If iMode = 0, blocking is enabled; 
+			// If iMode != 0, non-blocking mode is enabled.
+			u_long iMode = 0;
+			long rc = -1;
 			char buf[DEFAULT_BUFLEN];
 
 			
-			while(rc != SOCKET_ERROR && !m_threadStop) {
+			while(rc != SOCKET_ERROR && rc != NO_ERROR) {
 				if(!m_threadStop){
 
 					switch(m_mode) {
 						case MODE_SERVER:
 							printf("[%s] receiveData m_serverDataSocket\n", callFrom);
-							if (WSAGetLastError() != NO_ERROR){
+							rc = ioctlsocket(m_serverDataSocket, FIONBIO, &iMode);
+							if (rc != NO_ERROR){
 								printf("[%s] failed set iMode on ioctlsocket with error: %ld\n", callFrom, WSAGetLastError());
 								break;
 							}
@@ -176,7 +186,8 @@ namespace desm {
 							break;
 						case MODE_CLIENT:
 							printf("[%s] receiveData m_commonSocket\n", callFrom);
-							if (WSAGetLastError() != NO_ERROR){
+							rc = ioctlsocket(m_commonSocket, FIONBIO, &iMode);
+							if (rc != NO_ERROR){
 								printf("[%s] failed set iMode on ioctlsocket with error: %ld\n", callFrom, WSAGetLastError());
 								break;
 							}
@@ -202,43 +213,45 @@ namespace desm {
 				pushQueue(m_queue, std::string(buf), m_CSH);
 			}
 
-			return rc == NO_ERROR? sendData() : 0;
+			return (rc != NO_ERROR? WSAGetLastError() : sendData());
 		}
 
 		DWORD sendData() {
+
+			// Set the socket I/O mode: In this case FIONBIO
+			// enables or disables the blocking mode for the 
+			// socket based on the numerical value of iMode.
+			// If iMode = 0, blocking is enabled; 
+			// If iMode != 0, non-blocking mode is enabled.
+			u_long iMode = 0;
 			long rc = 0;
 
 			// Daten austauschen
 			std::string data;
 			while(rc != SOCKET_ERROR && !m_threadStop && (WSAGetLastError() != WSAEWOULDBLOCK)) {
-				if(popQueue(m_queue, data, m_CSH)) {
-					
-					switch(m_mode) {
-						case MODE_SERVER:
-							printf("[%s] sendData m_serverDataSocket\n", callFrom);
-							if(!m_threadStop){
-								printf("[%s] Sending Data: %s\n", callFrom, data.c_str());
+				if(popQueue(m_queue, data, m_CSH) ) {
+					if(!m_threadStop){						
+						switch(m_mode) {
+							case MODE_SERVER:
+								printf("[%s] Sending Data with m_serverDataSocket: %s\n", callFrom, data.c_str());
 								rc = ::send(m_serverDataSocket, data.c_str(), data.length(), 0);
-							}
 
-							break;
-						case MODE_CLIENT:
-							printf("[%s] sendData m_commonSocket\n", callFrom);
-							if(!m_threadStop){
-								printf("[%s] Sending Data: %s\n", callFrom, data.c_str());
+								break;
+							case MODE_CLIENT:
+								printf("[%s] Sending Data with m_commonSocket: %s\n", callFrom, data.c_str());
 								rc = ::send(m_commonSocket, data.c_str(), data.length(), 0);
-							}
+								break;
+							default:
+								throw std::bad_alloc("invalid mode");
+						};
+
+						if(WSAGetLastError() == WSAEWOULDBLOCK){
+							printf("[%s] !!!!WSAEWOULDBLOCK!!!! \n", callFrom);
+						}
+
+						if(rc == SOCKET_ERROR) {
 							break;
-						default:
-							throw std::bad_alloc("invalid mode");
-					};
-
-					if(WSAGetLastError() == WSAEWOULDBLOCK){
-						printf("[%s] !!!!WSAEWOULDBLOCK!!!! \n", callFrom);
-					}
-
-					if(rc == SOCKET_ERROR) {
-						break;
+						}
 					}
 				} else {
 					// can be improved - u know: source http://msdn.microsoft.com/en-us/library/windows/desktop/ms686689(v=vs.85).aspx
@@ -270,7 +283,7 @@ namespace desm {
 					throw std::bad_alloc("invalid mode");
 			};
 
-			return (rc == NO_ERROR) ? 0 : 1;
+			return (rc != NO_ERROR? WSAGetLastError() : 0);
 		}
 
 		DWORD startServer(){
@@ -292,7 +305,7 @@ namespace desm {
 			addr.sin_port = m_port;
 			addr.sin_addr.s_addr = ADDR_ANY;
 			rc = ::bind(m_commonSocket, (SOCKADDR*)&addr, sizeof(SOCKADDR_IN));
-			if(rc == SOCKET_ERROR) {
+			if(rc != NO_ERROR) {
 				printf("[%s] Fehler: bind, fehler code: %d\n", callFrom, WSAGetLastError());
 				return 1;
 			} else {
@@ -301,7 +314,7 @@ namespace desm {
 
 			// In den listen Modus
 			rc = ::listen(m_commonSocket, 10);
-			if(rc == SOCKET_ERROR) {
+			if(rc != NO_ERROR) {
 				printf("[%s] Fehler: listen, fehler code: %d\n", callFrom, WSAGetLastError());
 				return 1;
 			} else {
@@ -361,16 +374,12 @@ namespace desm {
 				printf("[%s] Neue Verbindung wurde akzeptiert ...\n", callFrom);
 			}
 
-
 			if(!startReceiveThread()) {
 				printf("[%s] unable to start receiving thread", callFrom);
 				return 1;
 			}
 
-			//if u want only a one shot connection, the socket can be shutdown here ...
-			//shutdown(m_serverDataSocket, SD_BOTH);
-
-			return sendData();
+			return rc;
 		}
 
 		/*
@@ -430,14 +439,12 @@ namespace desm {
 			
 
 			// again that confusin socket stuff -> needs to be improved
-			/*
 			if(!startReceiveThread()) {
 				printf("[%s] unable to start receiving thread", callFrom);
 				return 1;
 			}
-			*/
 
-			return sendData();
+			return rc;
 		}
 
 	};
@@ -454,11 +461,14 @@ namespace desm {
 	* http://tangentsoft.net/wskfaq/glossary.html#non-blocking
 	*/
 	bool CommunicationController::receive(std::string& data){
-		return pimpl->popQueue(pimpl->m_queue, data, pimpl->m_CSH);
+		bool iReturn = pimpl->popQueue(pimpl->m_queue, data, pimpl->m_CSH);
+		printf("[%s] popQueue: %s\n", this->pimpl->callFrom, iReturn);
+		return true;
 	}
 
 	bool CommunicationController::send(const std::string& data){
 		pimpl->pushQueue(pimpl->m_queue, data, pimpl->m_CSH);
+		printf("[%s] pushQueue: %s\n", this->pimpl->callFrom, data.c_str());
 		return true;
 	}
 };
