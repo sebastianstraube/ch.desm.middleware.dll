@@ -155,19 +155,20 @@ namespace desm {
 		}
 
 		DWORD receiveData() {
-			printf("[%s] starting receiveDataThread\n", callFrom);
+			printf("[%s] Starting 'receiveDataThread'\n", callFrom);
 
 			// Set the socket I/O mode: In this case FIONBIO
 			// enables or disables the blocking mode for the 
 			// socket based on the numerical value of iMode.
 			// If iMode = 0, blocking is enabled; 
 			// If iMode != 0, non-blocking mode is enabled.
-			u_long iMode = 0;
-			long rc = -1;
+			u_long iMode = 1;
+			long rc = 0;
 			char buf[DEFAULT_BUFLEN];
 
 			
-			while(rc != SOCKET_ERROR && rc != NO_ERROR) {
+			while(rc != SOCKET_ERROR) {
+
 				if(!m_threadStop){
 
 					switch(m_mode) {
@@ -178,46 +179,59 @@ namespace desm {
 								printf("[%s] failed set iMode on ioctlsocket with error: %ld\n", callFrom, WSAGetLastError());
 								break;
 							}
-							rc = ::recv(m_serverDataSocket, buf, DEFAULT_BUFLEN, 0);
+
+							rc = ::recv(m_serverDataSocket, buf, DEFAULT_BUFLEN, 0);							
+							
 							if (WSAGetLastError() != NO_ERROR){
-									printf("[%s] failed recv with error: %ld\n", callFrom, WSAGetLastError());
-									break;
+								printf("[%s] Failed recv with error: %ld\n", callFrom, WSAGetLastError());
+								break;
 							}
 							break;
 						case MODE_CLIENT:
 							printf("[%s] receiveData m_commonSocket\n", callFrom);
 							rc = ioctlsocket(m_commonSocket, FIONBIO, &iMode);
 							if (rc != NO_ERROR){
-								printf("[%s] failed set iMode on ioctlsocket with error: %ld\n", callFrom, WSAGetLastError());
+								printf("[%s] Failed set iMode on ioctlsocket with error: %ld\n", callFrom, WSAGetLastError());
 								break;
 							}
+
 							rc = ::recv(m_commonSocket, buf, DEFAULT_BUFLEN, 0);
-								if (WSAGetLastError() != NO_ERROR){
-									printf("[%s] failed recv with error: %ld\n", callFrom, WSAGetLastError());
-									break;
+							
+							if (WSAGetLastError() != NO_ERROR){
+								printf("[%s] Failed 'recv' with error: %ld\n", callFrom, WSAGetLastError());
+								break;
 							}
 							break;
 						default:
 							throw std::bad_alloc("invalid mode");
 					};
-				}
 
-				if(rc == NO_ERROR) {
-					printf("[%s] Verbindung getrennt ...\n", callFrom);
-					break;
-				}
+					if (rc < NO_ERROR){
+						printf("[%s] Socket Error: %d\n", callFrom,  WSAGetLastError());
+						break;
+					}else if (rc == NO_ERROR){
+						printf("[%s] Connection closed: %ld\n", callFrom, rc);
+						
+						// TODO: stitch buffer together until NULL byte received?
+						buf[rc]='\0';
+						printf("[%s] Buffer: %d\n", callFrom, buf);
+						pushQueue(m_queue, std::string(buf), m_CSH);
+						sendData();
+						break;
+					}else{
+						printf("[%s] Receive error: %ld\n", callFrom, WSAGetLastError());
+						break;
+					};
 
-				// TODO: stitch buffer together until NULL byte received?
-				//buf[rc]='\0';
-				printf("[%s] buffer: %d\n", callFrom, buf);
-				pushQueue(m_queue, std::string(buf), m_CSH);
+				}else{
+					printf("[%s] Commandet(threadstop): %ld\n", callFrom, m_threadStop);
+				};
 			}
-
-			return (rc != NO_ERROR? WSAGetLastError() : sendData());
+			return rc;
 		}
 
 		DWORD sendData() {
-
+			printf("[%s] Starting 'sendData'\n", callFrom);
 			// Set the socket I/O mode: In this case FIONBIO
 			// enables or disables the blocking mode for the 
 			// socket based on the numerical value of iMode.
