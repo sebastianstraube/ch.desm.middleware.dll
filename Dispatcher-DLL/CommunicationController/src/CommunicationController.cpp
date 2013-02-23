@@ -21,6 +21,7 @@
 
 static const int DEFAULT_BUFLEN = 512;
 static const DWORD INTERRUPT_TIMEOUT = 20;
+static const int CLIENT_MAX_RETRY = 10;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -289,17 +290,16 @@ namespace desm {
 		// client impl
 
 		DWORD startClient(void*){
-			int maxRetryCount = 10;
-			int currRetryCount = 0;
+			int retryCount = 0;
 			long rc;
 			SOCKADDR_IN addr;
 
 			do {		
 				Connection c;
 
-				currRetryCount++;
-				if(currRetryCount > 1) {
-					printf("Client retry: %d\n", currRetryCount);
+				retryCount++;
+				if(retryCount > 1) {
+					printf("Client retry: %d/%d\n", retryCount, CLIENT_MAX_RETRY);
 				}
 
 				c.socket = ::socket(AF_INET, SOCK_STREAM, 0);
@@ -348,7 +348,7 @@ namespace desm {
 					}
 				}
 
-			} while(!m_mainThreadStop && currRetryCount < maxRetryCount);
+			} while(!m_mainThreadStop && retryCount < CLIENT_MAX_RETRY);
 
 			return 0;
 		}
