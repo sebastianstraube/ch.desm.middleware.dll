@@ -26,9 +26,10 @@ namespace desm {
 
 	struct CommunicationController::Impl {
 
-		typedef Thread<typename CommunicationController::Impl>   tThread;
-		typedef CommunicationController::eMode                   eMode;
-		typedef SecureQueue<std::string>                         tQueue;
+		typedef Thread<typename CommunicationController::Impl, void*>    tMainThread;
+		typedef Thread<typename CommunicationController::Impl, SOCKET>   tDataThread;
+		typedef CommunicationController::eMode                           eMode;
+		typedef SecureQueue<std::string>                                 tQueue;
 
 		eMode                  m_mode;
 		std::string            m_host;
@@ -37,10 +38,10 @@ namespace desm {
 		tQueue                 m_sendQueue;
 		tQueue                 m_recvQueue;
 
-		tThread*               m_mainThread;
+		tMainThread*           m_mainThread;
 		bool                   m_mainThreadStop;
 		SOCKET                 m_mainSocket;
-		tThread*               m_recvThread; // not ideal but best to keep code similar and simple for client and server
+		tDataThread*           m_recvThread; // not ideal but best to keep code similar and simple for client and server
 		bool                   m_recvThreadStop;
 		SOCKET                 m_recvSocket;
 
@@ -62,7 +63,7 @@ namespace desm {
 				throw std::bad_alloc("unable to start windows sockets");
 			}
 			// setup main threads
-			DWORD (Impl::*fct)(void) = NULL;
+			DWORD (Impl::*fct)(void*) = NULL;
 			switch(mode) {
 			case MODE_SERVER:
 				fct = &Impl::startServer;
@@ -73,7 +74,7 @@ namespace desm {
 			default:
 				throw std::bad_alloc("invalid mode");
 			};
-			m_mainThread = new tThread(this, fct);
+			m_mainThread = new tMainThread(this, fct);
 			if(!m_mainThread) {
 				throw std::bad_alloc("unable to allocate main communication thread");
 			}
@@ -104,21 +105,23 @@ namespace desm {
 		}
 
 		bool startReceiveThread() {
-			m_recvThread = new tThread(this, &Impl::receiveData);
+			m_recvThread = new tDataThread(this, &Impl::receiveData, m_recvSocket);
 			return m_recvThread && m_recvThread->start();
 		}
 
-		DWORD receiveData() {
+		DWORD receiveData(SOCKET s) {
 			long rc = 0;
 			char buf[DEFAULT_BUFLEN];
 			while(rc != SOCKET_ERROR && !m_recvThreadStop) {
-				rc = ::recv(m_recvSocket, buf, DEFAULT_BUFLEN, 0);
+				rc = ::recv(s, buf, DEFAULT_BUFLEN-1, 0);
 				if(rc == 0) {
 					printf("Client hat die Verbindung getrennt..\n");
 					break;
-				}
-				if(rc == SOCKET_ERROR) {
+				} else if(rc == SOCKET_ERROR) {
 					printf("Fehler: recv, fehler code: %d\n", WSAGetLastError());
+					break;
+				} else if(rc < 0) {
+					printf("Unbekannter Fehler: %d\n", rc);
 					break;
 				}
 				// TODO: stitch buffer together until NUL byte received?
@@ -148,7 +151,7 @@ namespace desm {
 			return (rc == SOCKET_ERROR) ? 1 : 0;
 		}
 
-		DWORD startServer(){
+		DWORD startServer(void*){
 			long rc;
 			SOCKADDR_IN addr;
 
@@ -202,7 +205,7 @@ namespace desm {
 			return sendData();
 		}
 
-		DWORD startClient(){
+		DWORD startClient(void*){
 			long rc;
 			SOCKADDR_IN addr;
 
