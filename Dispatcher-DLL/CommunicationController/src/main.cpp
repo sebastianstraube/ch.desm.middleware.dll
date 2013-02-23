@@ -10,6 +10,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	std::string data;
 	try {
 		CommunicationController *cc_server = new CommunicationController(CommunicationController::MODE_SERVER, "127.0.0.1", 27017);
+		Sleep(1000);
 		CommunicationController *cc_client = new CommunicationController(CommunicationController::MODE_CLIENT, "127.0.0.1", 27017);
 		// send a string once - will be bounced back and forth in the loop
 		cc_client->send("muh");

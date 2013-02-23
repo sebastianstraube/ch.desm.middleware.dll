@@ -9,6 +9,7 @@
 #include <iphlpapi.h>
 #pragma comment(lib, "Ws2_32.lib")
 
+#include <list>
 #include <queue>
 
 #include "CommunicationController.h"
@@ -16,34 +17,46 @@
 #include "SecureQueue.h"
 #include "Thread.h"
 
-// =============================================================================
+////////////////////////////////////////////////////////////////////////////////
 
 static const int DEFAULT_BUFLEN = 512;
+static const DWORD INTERRUPT_TIMEOUT = 20;
 
-// =============================================================================
+
+////////////////////////////////////////////////////////////////////////////////
 
 namespace desm {
 
 	struct CommunicationController::Impl {
+		
+		////////////////////////////////////////////////////////////////////////
+		// member
 
 		typedef Thread<typename CommunicationController::Impl, void*>    tMainThread;
-		typedef Thread<typename CommunicationController::Impl, SOCKET>   tDataThread;
+		typedef Thread<typename CommunicationController::Impl, SOCKET*>  tSocketThread;
 		typedef CommunicationController::eMode                           eMode;
 		typedef SecureQueue<std::string>                                 tQueue;
 
-		eMode                  m_mode;
-		std::string            m_host;
-		unsigned short         m_port;
+		eMode              m_mode;
+		std::string        m_host;
+		unsigned short     m_port;
 
-		tQueue                 m_sendQueue;
-		tQueue                 m_recvQueue;
+		tQueue             m_sendQueue;
+		tQueue             m_recvQueue;
 
-		tMainThread*           m_mainThread;
-		bool                   m_mainThreadStop;
-		SOCKET                 m_mainSocket;
-		tDataThread*           m_recvThread; // not ideal but best to keep code similar and simple for client and server
-		bool                   m_recvThreadStop;
-		SOCKET                 m_recvSocket;
+		tMainThread*       m_mainThread;
+		bool               m_mainThreadStop;
+		
+		struct Connection {
+			Connection() : recvThread(NULL), sendThread(NULL), socket(INVALID_SOCKET) {}
+			~Connection() { delete recvThread; delete sendThread; }
+			tSocketThread* recvThread;
+			tSocketThread* sendThread;
+			SOCKET socket;
+		};
+		
+		////////////////////////////////////////////////////////////////////////
+		// lifetime
 
 		Impl(eMode mode, const std::string& host, unsigned short port)
 			: m_mode(mode)
@@ -53,11 +66,8 @@ namespace desm {
 			, m_recvQueue()
 			, m_mainThread(NULL)
 			, m_mainThreadStop(false)
-			, m_mainSocket(INVALID_SOCKET)
-			, m_recvThread(NULL)
-			, m_recvThreadStop(false)
-			, m_recvSocket(INVALID_SOCKET)
 		{
+			// TODO: really start wsa stuff on every impl call?
 			WSADATA wsa;
 			if(WSAStartup(MAKEWORD(2,0), &wsa) != 0) {
 				throw std::bad_alloc("unable to start windows sockets");
@@ -75,53 +85,63 @@ namespace desm {
 				throw std::bad_alloc("invalid mode");
 			};
 			m_mainThread = new tMainThread(this, fct);
-			if(!m_mainThread) {
-				throw std::bad_alloc("unable to allocate main communication thread");
-			}
-			// start main thread
-			if(!m_mainThread->start()) {
-				throw std::bad_alloc("unable to start main communication thread");
+			if(!m_mainThread || !m_mainThread->start()) {
+				throw std::bad_alloc("unable to start main thread");
 			}
 		}
 
 		~Impl() {
-			m_mainThreadStop = true;
-			m_recvThreadStop = true;
-			if(m_recvSocket != INVALID_SOCKET && m_recvSocket != m_mainSocket) {
-				closesocket(m_recvSocket);
-			}
-			if(m_mainSocket != INVALID_SOCKET) {
-				closesocket(m_mainSocket);
-			}
 			m_recvQueue.clear();
 			m_sendQueue.clear();
-			WSACleanup();
+			m_mainThreadStop = true;
+			m_mainThread->interrupt();
 			m_mainThread->join();
-			if(m_recvThread) {
-				m_recvThread->join();
-			}
-			delete m_recvThread;
 			delete m_mainThread;
+			// TODO: same here, really cleanup on every impl close?
+			WSACleanup();
+		}
+		
+		////////////////////////////////////////////////////////////////////////
+		// thread helper
+
+		bool startReceiveThread(Connection& c) {
+			c.recvThread = new tSocketThread(this, &Impl::receiveData, &c.socket);
+			return c.recvThread && c.recvThread->start();
 		}
 
-		bool startReceiveThread() {
-			m_recvThread = new tDataThread(this, &Impl::receiveData, m_recvSocket);
-			return m_recvThread && m_recvThread->start();
+		bool startSendThread(Connection& c) {
+			c.sendThread = new tSocketThread(this, &Impl::sendData, &c.socket);
+			return c.sendThread && c.sendThread->start();
+		}
+		
+		bool startAcceptThread(tSocketThread** thread, SOCKET* s) {
+			*thread = new tSocketThread(this, &Impl::acceptConnections, s);
+			return *thread && (*thread)->start();
 		}
 
-		DWORD receiveData(SOCKET s) {
+		////////////////////////////////////////////////////////////////////////
+		// socket thread helper
+
+		DWORD receiveData(SOCKET* s) {
 			long rc = 0;
 			char buf[DEFAULT_BUFLEN];
-			while(rc != SOCKET_ERROR && !m_recvThreadStop) {
-				rc = ::recv(s, buf, DEFAULT_BUFLEN-1, 0);
+			while(rc != SOCKET_ERROR && *s && *s != INVALID_SOCKET) {
+				rc = ::recv(*s, buf, DEFAULT_BUFLEN-1, 0);
 				if(rc == 0) {
-					printf("Client hat die Verbindung getrennt..\n");
+					printf("[%d] Connection closed\n", m_mode);
 					break;
-				} else if(rc == SOCKET_ERROR) {
-					printf("Fehler: recv, fehler code: %d\n", WSAGetLastError());
+				}
+				if(rc == SOCKET_ERROR) {
+					int wsaErr = WSAGetLastError();
+					if(wsaErr == WSAECONNABORTED || wsaErr == WSAECONNRESET) {
+						printf("[%d] Connection closed\n", m_mode);
+					} else {
+						printf("[%d] Unknown WSA Error: %d\n", m_mode, WSAGetLastError());
+					}
 					break;
-				} else if(rc < 0) {
-					printf("Unbekannter Fehler: %d\n", rc);
+				}
+				if(rc < 0) {
+					printf("[%d] Unknown Socket Error: %d\n", m_mode, rc);
 					break;
 				}
 				// TODO: stitch buffer together until NUL byte received?
@@ -129,39 +149,93 @@ namespace desm {
 				printf("[Receive] %s\n", buf);
 				m_recvQueue.push(std::string(buf));
 			}
-			return 0;
+			printf("[%d] leaving receive thread!\n", m_mode);
+			return (rc < 0) ? 1 : 0;
 		}
 
-		DWORD sendData() {
+		DWORD sendData(SOCKET* s) {
 			long rc = 0;
 			// Daten austauschen
 			std::string data;
-			while(rc != SOCKET_ERROR && !m_mainThreadStop) {
+			while(rc != SOCKET_ERROR && *s && *s != INVALID_SOCKET) {
 				if(m_sendQueue.pop(data)) {
 					printf("[Sending] %s\n", data.c_str());
-					rc = ::send(m_recvSocket, data.c_str(), data.length(), 0);
-					if(rc == SOCKET_ERROR) {
+					rc = ::send(*s, data.c_str(), data.length(), 0);
+					if(rc == SOCKET_ERROR || rc < 0) {
 						break;
 					}
 				} else {
 					// some polling going on...
-					Sleep(50);
+					Sleep(10);
 				}
 			}
-			return (rc == SOCKET_ERROR) ? 1 : 0;
+			printf("[%d] leaving send thread!\n", m_mode);
+			return (rc < 0) ? 1 : 0;
 		}
+
+		DWORD acceptConnections(SOCKET* s) {
+			std::list<Connection*> connections;
+			while(!m_mainThreadStop && *s && *s != INVALID_SOCKET) {
+				Connection* c = new Connection();
+				c->socket = ::accept(*s, NULL, NULL);
+				if(c->socket == INVALID_SOCKET) {
+					int wsaErr = WSAGetLastError();
+					if(wsaErr == WSAECONNABORTED || wsaErr == WSAECONNRESET || wsaErr == WSAEINTR) {
+						printf("[%d] Connection closed\n", m_mode);
+					} else {
+						printf("[%d] Unknown WSA Error: %d\n", m_mode, WSAGetLastError());
+					}
+					// TODO memory leak of c
+					break;
+				} else {
+					fprintf(stderr, "Neue Verbindung wurde akzeptiert!\n");
+				}
+				
+				if(!startReceiveThread(*c)) {
+					fprintf(stderr, "unable to start receiving thread");
+					// TODO memory leak of c
+					break;
+				}
+
+				if(!startSendThread(*c)) {
+					fprintf(stderr, "unable to start receiving thread");
+					// TODO memory leak of c
+					break;
+				}
+
+				connections.push_back(c);
+			}
+			
+			std::list<Connection*>::iterator it = connections.begin();
+			for(; it != connections.end(); ++it) {
+				Connection* c = *it;
+				if(!c) { continue; }
+				// kill connection's socket and wait for him to close on its own
+				if(c->socket != INVALID_SOCKET) {
+					::closesocket(c->socket);
+					c->socket = INVALID_SOCKET;
+				}
+				c->recvThread->join();
+				c->sendThread->join();
+				delete c;
+			}
+
+			return 0;
+		}
+		
+		////////////////////////////////////////////////////////////////////////
+		// server impl
 
 		DWORD startServer(void*){
 			long rc;
 			SOCKADDR_IN addr;
+			SOCKET mainSocket = INVALID_SOCKET;
 
 			// Socket erstellen
-			m_mainSocket = ::socket(AF_INET, SOCK_STREAM, 0);
-			if(m_mainSocket == INVALID_SOCKET) {
-				printf("Fehler: Der Socket konnte nicht erstellt werden, fehler code: %d\n",WSAGetLastError());
+			mainSocket = ::socket(AF_INET, SOCK_STREAM, 0);
+			if(mainSocket == INVALID_SOCKET) {
+				fprintf(stderr, "Unable to start server: %d\n",WSAGetLastError());
 				return 1;
-			} else {
-				printf("Socket erstellt!\n");
 			}
 
 			// Socket binden
@@ -169,83 +243,119 @@ namespace desm {
 			addr.sin_family = AF_INET;
 			addr.sin_port = m_port;
 			addr.sin_addr.s_addr = ADDR_ANY;
-			rc = ::bind(m_mainSocket, (SOCKADDR*)&addr, sizeof(SOCKADDR_IN));
+			rc = ::bind(mainSocket, (SOCKADDR*)&addr, sizeof(SOCKADDR_IN));
 			if(rc == SOCKET_ERROR) {
-				printf("Fehler: bind, fehler code: %d\n", WSAGetLastError());
+				fprintf(stderr, "Unable to start server: %d\n", WSAGetLastError());
 				return 1;
-			} else {
-				printf("Socket an port gebunden\n");
 			}
 
 			// In den listen Modus
-			rc = ::listen(m_mainSocket, 10);
+			rc = ::listen(mainSocket, 10);
 			if(rc == SOCKET_ERROR) {
-				printf("Fehler: listen, fehler code: %d\n",WSAGetLastError());
+				fprintf(stderr, "Unable to start server: %d\n", WSAGetLastError());
 				return 1;
-			} else {
-				printf("m_socket ist im listen Modus....\n");
 			}
-
-			// Max: now it may get a bit confusing with the socket names...
-
-			// Verbindung annehmen
-			m_recvSocket = ::accept(m_mainSocket, NULL, NULL);
-			if(m_recvSocket == INVALID_SOCKET) {
-				fprintf(stderr, "Fehler: accept, fehler code: %d\n",WSAGetLastError());
-				return 1;
-			} else {
-				fprintf(stderr, "Neue Verbindung wurde akzeptiert!\n");
-			}
-
-			if(!startReceiveThread()) {
-				fprintf(stderr, "unable to start receiving thread");
+			if(rc < 0) {
+				fprintf(stderr, "Unable to start server: %d\n", rc);
 				return 1;
 			}
 
-			return sendData();
+			tSocketThread* acceptThread;
+			if(!startAcceptThread(&acceptThread, &mainSocket)) {
+				fprintf(stderr, "Unable to start accept thread\n");
+				return 1;
+			}
+			
+			while(acceptThread && acceptThread->isRunning()) {
+				bool interrupted = false;
+				interrupted = interrupted || acceptThread->isInterrupted(INTERRUPT_TIMEOUT);
+				interrupted = interrupted || m_mainThread->isInterrupted(INTERRUPT_TIMEOUT);
+				if(interrupted) {
+					printf("Server shutdown requested!\n");
+					if(mainSocket != INVALID_SOCKET) {
+						::closesocket(mainSocket);
+						// TODO handle closesocket's return code
+						mainSocket = INVALID_SOCKET;
+					}
+					acceptThread->join();
+					break;
+				}
+			}
+			
+			return 0;
 		}
+		
+		////////////////////////////////////////////////////////////////////////
+		// client impl
 
 		DWORD startClient(void*){
+			int maxRetryCount = 10;
+			int currRetryCount = 0;
 			long rc;
 			SOCKADDR_IN addr;
 
-			// Socket erstellen
-			m_mainSocket = ::socket(AF_INET, SOCK_STREAM, 0);
-			if(m_mainSocket == INVALID_SOCKET) {
-				fprintf(stderr, "Fehler: Der Socket konnte nicht erstellt werden, fehler code: %d\n", WSAGetLastError());
-				return 1;
-			} else {
-				printf("Socket erstellt!\n");
-			}
+			do {		
+				Connection c;
 
-			// Verbinden
-			memset(&addr, 0, sizeof(SOCKADDR_IN)); // zuerst alles auf 0 setzten
-			addr.sin_family = AF_INET;
-			addr.sin_port = m_port;
-			addr.sin_addr.s_addr = inet_addr(m_host.c_str()); // zielrechner ist unser eigener
+				currRetryCount++;
+				if(currRetryCount > 1) {
+					printf("Client retry: %d\n", currRetryCount);
+				}
 
-			rc = ::connect(m_mainSocket, (SOCKADDR*)&addr, sizeof(SOCKADDR));
-			if(rc == SOCKET_ERROR) {
-				m_mainSocket = INVALID_SOCKET;
-				printf("Fehler: connect gescheitert, fehler code: %d\n", WSAGetLastError());
-				return 1;
-			} else {
-				printf("Client ist verbunden mit Server..\n");
-			}
+				c.socket = ::socket(AF_INET, SOCK_STREAM, 0);
+				if(c.socket == INVALID_SOCKET) {
+					fprintf(stderr, "Unable to create Client socket: %d\n", WSAGetLastError());
+					continue;
+				}
+				
+				// Verbinden
+				memset(&addr, 0, sizeof(SOCKADDR_IN));
+				addr.sin_family = AF_INET;
+				addr.sin_port = m_port;
+				addr.sin_addr.s_addr = inet_addr(m_host.c_str());
+				
+				rc = ::connect(c.socket, (SOCKADDR*)&addr, sizeof(SOCKADDR));
+				if(rc == SOCKET_ERROR) {
+					c.socket = INVALID_SOCKET;
+					fprintf(stderr, "Unable to connect to server: %d\n", WSAGetLastError());
+					continue;
+				}
+				
+				if(!startReceiveThread(c)) {
+					fprintf(stderr, "Unable to start receiving thread\n");
+					continue;
+				}
+				
+				if(!startSendThread(c)) {
+					fprintf(stderr, "Unable to start sending thread\n");
+					continue;
+				}
+				
+				printf("client connected! :) sending/receiving data\n");
 
-			// again that confusin socket stuff -> needs to be improved
-			m_recvSocket = m_mainSocket;
-			if(!startReceiveThread()) {
-				fprintf(stderr, "unable to start receiving thread");
-				return 1;
-			}
+				while(c.recvThread->isRunning() || c.sendThread->isRunning()) {
+					bool interrupted = false;
+					interrupted = interrupted || c.recvThread->isInterrupted(INTERRUPT_TIMEOUT);
+					interrupted = interrupted || c.sendThread->isInterrupted(INTERRUPT_TIMEOUT);
+					interrupted = interrupted || m_mainThread->isInterrupted(INTERRUPT_TIMEOUT);
+					if(interrupted) {
+						printf("Client shutdown requested!\n");
+						::closesocket(c.socket);
+						c.socket = INVALID_SOCKET;
+						c.recvThread->join();
+						c.sendThread->join();
+						break;
+					}
+				}
 
-			return sendData();
+			} while(!m_mainThreadStop && currRetryCount < maxRetryCount);
+
+			return 0;
 		}
 
 	};
 
-	// =============================================================================
+	////////////////////////////////////////////////////////////////////////////
 
 	CommunicationController::CommunicationController(CommunicationController::eMode mode, const std::string& host, unsigned short port)
 		: pimpl(new Impl(mode, host, port))
