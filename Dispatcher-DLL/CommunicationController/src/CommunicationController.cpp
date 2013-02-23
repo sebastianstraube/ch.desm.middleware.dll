@@ -13,6 +13,7 @@
 
 #include "CommunicationController.h"
 #include "CriticalSection.h"
+#include "SecureQueue.h"
 #include "Thread.h"
 
 // =============================================================================
@@ -27,17 +28,14 @@ namespace desm {
 
 		typedef Thread<typename CommunicationController::Impl>   tThread;
 		typedef CommunicationController::eMode                   eMode;
-		typedef std::queue<std::string>                          tQueue;
+		typedef SecureQueue<std::string>                         tQueue;
 
 		eMode                  m_mode;
 		std::string            m_host;
 		unsigned short         m_port;
 
-		// IMPORTANT: use wrapper functions below to ensure thread-safety
 		tQueue                 m_sendQueue;
-		CriticalSectionHandle  m_sendCSH;
 		tQueue                 m_recvQueue;
-		CriticalSectionHandle  m_recvCSH;
 
 		tThread*               m_mainThread;
 		bool                   m_mainThreadStop;
@@ -51,9 +49,7 @@ namespace desm {
 			, m_host(host)
 			, m_port(port)
 			, m_sendQueue()
-			, m_sendCSH()
 			, m_recvQueue()
-			, m_recvCSH()
 			, m_mainThread(NULL)
 			, m_mainThreadStop(false)
 			, m_mainSocket(INVALID_SOCKET)
@@ -96,8 +92,8 @@ namespace desm {
 			if(m_mainSocket != INVALID_SOCKET) {
 				closesocket(m_mainSocket);
 			}
-			clearQueue(m_recvQueue, m_recvCSH);
-			clearQueue(m_sendQueue, m_sendCSH);
+			m_recvQueue.clear();
+			m_sendQueue.clear();
 			WSACleanup();
 			m_mainThread->join();
 			if(m_recvThread) {
@@ -105,28 +101,6 @@ namespace desm {
 			}
 			delete m_recvThread;
 			delete m_mainThread;
-		}
-
-		void clearQueue(tQueue& q, CriticalSectionHandle& csh) {
-			CriticalSection cs(csh);
-			while(!q.empty()) {
-				q.pop();
-			}
-		}
-
-		void pushQueue(tQueue& q, const std::string& data, CriticalSectionHandle& csh) {
-			CriticalSection cs(csh);
-			q.push(data);
-		}
-
-		bool popQueue(tQueue& q, std::string& data, CriticalSectionHandle& csh) {
-			CriticalSection cs(csh);
-			if(q.empty()) {
-				return false;
-			}
-			data = q.front();
-			q.pop();
-			return true;
 		}
 
 		bool startReceiveThread() {
@@ -150,7 +124,7 @@ namespace desm {
 				// TODO: stitch buffer together until NUL byte received?
 				buf[rc]='\0';
 				printf("[Receive] %s\n", buf);
-				pushQueue(m_recvQueue, std::string(buf), m_recvCSH);
+				m_recvQueue.push(std::string(buf));
 			}
 			return 0;
 		}
@@ -160,7 +134,7 @@ namespace desm {
 			// Daten austauschen
 			std::string data;
 			while(rc != SOCKET_ERROR && !m_mainThreadStop) {
-				if(popQueue(m_sendQueue, data, m_sendCSH)) {
+				if(m_sendQueue.pop(data)) {
 					printf("[Sending] %s\n", data.c_str());
 					rc = ::send(m_recvSocket, data.c_str(), data.length(), 0);
 					if(rc == SOCKET_ERROR) {
@@ -282,12 +256,12 @@ namespace desm {
 
 	bool CommunicationController::receive(std::string& data)
 	{
-		return pimpl->popQueue(pimpl->m_recvQueue, data, pimpl->m_recvCSH);
+		return pimpl->m_recvQueue.pop(data);
 	}
 
 	bool CommunicationController::send(const std::string& data)
 	{
-		pimpl->pushQueue(pimpl->m_sendQueue, data, pimpl->m_sendCSH);
+		pimpl->m_sendQueue.push(data);
 		return true;
 	}
 

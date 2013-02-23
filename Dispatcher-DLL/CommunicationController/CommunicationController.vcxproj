@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="src\CommunicationController.h" />
     <ClInclude Include="src\CriticalSection.h" />
+    <ClInclude Include="src\SecureQueue.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\Thread.h" />
   </ItemGroup>
