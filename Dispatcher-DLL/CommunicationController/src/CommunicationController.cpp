@@ -19,10 +19,9 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-static const int DEFAULT_BUFLEN = 512;
-static const DWORD INTERRUPT_TIMEOUT = 20;
+static const int DEFAULT_BUFLEN = 1024;
+static const DWORD INTERRUPT_TIMEOUT = 10;
 static const int CLIENT_MAX_RETRY = 10;
-
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -31,30 +30,39 @@ namespace desm {
 	struct CommunicationController::Impl {
 		
 		////////////////////////////////////////////////////////////////////////
-		// member
+		// types
+		
+		typedef struct Connection;
 
-		typedef Thread<typename CommunicationController::Impl, void*>    tMainThread;
-		typedef Thread<typename CommunicationController::Impl, SOCKET*>  tSocketThread;
-		typedef CommunicationController::eMode                           eMode;
-		typedef SecureQueue<std::string>                                 tQueue;
-
-		eMode              m_mode;
-		std::string        m_host;
-		unsigned short     m_port;
-
-		tQueue             m_sendQueue;
-		tQueue             m_recvQueue;
-
-		tMainThread*       m_mainThread;
-		bool               m_mainThreadStop;
+		typedef Thread<typename CommunicationController::Impl, void*>        tMainThread;
+		typedef Thread<typename CommunicationController::Impl, Connection*>  tDataThread;
+		typedef Thread<typename CommunicationController::Impl, SOCKET*>      tSocketThread;
+		typedef CommunicationController::eMode                               eMode;
+		typedef SecureQueue<std::string>                                     tQueue;
 		
 		struct Connection {
 			Connection() : recvThread(NULL), sendThread(NULL), socket(INVALID_SOCKET) {}
 			~Connection() { delete recvThread; delete sendThread; }
-			tSocketThread* recvThread;
-			tSocketThread* sendThread;
+			tDataThread* recvThread;
+			tDataThread* sendThread;
+			tQueue recvQueue;
+			tQueue sendQueue;
 			SOCKET socket;
 		};
+		
+		////////////////////////////////////////////////////////////////////////
+		// member
+
+		eMode                   m_mode;
+		std::string             m_host;
+		unsigned short          m_port;
+
+		tQueue                  m_sendQueue;
+		tQueue                  m_recvQueue;
+
+		tMainThread*            m_mainThread;
+		bool                    m_mainThreadStop;
+		std::list<Connection*>  m_clientConnections;
 		
 		////////////////////////////////////////////////////////////////////////
 		// lifetime
@@ -67,6 +75,7 @@ namespace desm {
 			, m_recvQueue()
 			, m_mainThread(NULL)
 			, m_mainThreadStop(false)
+			, m_clientConnections()
 		{
 			//! @see http://msdn.microsoft.com/en-us/library/windows/desktop/ms742213(v=vs.85).aspx
 			WSADATA wsa;
@@ -101,18 +110,18 @@ namespace desm {
 			//! @see http://msdn.microsoft.com/en-us/library/windows/desktop/ms741549(v=vs.85).aspx
 			WSACleanup();
 		}
-		
+
 		////////////////////////////////////////////////////////////////////////
 		// thread helper
 
-		bool startReceiveThread(Connection& c) {
-			c.recvThread = new tSocketThread(this, &Impl::receiveData, &c.socket);
-			return c.recvThread && c.recvThread->start();
+		bool startReceiveThread(Connection* c) {
+			c->recvThread = new tDataThread(this, &Impl::receiveData, c);
+			return c->recvThread && c->recvThread->start();
 		}
 
-		bool startSendThread(Connection& c) {
-			c.sendThread = new tSocketThread(this, &Impl::sendData, &c.socket);
-			return c.sendThread && c.sendThread->start();
+		bool startSendThread(Connection* c) {
+			c->sendThread = new tDataThread(this, &Impl::sendData, c);
+			return c->sendThread && c->sendThread->start();
 		}
 		
 		bool startAcceptThread(tSocketThread** thread, SOCKET* s) {
@@ -123,11 +132,11 @@ namespace desm {
 		////////////////////////////////////////////////////////////////////////
 		// socket thread helper
 
-		DWORD receiveData(SOCKET* s) {
+		DWORD receiveData(Connection* c) {
 			long rc = 0;
 			char buf[DEFAULT_BUFLEN];
-			while(rc != SOCKET_ERROR && *s && *s != INVALID_SOCKET) {
-				rc = ::recv(*s, buf, DEFAULT_BUFLEN-1, 0);
+			while(rc != SOCKET_ERROR && c && c->socket != INVALID_SOCKET) {
+				rc = ::recv(c->socket, buf, DEFAULT_BUFLEN-1, 0);
 				if(rc == 0) {
 					printf("[%d] Connection closed\n", m_mode);
 					break;
@@ -148,20 +157,20 @@ namespace desm {
 				// TODO: stitch buffer together until NUL byte received?
 				buf[rc]='\0';
 				printf("[Receive] %s\n", buf);
-				m_recvQueue.push(std::string(buf));
+				c->recvQueue.push(std::string(buf));
 			}
 			printf("[%d] leaving receive thread!\n", m_mode);
 			return (rc < 0) ? 1 : 0;
 		}
 
-		DWORD sendData(SOCKET* s) {
+		DWORD sendData(Connection* c) {
 			long rc = 0;
 			// Daten austauschen
 			std::string data;
-			while(rc != SOCKET_ERROR && *s && *s != INVALID_SOCKET) {
-				if(m_sendQueue.pop(data)) {
+			while(rc != SOCKET_ERROR && c && c->socket != INVALID_SOCKET) {
+				if(c->sendQueue.pop(data)) {
 					printf("[Sending] %s\n", data.c_str());
-					rc = ::send(*s, data.c_str(), data.length(), 0);
+					rc = ::send(c->socket, data.c_str(), data.length(), 0);
 					if(rc == SOCKET_ERROR || rc < 0) {
 						break;
 					}
@@ -175,7 +184,6 @@ namespace desm {
 		}
 
 		DWORD acceptConnections(SOCKET* s) {
-			std::list<Connection*> connections;
 			while(!m_mainThreadStop && *s && *s != INVALID_SOCKET) {
 				Connection* c = new Connection();
 				c->socket = ::accept(*s, NULL, NULL);
@@ -192,23 +200,23 @@ namespace desm {
 					fprintf(stderr, "Neue Verbindung wurde akzeptiert!\n");
 				}
 				
-				if(!startReceiveThread(*c)) {
+				if(!startReceiveThread(c)) {
 					fprintf(stderr, "unable to start receiving thread");
 					// TODO memory leak of c
 					break;
 				}
 
-				if(!startSendThread(*c)) {
+				if(!startSendThread(c)) {
 					fprintf(stderr, "unable to start receiving thread");
 					// TODO memory leak of c
 					break;
 				}
 
-				connections.push_back(c);
+				m_clientConnections.push_back(c);
 			}
 			
-			std::list<Connection*>::iterator it = connections.begin();
-			for(; it != connections.end(); ++it) {
+			std::list<Connection*>::iterator it = m_clientConnections.begin();
+			for(; it != m_clientConnections.end(); ++it) {
 				Connection* c = *it;
 				if(!c) { continue; }
 				// kill connection's socket and wait for him to close on its own
@@ -268,6 +276,9 @@ namespace desm {
 			}
 			
 			while(acceptThread && acceptThread->isRunning()) {
+				// forward sending queues
+				updateClientQueues(m_clientConnections);
+				// check for interruption request
 				bool interrupted = false;
 				interrupted = interrupted || acceptThread->isInterrupted(INTERRUPT_TIMEOUT);
 				interrupted = interrupted || m_mainThread->isInterrupted(INTERRUPT_TIMEOUT);
@@ -284,6 +295,18 @@ namespace desm {
 			}
 			
 			return 0;
+		}
+
+		void updateClientQueues(std::list<Connection*>& connections) {
+			tQueue tmp;
+			m_sendQueue.moveTo(tmp);
+			std::list<Connection*>::iterator it = connections.begin();
+			// TODO CriticalSection needed here! edited in acceptThread at the same time!
+			for(; it != connections.end(); ++it) {
+				Connection* connection = *it;
+				tmp.copyTo(connection->sendQueue);
+				connection->recvQueue.moveTo(m_recvQueue);
+			}
 		}
 		
 		////////////////////////////////////////////////////////////////////////
@@ -321,12 +344,12 @@ namespace desm {
 					continue;
 				}
 				
-				if(!startReceiveThread(c)) {
+				if(!startReceiveThread(&c)) {
 					fprintf(stderr, "Unable to start receiving thread\n");
 					continue;
 				}
 				
-				if(!startSendThread(c)) {
+				if(!startSendThread(&c)) {
 					fprintf(stderr, "Unable to start sending thread\n");
 					continue;
 				}
@@ -334,6 +357,10 @@ namespace desm {
 				printf("client connected! :) sending/receiving data\n");
 
 				while(c.recvThread->isRunning() || c.sendThread->isRunning()) {
+					// forward content of according queue
+					c.recvQueue.moveTo(m_recvQueue);
+					m_sendQueue.moveTo(c.sendQueue);
+					// check for interruption request
 					bool interrupted = false;
 					interrupted = interrupted || c.recvThread->isInterrupted(INTERRUPT_TIMEOUT);
 					interrupted = interrupted || c.sendThread->isInterrupted(INTERRUPT_TIMEOUT);
