@@ -9,14 +9,14 @@
 #include <strsafe.h>
 #include <tchar.h>
 
-/* #############################################################################
-http://stackoverflow.com/questions/1372967/how-do-you-use-createthread-for-functions-which-are-class-members
-// ============================================================================= */
-template<class T>
+// #############################################################################
+
+// =============================================================================
+template<typename T, typename P = void*>
 class Thread
 {
     // new type Method: pointer to a object's method (this call)
-    typedef DWORD (T::* Method)(void);
+    typedef DWORD (T::* Method)(P);
 // -----------------------------------------------------------------------------
 protected:
     HANDLE  hThread;      // unique handle to the thread
@@ -24,15 +24,15 @@ private:
     DWORD   threadID;     // thread id - 0 until started
     T*      object;       // the object which owns the method
     Method  method;       // the method of the object
+	P       param;        // method param
     HANDLE  hInterrupt;   // mutex to signal an interrupt via ReleaseSemaphore()
     HANDLE  hSingleStart; // only one thread allowed to call start() mutex
 // -----------------------------------------------------------------------------
 private:
     // This function gets executed by a concurrent thread.
-    static DWORD run(LPVOID thread_obj)
-    {
-        Thread<T>* thread = (Thread<T>*)thread_obj;
-        return (thread->object->*thread->method) ();
+    static DWORD run(LPVOID thread_obj) {
+        Thread<T, P>* thread = (Thread<T, P>*)thread_obj;
+        return (thread->object->*thread->method) (thread->param);
     }
     // Prevent copying of threads: No sensible implementation!
     Thread(const Thread<T>& other) {}
@@ -42,11 +42,12 @@ private:
 public:
     /* Creates a new Thread object. object: the one which method should be
     executed. method: pointer to the object's method. */
-    explicit Thread(T* object, DWORD ( T::* method)(void))
+    explicit Thread(T* object, DWORD ( T::* method)(P), P param = NULL)
     {
         this->hThread       = NULL;
         this->object        = object;
         this->method        = method;
+		this->param         = param;
         this->threadID      = 0;
         this->hInterrupt    = CreateSemaphore(NULL, 1, 1, NULL);
         this->hSingleStart  = CreateMutex(NULL, FALSE, NULL);
@@ -82,7 +83,7 @@ public:
             hThread = CreateThread(
                 NULL,
                 0,
-                (LPTHREAD_START_ROUTINE) Thread<T>::run,
+                (LPTHREAD_START_ROUTINE) Thread<T, P>::run,
                 this,
                 0,
                 &this->threadID
