@@ -68,7 +68,7 @@ namespace desm {
 			, m_mainThread(NULL)
 			, m_mainThreadStop(false)
 		{
-			// TODO: really start wsa stuff on every impl call?
+			//! @see http://msdn.microsoft.com/en-us/library/windows/desktop/ms742213(v=vs.85).aspx
 			WSADATA wsa;
 			if(WSAStartup(MAKEWORD(2,0), &wsa) != 0) {
 				throw std::bad_alloc("unable to start windows sockets");
@@ -98,7 +98,7 @@ namespace desm {
 			m_mainThread->interrupt();
 			m_mainThread->join();
 			delete m_mainThread;
-			// TODO: same here, really cleanup on every impl close?
+			//! @see http://msdn.microsoft.com/en-us/library/windows/desktop/ms741549(v=vs.85).aspx
 			WSACleanup();
 		}
 		
