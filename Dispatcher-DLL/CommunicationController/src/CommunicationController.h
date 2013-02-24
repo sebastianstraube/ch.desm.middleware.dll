@@ -11,9 +11,9 @@ namespace desm {
 			MODE_SERVER,
 			MODE_CLIENT,
 		};
-		CommunicationController(eMode mode, const std::string& host, const std::string& client, unsigned short port);
+		CommunicationController(eMode mode, const std::string& host, unsigned short port);
 		~CommunicationController();
-		// TODO: use std::vector<char> to avoid complications with NULL bytes?
+		// TODO: use std::vector<char> to avoid complications with NUL bytes?
 		bool receive(std::string& data);
 		bool send(const std::string& data);
 	private:
