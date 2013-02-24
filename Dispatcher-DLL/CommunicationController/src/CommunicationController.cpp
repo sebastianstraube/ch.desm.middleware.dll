@@ -19,9 +19,10 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-static const int DEFAULT_BUFLEN = 1024;
+static const unsigned DEFAULT_BUFLEN = 10;
+
 static const DWORD INTERRUPT_TIMEOUT = 10;
-static const int CLIENT_MAX_RETRY = 10;
+static const unsigned CLIENT_MAX_RETRY = 10;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -132,11 +133,15 @@ namespace desm {
 		////////////////////////////////////////////////////////////////////////
 		// socket thread helper
 
+		static const unsigned PAYLOAD_OFFSET = sizeof(unsigned);
+		static const unsigned PAYLOAD_MAX_LEN = DEFAULT_BUFLEN - PAYLOAD_OFFSET;
+		
 		DWORD receiveData(Connection* c) {
 			long rc = 0;
 			char buf[DEFAULT_BUFLEN];
+			std::string partialData;
 			while(rc != SOCKET_ERROR && c && c->socket != INVALID_SOCKET) {
-				rc = ::recv(c->socket, buf, DEFAULT_BUFLEN-1, 0);
+				rc = ::recv(c->socket, buf, DEFAULT_BUFLEN, 0);
 				if(rc == 0) {
 					printf("[%d] Connection closed\n", m_mode);
 					break;
@@ -154,10 +159,14 @@ namespace desm {
 					printf("[%d] Unknown Socket Error: %d\n", m_mode, rc);
 					break;
 				}
-				// TODO: stitch buffer together until NUL byte received?
-				buf[rc]='\0';
-				printf("[Receive] %s\n", buf);
-				c->recvQueue.push(std::string(buf));
+				unsigned remainingLength = *((unsigned*)&buf[0]);
+				unsigned payloadLength = rc - PAYLOAD_OFFSET;
+				partialData += std::string(&buf[PAYLOAD_OFFSET], payloadLength);
+				if(remainingLength == payloadLength) {
+					c->recvQueue.push(partialData);
+					printf("[Received] %s\n", partialData.c_str());
+					partialData.clear();
+				}
 			}
 			printf("[%d] leaving receive thread!\n", m_mode);
 			return (rc < 0) ? 1 : 0;
@@ -165,18 +174,32 @@ namespace desm {
 
 		DWORD sendData(Connection* c) {
 			long rc = 0;
-			// Daten austauschen
 			std::string data;
+			char buf[DEFAULT_BUFLEN];
+			
 			while(rc != SOCKET_ERROR && c && c->socket != INVALID_SOCKET) {
-				if(c->sendQueue.pop(data)) {
-					printf("[Sending] %s\n", data.c_str());
-					rc = ::send(c->socket, data.c_str(), data.length(), 0);
+				if(data.empty()) {
+					if(c->sendQueue.pop(data)) {
+						printf("[Sending] %s\n", data.c_str());
+					}
+				}
+				if(!data.empty()) {
+					*((unsigned*)&buf[0]) = static_cast<unsigned>(data.size());
+					unsigned payloadLen = (PAYLOAD_MAX_LEN < data.size()) ? PAYLOAD_MAX_LEN : data.size();
+					memcpy(&buf[PAYLOAD_OFFSET], data.c_str(), payloadLen);
+					rc = ::send(c->socket, buf, PAYLOAD_OFFSET + payloadLen, 0);
 					if(rc == SOCKET_ERROR || rc < 0) {
+						fprintf(stderr, "Error: sending failed %d\n", WSAGetLastError());
 						break;
 					}
+					unsigned sentPayload = static_cast<unsigned>(rc) - PAYLOAD_OFFSET;
+					if(sentPayload < data.size()) {
+						data = data.substr(sentPayload, std::string::npos);
+					} else {
+						data.clear();
+					}
 				} else {
-					// some polling going on...
-					Sleep(10);
+					Sleep(10); // some polling going on...
 				}
 			}
 			printf("[%d] leaving send thread!\n", m_mode);
@@ -277,7 +300,7 @@ namespace desm {
 			
 			while(acceptThread && acceptThread->isRunning()) {
 				// forward sending queues
-				updateClientQueues(m_clientConnections);
+				syncServerQueues(m_clientConnections);
 				// check for interruption request
 				bool interrupted = false;
 				interrupted = interrupted || acceptThread->isInterrupted(INTERRUPT_TIMEOUT);
@@ -297,7 +320,7 @@ namespace desm {
 			return 0;
 		}
 
-		void updateClientQueues(std::list<Connection*>& connections) {
+		void syncServerQueues(std::list<Connection*>& connections) {
 			tQueue tmp;
 			m_sendQueue.moveTo(tmp);
 			std::list<Connection*>::iterator it = connections.begin();
@@ -313,7 +336,7 @@ namespace desm {
 		// client impl
 
 		DWORD startClient(void*){
-			int retryCount = 0;
+			unsigned retryCount = 0;
 			long rc;
 			SOCKADDR_IN addr;
 
@@ -358,8 +381,7 @@ namespace desm {
 
 				while(c.recvThread->isRunning() || c.sendThread->isRunning()) {
 					// forward content of according queue
-					c.recvQueue.moveTo(m_recvQueue);
-					m_sendQueue.moveTo(c.sendQueue);
+					syncClientQueues(c);
 					// check for interruption request
 					bool interrupted = false;
 					interrupted = interrupted || c.recvThread->isInterrupted(INTERRUPT_TIMEOUT);
@@ -378,6 +400,11 @@ namespace desm {
 			} while(!m_mainThreadStop && retryCount < CLIENT_MAX_RETRY);
 
 			return 0;
+		}
+
+		void syncClientQueues(Connection& c) {
+			c.recvQueue.moveTo(m_recvQueue);
+			m_sendQueue.moveTo(c.sendQueue);
 		}
 
 	};
