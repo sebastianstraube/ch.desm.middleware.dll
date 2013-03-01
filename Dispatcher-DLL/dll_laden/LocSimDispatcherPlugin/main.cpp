@@ -3,182 +3,121 @@
 
 extern "C" {
 
-	__declspec(dllexport) const char* getName(){
-		return "LocsimDesmMiddleware";
-	}
-
-	__declspec(dllexport) const char* getDescription(){
-		return "This DLL contains the implementation of the communication between the system components DESM-Middleware and LOCSIM.";
-	}
-
-	__declspec(dllexport) int initialize(){
-		std::cout << "initialize" << std::endl;
+	__declspec(dllexport) int stw_onStartProgramm (char* configPath){
+		std::cout << "stw_onStartProgramm"<< std::endl;
 		return 0;
 	}
 
-	__declspec(dllexport) int release(){
-		std::cout << "releasing" << std::endl;
+	__declspec(dllexport) int stw_onStopProgramm (void){
+		std::cout << "stw_onStopProgramm"<< std::endl;
 		return 0;
 	}
 
-	/**
-	* Behandlung von Versionskonflikten der DLL.
-	**/
-	__declspec(dllexport) const char* stw_getVersion(){
-		return "0.1";
+	__declspec(dllexport) const char* stw_infoVersion(void){
+		std::cout << "stw_infoVersion"<< std::endl;
+		return "0.13";
 	}
 
-	/**
-	* Beim Laden der DLL library, wird der Netzwerkserver durch diese Funktion gestartet.
-	**/
-	__declspec(dllexport) int stw_onLoadLibrary(){
-		std::cout << "stw_onloadLibrary()" << std::endl;
+	__declspec(dllexport) char* stw_infoName(void){
+		std::cout << "DLL DESMMiddleware"<< std::endl;
 		return 0;
 	}
 
-	/**
-	* Wenn der LOCSIM die Simulation stoppt wird die DLL entladen und der der Netzwerkserver durch diese Funktion
-	* geschlossen und gestoppt. Damit wird die Verbindung zwischen Server und Client ordnungsgemäss geschlossen.
-	**/
-	__declspec(dllexport) int stw_onUnloadLibrary(){
-		std::cout << "stw_onunloadLibrary()" << std::endl;
+	__declspec(dllexport) char* stw_infoDescription(void){
+		std::cout << "stw_infoDescription"<< std::endl;
+		return "stw_infoDescription";
+	}
+
+	__declspec(dllexport) int stw_onStartSimulation (void){
+		std::cout << "stw_onStartSimulation"<< std::endl;
 		return 0;
 	}
 
-	/**
-	* Wenn der LOCSIM die Simulation stoppt wird die DLL entladen und der der Netzwerkserver durch diese Funktion
-	* geschlossen und gestoppt. Damit wird die Verbindung zwischen Server und Client ordnungsgemäss geschlossen.
-	**/
-	__declspec(dllexport) int stw_init(){
-		std::cout << "stw_init()" << std::endl;
+	__declspec(dllexport) int stw_onStopSimulation (void){
+		std::cout << "stw_onStopSimulation"<< std::endl;
 		return 0;
 	}
 
-	/**
-	* markiert Simulation Start
-	* impliziert das Event „Strecke neu laden“
-	* es werden ab jetzt mögliche „defines“ zum Verarbeiten erwartet
-	**/
-	__declspec(dllexport) int stw_ready(){
-		std::cout << "stw_ready()" << std::endl;
+	__declspec(dllexport) int stw_setTrack (int gleisId, double von, double bis, float abstand, char* name){
+		std::cout << "stw_setTrack"<< std::endl;
 		return 0;
 	}
 
-	/**
-	* Definition von zu Hauptgleis parallelen Gleisabschnitten
-	* Das Hauptgleis ist die Standardfahrstrasse der Simulation.
-	**/
-	__declspec(dllexport) int define_track (int gleisId, double von, double bis, float abstand, char* name){
-		std::cout << "define_track (int gleisId, double von, double bis, float abstand, char* name)" << std::endl;
+	__declspec(dllexport) int stw_setTrackConnection (int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int weiche1Id, int weiche2Id){
+		std::cout << "stw_setTrackConnection"<< std::endl;
 		return 0;
 	}
 
-	/**
-	* Definition von Verbindungen zwischen parallelen Gleisabschnitten
-	* weiche1_id, weiche2_id = ID der Weiche (eindeutige locsim-interne Nummerierung), wenn 0: keine Weiche (wenn z.B. connection2 in gleis2 übergeht)
-	* pro Längsposition dürfen max. 20 verschiedene Gleise definiert sein (ID= 1…20) 
-	**/
-	__declspec(dllexport) int define_trackConnection (int gleis1, int gleis2, double von, double bis, char* name, int weiche1_id, int weiche2_id){
-		std::cout << "define_trackConnection (int gleis1, int gleis2, double von, double bis, char* name, int weiche1_id, int weiche2_id)" << std::endl;
+	__declspec(dllexport) int stw_setSignal (int signalId, int gleisId, double position, int typ, float hoehe, float distanz, char* name, int direction){
+		std::cout << "stw_setSignal"<< std::endl;
 		return 0;
 	}
 
-	/**
-	* wird pro Signal aufgerufen
-	**/
-	__declspec(dllexport) int define_signal (int signal_id, int gleis_id, double position, int typ, float hoehe, float distanz, char* name){
-		std::cout << "define_signal (int signal_id, int gleis_id, double position, int typ, float hoehe, float distanz, char* name)" << std::endl;
+	__declspec(dllexport) int stw_setBalise (int gleisId, double position, int baliseId, int direction){
+		std::cout << "stw_setBalise"<< std::endl;
 		return 0;
 	}
 
-	/**
-	* definiert eine Balise auf einem bestimmten Gleis an einer bestimmten Position
-	**/
-	__declspec(dllexport) int define_balise (int gleis_id, double position, int balise_id){
-		std::cout << "define_balise (int gleis_id, double position, int balise_id)" << std::endl;
+	__declspec(dllexport) int stw_setLoop (int gleisId, double positionVon, double positionBis, int baliseId){
+		std::cout << "stw_setLoop"<< std::endl;
 		return 0;
 	}
 
-	/**
-	* Ist in den locsim-Streckendaten bis jetzt nicht drin, könnte aber dazugefügt werden
-	**/
-	__declspec(dllexport) int define_isolierstoss (int gleis, double position){
-		std::cout << "define_isolierstoss (int gleis, double position)" << std::endl;
+	__declspec(dllexport) int stw_setIsolierstoss (int gleisId, double position){
+		std::cout << "stw_setIsolierstoss"<< std::endl;
 		return 0;
 	}
 
-	/**
-	* Funktion: Locsim fragt DLL, welche events vom Stellwerk vorhanden sind (DLL cached)
-	* jedes Event führt zum Aufruf einer der nachstehenden Funktionen
-	* stw_get_event(3, typeList(1,1,2), idList(63, 32 , 765) )
-	*
-	* Beispiel:
-	*	int num;
-	*	int* type_list;
-	*	int* id_list;
-	*	stw_getEvents(&number, &type_list, &id_list);
-	*
-	**/	
-	__declspec(dllexport) int stw_getEvents(int* number, int** type_list, int** id_list){
-		std::cout << "stw_getEvents(int* number, int** type_list, int** id_list)" << std::endl;
+	__declspec(dllexport) int stw_setKilometerDirection (int direction){
+		std::cout << "stw_setKilometerDirection"<< std::endl;
 		return 0;
 	}
 
-	/**
-	* gibt die Stellung eines bestimmten Signals zurück
-	**/
-	__declspec(dllexport) int stw_getSignal (int signal_id, int* stellung){
-		std::cout << "stw_getSignal (int signal_id, int* stellung)" << std::endl;
+	__declspec(dllexport) int stw_onLoadStrecke (void){
+		std::cout << "stw_onLoadStrecke"<< std::endl;
 		return 0;
 	}
 
-	/**
-	* gibt eine Stellung und das Protokoll einer bestimmten Balise zurück
-	**/
-	__declspec(dllexport) int stw_getBalise (int balise_id, int* stellung, char** protokoll){
-		std::cout << "get_balise (int balise_id, int* stellung, char** protokoll)" << std::endl;
+	__declspec(dllexport) int stw_getEvents(int* number, int** typeList, int** idList){
+		std::cout << "stw_getEvents"<< std::endl;
 		return 0;
 	}
 
-	/**
-	* gibt die Stellung einer bestimmten Weiche zurück
-	**/
-	__declspec(dllexport) int stw_getWeiche (int weiche_id, int* gleis_id){
-		std::cout << "get_weiche (int weiche_id, int* gleis_id)" << std::endl;
+	__declspec(dllexport) int stw_getSignal (int signalId, int* stellung){
+		std::cout << "stw_getSignal"<< std::endl;
 		return 0;
 	}
 
-	/**
-	* Übergibt pos1 – gleis1 – pos2 – gleis2 – pos3 - … des Zuges train an stellwerk.dll wenn die Zugspitze oder der Zugschluss einen Isolierstoss überfährt
-	* Was bedeutet in diesem Fall die Position?
-	* Anzahl pos = Anzahl gleis +1
-	**/
-	__declspec(dllexport) int define_trainposition(int train, int direction, double** positionList, int** gleisList){
-		std::cout << "define_trainposition(int train, int direction, double** positionList, int** gleisList)" << std::endl;
+
+	__declspec(dllexport) int stw_getBalise (int baliseId, int* stellung, char** protokoll){
+		std::cout << "stw_getBalise"<< std::endl;
 		return 0;
 	}
 
-	/**
-	* Speicher Allocation and Deallocation muss in DLL und von Locsim aufgerufen werden, sonst tritt ein memory-leak auf.
-	**/
-	__declspec(dllexport) int stw_deallocate(void*){
-		std::cout << "stw_deallocate(void*)" << std::endl;
+	__declspec(dllexport) int stw_getLoop (int baliseId, int* stellung, char** protokoll){
+		std::cout << "stw_getLoop"<< std::endl;
 		return 0;
 	}
 
-	/**
-	* Speicher Allocation and Deallocation muss in DLL und von Locsim aufgerufen werden, sonst tritt ein memory-leak auf.
-	**/
-	__declspec(dllexport) int stw_deallocate_array(void*){
-		std::cout << "stw_deallocate_array(void*)" << std::endl;
+	__declspec(dllexport) int stw_getWeiche (int weicheId, int* gleisId){
+		std::cout << "stw_getWeiche"<< std::endl;
 		return 0;
+	}
+
+	__declspec(dllexport) int stw_setTrainPosition (int train, int direction, double** positionList, int** gleisList){
+		std::cout << "stw_setTrainPosition"<< std::endl;
+		return 0;
+	}
+
+	__declspec(dllexport) void stw_deallocate(void**){
+		std::cout << "stw_deallocate"<< std::endl;
 	}
 
 };
 
 int main()
 {
-	std::cout << "DLL compliation successfull!" << std::endl;
+	std::cout << "DLL compilation successfull!" << std::endl;
 	system("PAUSE");
 
 	return 0;
