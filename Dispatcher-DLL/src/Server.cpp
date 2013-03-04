@@ -1,12 +1,12 @@
-#include "stdafx.h"
 #include <Windows.h> // Sleep()
+#include <iostream>
 #include "CommunicationController.h"
 
 static const USHORT DEFAULT_PORT = 27015;
 
 using namespace desm;
 
-int _tmain(int argc, _TCHAR* argv[]) {
+int main(int argc, char** argv) {
 	std::string data;
 	try {
 		CommunicationController *cc = new CommunicationController(CommunicationController::MODE_SERVER, "127.0.0.1", 27017);

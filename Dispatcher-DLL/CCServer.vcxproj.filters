@@ -7,7 +7,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\server.cpp">
+    <ClCompile Include="src\Server.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

@@ -7,15 +7,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
+    <ClCompile Include="src\Middleware.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\stdafx.cpp">
+    <ClCompile Include="src\Interface.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\stdafx.h">
+    <ClInclude Include="src\Middleware.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
