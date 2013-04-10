@@ -5,18 +5,18 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="inc">
-      <UniqueIdentifier>{3c955327-0a74-421a-8c70-e98f4733e576}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
+    <ClCompile Include="src\Middleware.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Interface.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\locsim.h">
-      <Filter>inc</Filter>
+    <ClInclude Include="src\Middleware.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

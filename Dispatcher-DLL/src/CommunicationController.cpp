@@ -1,4 +1,6 @@
-#include "stdafx.h"
+#include <tchar.h>
+#include <stdio.h>
+#include <string.h>
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -10,7 +12,6 @@
 #pragma comment(lib, "Ws2_32.lib")
 
 #include <list>
-#include <queue>
 
 #include "CommunicationController.h"
 #include "CriticalSection.h"
