@@ -116,13 +116,23 @@ extern "C" {
 		}
 		return s_middleware->setIsolierstoss(gleisId, position);
 	}
-
+	
 	__declspec(dllexport) int stw_setKilometerDirection(int direction) {
 		std::cout << "stw_setKilometerDirection"<< std::endl;
 		if(s_middleware == NULL) {
 			return 1; // TODO error code
 		}
-		return s_middleware->setKilometerDirection(direction);
+		s_middleware->setKilometerDirection(direction);
+		return 0;
+	}
+
+	__declspec(dllexport) int stw_getKilometerDirection(int *direction) {
+		std::cout << "stw_getKilometerDirection"<< std::endl;
+		if(s_middleware == NULL || direction == NULL) {
+			return 1; // TODO error code
+		}
+		*direction = s_middleware->getKilometerDirection();
+		return 0;
 	}
 
 	__declspec(dllexport) int stw_onLoadStrecke(void) {

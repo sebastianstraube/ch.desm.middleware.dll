@@ -21,7 +21,8 @@ namespace desm {
 		int setBalise (int gleisId, double position, int baliseId, int direction);
 		int setLoop (int gleisId, double positionVon, double positionBis, int baliseId);
 		int setIsolierstoss (int gleisId, double position);
-		int setKilometerDirection (int direction);
+		void setKilometerDirection(int direction);
+		int getKilometerDirection();
 	public: // api - simulation
 		int onStartSimulation();
 		int getEvents(tTypeList&);
@@ -33,7 +34,7 @@ namespace desm {
 		int onStopSimulation();
 	private:
 		struct Impl;
-		Impl* pimpl;
+		Impl* m_pImpl;
 	};
 
 };

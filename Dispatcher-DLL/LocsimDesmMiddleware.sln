@@ -18,6 +18,16 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LocsimDesmMiddlewarePlugin"
 		{CF74C6CB-2DED-42F9-8A13-A2522D1B9F70} = {CF74C6CB-2DED-42F9-8A13-A2522D1B9F70}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestDispatcher", "TestDispatcher.vcxproj", "{0CE5A6B9-4A57-4CC8-8EAA-4B55D540BF53}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8FA8A492-0E1B-47A0-880C-3F2A71D3D07E} = {8FA8A492-0E1B-47A0-880C-3F2A71D3D07E}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestLocSim", "TestLocSim.vcxproj", "{84928FDF-99FB-46AB-89D5-890DCC264FE5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8FA8A492-0E1B-47A0-880C-3F2A71D3D07E} = {8FA8A492-0E1B-47A0-880C-3F2A71D3D07E}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -40,6 +50,14 @@ Global
 		{8FA8A492-0E1B-47A0-880C-3F2A71D3D07E}.Debug|Win32.Build.0 = Debug|Win32
 		{8FA8A492-0E1B-47A0-880C-3F2A71D3D07E}.Release|Win32.ActiveCfg = Release|Win32
 		{8FA8A492-0E1B-47A0-880C-3F2A71D3D07E}.Release|Win32.Build.0 = Release|Win32
+		{0CE5A6B9-4A57-4CC8-8EAA-4B55D540BF53}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0CE5A6B9-4A57-4CC8-8EAA-4B55D540BF53}.Debug|Win32.Build.0 = Debug|Win32
+		{0CE5A6B9-4A57-4CC8-8EAA-4B55D540BF53}.Release|Win32.ActiveCfg = Release|Win32
+		{0CE5A6B9-4A57-4CC8-8EAA-4B55D540BF53}.Release|Win32.Build.0 = Release|Win32
+		{84928FDF-99FB-46AB-89D5-890DCC264FE5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{84928FDF-99FB-46AB-89D5-890DCC264FE5}.Debug|Win32.Build.0 = Debug|Win32
+		{84928FDF-99FB-46AB-89D5-890DCC264FE5}.Release|Win32.ActiveCfg = Release|Win32
+		{84928FDF-99FB-46AB-89D5-890DCC264FE5}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
