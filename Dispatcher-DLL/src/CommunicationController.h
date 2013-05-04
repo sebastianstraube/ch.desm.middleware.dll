@@ -16,6 +16,7 @@ namespace desm {
 		// TODO: use std::vector<char> to avoid complications with NUL bytes?
 		bool receive(std::string& data);
 		bool send(const std::string& data);
+		bool connected();
 	private:
 		struct Impl;
 		Impl* pimpl;

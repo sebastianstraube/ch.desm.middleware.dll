@@ -10,11 +10,10 @@ int main(int argc, char** argv) {
 	std::string data;
 	try {
 		CommunicationController *cc = new CommunicationController(CommunicationController::MODE_SERVER, "127.0.0.1", 27017);
-		cc->send("muh");
 		while(true) {
 			while(cc->receive(data)) {
 				std::cout << "server got data: " << data << std::endl;
-				cc->send(data + "[server]");
+				cc->send(data + " World");
 			}
 			Sleep(50);
 		}

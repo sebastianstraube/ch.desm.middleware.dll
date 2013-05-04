@@ -10,14 +10,16 @@ int main(int argc, char** argv) {
 	std::string data;
 	try {
 		CommunicationController *cc_client = new CommunicationController(CommunicationController::MODE_CLIENT, "127.0.0.1", 27017);
-		cc_client->send("muh");
-		for(int i = 0; i < 5; ++i) {
-			while(cc_client->receive(data)) {
-				std::cout << "client got data: " << data << std::endl;
-				cc_client->send(data + "[client]");
-			}
+		int receivedMessages = 0;
+		for(int i = 0; i < 10; ++i) {
+			cc_client->send("Hello");
 			Sleep(500);
+			while(cc_client->receive(data)) {
+				receivedMessages++;
+				std::cout << "client got data: " << data << std::endl;
+			}
 		}
+		std::cout << "received messages: " << receivedMessages << std::endl;
 		std::cout << "shutting down client" << std::endl;
 		delete cc_client;
 	} catch(const std::bad_alloc& e) {
