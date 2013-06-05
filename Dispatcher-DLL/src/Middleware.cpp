@@ -4,12 +4,19 @@
 
 #include <iostream>
 #include <sstream>
+
+#include <json/json.h>
+
 #include "Middleware.h"
 #include "Thread.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace desm {
+
+	enum MESSAGE_TYPE {
+		MESSAGE_TYPE_SET_KILOMETER_DIRECTION = 1
+	};
 
 	struct Middleware::Impl {
 
@@ -27,7 +34,9 @@ namespace desm {
 		bool m_fetchThreadStop;
 
 		// the state...
-		int m_kilometerDirection;
+		struct {
+			int kilometerDirection;
+		} m_state;
 
 		////////////////////////////////////////////////////////////////////////
 		// lifetime
@@ -36,8 +45,9 @@ namespace desm {
 			: m_cc(NULL)
 			, m_fetchThread(NULL)
 			, m_fetchThreadStop(false)
-			, m_kilometerDirection(0)
 		{
+			resetState();
+			
 			// TODO: load config
 			CommunicationController::eMode mode = (configPath == "server")
 				? CommunicationController::MODE_SERVER
@@ -69,21 +79,45 @@ namespace desm {
 			return 0;
 		}
 
+		void resetState() {
+			m_state.kilometerDirection = 0;
+		}
+
 		void parseMessage(const std::string& msg) {
-			if(msg.substr(0, 2) == "KD") {
-				std::string kd = msg.substr(2);
-				m_kilometerDirection = atoi(kd.c_str());
-				std::cout << "updated Kilometer Direction to " << m_kilometerDirection << std::endl;
-			} else {
-				std::cerr << "INVALID MESSAGE RECEIVED!" << std::endl;
+			Json::Value root;
+			Json::Reader reader;
+			if(!reader.parse(msg, root)) {
+				std::cerr << "INVALID MESSAGE RECEIVED!" << reader.getFormatedErrorMessages() << std::endl;
+				return;
+			}
+			unsigned msgType = root.get("t", Json::Value::maxInt).asInt();
+			if(msgType == Json::Value::maxInt) {
+				std::cerr << "INVALID MESSAGE (no message type available)" << std::endl;
+				return;
+			}
+			parseJsonValue(msgType, root.get("v", Json::Value()));
+		}
+
+		void parseJsonValue(int msgType, const Json::Value& v) {
+			switch(msgType) {
+			case MESSAGE_TYPE_SET_KILOMETER_DIRECTION:
+				if(v.isInt()) {
+					m_state.kilometerDirection = v.asInt();
+					std::cout << "updated Kilometer Direction to " << m_state.kilometerDirection << std::endl;
+				}
+				break;
+			default:
+				std::cerr << "RECEIVED UNKNOWN MESSAGE " << msgType << std::endl;
+				break;
 			}
 		}
 
-		template<class T>
-		void broadcastUpdate(const std::string& id, const T& v) {
-			std::ostringstream ss;
-			ss << id << v;
-			m_cc->send(ss.str());
+		void sendMessage(int msgType, const Json::Value& v) {
+			Json::FastWriter writer;
+			Json::Value root;
+			root["t"] = msgType;
+			root["v"] = v;
+			m_cc->send(writer.write(root));
 		}
 
 	};
@@ -128,12 +162,12 @@ namespace desm {
 	}
 	
 	void Middleware::setKilometerDirection(int direction) {
-		m_pImpl->m_kilometerDirection = direction;
-		m_pImpl->broadcastUpdate("KD", direction);
+		m_pImpl->m_state.kilometerDirection = direction;
+		m_pImpl->sendMessage(MESSAGE_TYPE_SET_KILOMETER_DIRECTION, Json::Value(direction));
 	}
 
 	int Middleware::getKilometerDirection() {
-		return m_pImpl->m_kilometerDirection;
+		return m_pImpl->m_state.kilometerDirection;
 	}
 
 	int Middleware::onStartSimulation() {
