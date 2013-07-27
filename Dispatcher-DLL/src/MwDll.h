@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <Windows.h>
 
 namespace desm {
@@ -9,33 +10,28 @@ namespace desm {
 		MwDll(LPCWSTR dllName);
 		~MwDll();
 	public:
-		int stw_onStartProgramm(char* configPath);
-		int stw_onStopProgramm(void);
-		/*
-		const char* stw_infoVersion(void);
-		const char* stw_infoName(void);
-		const char* stw_infoDescription(void);
-		int stw_onStartSimulation(void);
-		int stw_onStopSimulation(void);
-		int stw_setTrack(int gleisId, double von, double bis, float abstand, char* name);
-		int stw_setTrackConnection(int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int weiche1Id, int weiche2Id);
-		int stw_setSignal(int signalId, int gleisId, double position, int typ, float hoehe, float distanz, char* name, int direction);
-		int stw_setBalise(int gleisId, double position, int baliseId, int direction);
-		int stw_setLoop(int gleisId, double positionVon, double positionBis, int baliseId);
-		int stw_setIsolierstoss(int gleisId, double position);
-		*/
-		int stw_setKilometerDirection(int direction);
-		int stw_getKilometerDirection(int& direction);
-		/*
-		int stw_onLoadStrecke(void);
-		int stw_getEvents(int* number, int** typeList, int** idList);
-		int stw_getSignal(int signalId, int* stellung);
-		int stw_getBalise(int baliseId, int* stellung, char** protokoll);
-		int stw_getLoop(int baliseId, int* stellung, char** protokoll);
-		int stw_getWeiche(int weicheId, int* gleisId);
-		int stw_setTrainPosition(int train, int direction, double* positionList, int* gleisList);
-		void stw_deallocate(void** p);
-		*/
+		std::string infoVersion();
+		std::string infoName();
+		std::string infoDescription();
+		int onStartProgramm(const std::string& configPath);
+		int onStopProgramm();
+		int onStartSimulation();
+		int onStopSimulation();
+		int setTrack(int gleisId, double von, double bis, float abstand, const std::string& name);
+		int setTrackConnection(int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id);
+		int setSignal(int signalId, int gleisId, double position, int typ, float hoehe, float distanz, const std::string& name, int direction);
+		int setBalise(int gleisId, double position, int baliseId, int direction);
+		int setLoop(int gleisId, double positionVon, double positionBis, int baliseId);
+		int setIsolierstoss(int gleisId, double position);
+		int setKilometerDirection(int direction);
+		int getKilometerDirection(int& direction);
+		int onLoadStrecke(void);
+		int getEvents(std::vector<int>& typeList, std::vector<int>& idList);
+		int getSignal(int signalId, int& stellung);
+		int getBalise(int baliseId, int& stellung, std::string& protokoll);
+		int getLoop(int baliseId, int& stellung, std::string& protokoll);
+		int getWeiche(int weicheId, int& gleisId);
+		int setTrainPosition(int train, int direction, const std::vector<double>& positionList, const std::vector<int>& gleisList);
 	private:
 		struct Impl;
 		Impl* m_pImpl;

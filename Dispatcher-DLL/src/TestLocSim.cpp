@@ -7,21 +7,21 @@ using namespace desm;
 int main(int argc, char** argv) {
 	try {
 		MwDll dll(L"LocsimDesmMiddlewarePlugin.dll");
-		dll.stw_onStartProgramm("client");
+		dll.onStartProgramm("client");
 		
 		std::cout << "doing some stuff..." << std::endl;
 		Sleep(1000);
 		std::cout << "setting Kilometer Distance to " << 0 << std::endl;
-		dll.stw_setKilometerDirection(0);
+		dll.setKilometerDirection(0);
 		Sleep(1000);
 		std::cout << "setting Kilometer Distance to " << 1 << std::endl;
-		dll.stw_setKilometerDirection(1);
+		dll.setKilometerDirection(1);
 		Sleep(1000);
 		std::cout << "setting Kilometer Distance to " << 2 << std::endl;
-		dll.stw_setKilometerDirection(2);
+		dll.setKilometerDirection(2);
 		Sleep(1000);
 
-		dll.stw_onStopProgramm();
+		dll.onStopProgramm();
 
 	} catch(std::exception& e) {
 		std::cerr << "EXCEPTION: " << e.what() << std::endl;
