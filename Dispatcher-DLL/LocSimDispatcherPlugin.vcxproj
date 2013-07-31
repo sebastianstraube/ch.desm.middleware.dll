@@ -90,6 +90,7 @@
     <ClCompile Include="src\Middleware.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ErrorCodes.h" />
     <ClInclude Include="src\Middleware.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

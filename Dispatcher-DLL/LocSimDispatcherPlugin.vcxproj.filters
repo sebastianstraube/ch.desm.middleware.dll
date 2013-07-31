@@ -18,5 +18,8 @@
     <ClInclude Include="src\Middleware.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\ErrorCodes.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
