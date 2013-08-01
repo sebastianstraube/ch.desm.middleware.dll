@@ -41,7 +41,12 @@ namespace desm {
 		}
 
 		bool loadConfig(const std::string& fname) {
-			std::ifstream ifs(fname.c_str(), std::ifstream::in);
+			std::ifstream ifs;
+			ifs.open(fname.c_str(), std::ifstream::in);
+			if(!ifs.is_open()) {
+				std::cerr << "unable to open config file at path " << fname << std::endl;
+				return false;
+			}
 			Json::Value root;
 			Json::Reader reader;
 			if(!reader.parse(ifs, root)) {
