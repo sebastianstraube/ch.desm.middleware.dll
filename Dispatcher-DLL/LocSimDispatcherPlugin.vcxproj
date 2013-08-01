@@ -86,10 +86,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\Interface.cpp" />
     <ClCompile Include="src\Middleware.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\ErrorCodes.h" />
     <ClInclude Include="src\Middleware.h" />
   </ItemGroup>

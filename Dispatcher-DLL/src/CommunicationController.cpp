@@ -20,7 +20,6 @@ namespace desm {
 
 	namespace {
 		static int POLLING_SLEEP_MS = 25;
-		static int CONNECTION_TIMEOUT_SEC = 10;
 		static char* PING_MESSAGE = "PING";
 	};
 
@@ -41,6 +40,7 @@ namespace desm {
 		eMode                   m_mode;
 		std::string             m_host;
 		unsigned short          m_port;
+		unsigned int            m_timeout;
 
 		bool                    m_connected;
 		int64_t                 m_lastPingTs;
@@ -55,10 +55,11 @@ namespace desm {
 		////////////////////////////////////////////////////////////////////////
 		// lifetime
 
-		Impl(eMode mode, const std::string& host, unsigned short port)
+		Impl(eMode mode, const std::string& host, unsigned short port, unsigned int timeout)
 			: m_mode(mode)
 			, m_host(host)
 			, m_port(port)
+			, m_timeout(timeout)
 			, m_connected(false)
 			, m_lastPingTs(0)
 			, m_sendQueue()
@@ -99,7 +100,7 @@ namespace desm {
 
 		bool isConnected() {
 			int64_t now = zmqh_clock();
-			return m_connected && (now - m_lastPingTs < CONNECTION_TIMEOUT_SEC * 1000);
+			return m_connected && (now - m_lastPingTs < (int64_t)m_timeout);
 		}
 
 		////////////////////////////////////////////////////////////////////////
@@ -215,8 +216,8 @@ namespace desm {
 
 	////////////////////////////////////////////////////////////////////////////
 
-	CommunicationController::CommunicationController(CommunicationController::eMode mode, const std::string& host, unsigned short port)
-		: pimpl(new Impl(mode, host, port))
+	CommunicationController::CommunicationController(CommunicationController::eMode mode, const std::string& host, unsigned short port, unsigned int timeout)
+		: pimpl(new Impl(mode, host, port, timeout))
 	{
 	}
 

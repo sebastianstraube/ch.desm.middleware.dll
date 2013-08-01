@@ -7,8 +7,8 @@ using namespace desm;
 int main(int argc, char** argv) {
 	try {
 		MwDll dll(L"LocsimDesmMiddlewarePlugin.dll");
-		dll.onStartProgramm("client");
-		
+		dll.onStartProgramm("locsim.json");
+
 		std::cout << "doing some stuff..." << std::endl;
 		Sleep(1000);
 		std::cout << "setting Kilometer Distance to " << 0 << std::endl;

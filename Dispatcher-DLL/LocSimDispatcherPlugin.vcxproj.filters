@@ -13,12 +13,18 @@
     <ClCompile Include="src\Interface.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Config.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Middleware.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\ErrorCodes.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Config.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,6 +11,7 @@
 
 #include <json/json.h>
 
+#include "Config.h"
 #include "ErrorCodes.h"
 #include "Middleware.h"
 #include "Thread.h"
@@ -33,7 +34,7 @@ namespace desm {
 				delete *begin;
 			}
 		}
-		
+
 		struct Balise {
 			Balise(int _id, double _position, int _direction) : id(_id), position(_position), direction(_direction) {}
 			int id;
@@ -67,7 +68,7 @@ namespace desm {
 		// member
 
 		CommunicationController* m_cc;
-		
+
 		tFetchThread* m_fetchThread;
 		bool m_fetchThreadStop;
 
@@ -82,12 +83,9 @@ namespace desm {
 			, m_fetchThreadStop(false)
 		{
 			resetState();
-			
-			// TODO: load config
-			CommunicationController::eMode mode = (configPath == "server")
-				? CommunicationController::MODE_SERVER
-				: CommunicationController::MODE_CLIENT;
-			m_cc = new CommunicationController(mode, "127.0.0.1", 27017);
+
+			Config cfg(configPath);
+			m_cc = new CommunicationController(cfg.getMode(), cfg.getHost(), cfg.getPort(), cfg.getTimeout());
 
 			m_fetchThread = new tFetchThread(this, &Impl::fetch);
 			if(!m_fetchThread || !m_fetchThread->start()) {
@@ -161,7 +159,7 @@ namespace desm {
 				break;
 			}
 		}
-		
+
 		void parseSetBalise(const Json::Value& v) {
 			if(!v.isObject()) {
 				return;
@@ -174,9 +172,9 @@ namespace desm {
 				baliseId == Json::Value::maxInt || 
 				direction == Json::Value::maxInt || 
 				position == std::numeric_limits<double>::max()) {
-				return;
+					return;
 			}
-			if(setBaliseImpl(gleisId, baliseId, position, direction)) {
+			if(setBaliseImpl(gleisId, position, baliseId, direction)) {
 				// TODO add balise event to event list for stw_getEvents();
 			}
 		}
@@ -300,7 +298,7 @@ namespace desm {
 		}
 		return desm::ERROR_OK;
 	}
-	
+
 	void Middleware::setKilometerDirection(int direction) {
 		m_pImpl->m_state.kilometerDirection = direction;
 		m_pImpl->sendMessage(MESSAGE_TYPE_SET_KILOMETER_DIRECTION, Json::Value(direction));
