@@ -9,7 +9,7 @@ using namespace desm;
 int main(int argc, char** argv) {
 	std::string data;
 	try {
-		CommunicationController *cc_client = new CommunicationController(CommunicationController::MODE_CLIENT, "127.0.0.1", 27017);
+		CommunicationController *cc_client = new CommunicationController(CommunicationController::MODE_CLIENT, "127.0.0.1", 27017, 10 * 1000);
 		int receivedMessages = 0;
 		for(int i = 0; i < 10; ++i) {
 			cc_client->send("Hello");

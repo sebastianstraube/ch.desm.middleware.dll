@@ -7,7 +7,7 @@ using namespace desm;
 int main(int argc, char** argv) {
 	try {
 		MwDll dll(L"LocsimDesmMiddlewarePlugin.dll");
-		dll.onStartProgramm("server");
+		dll.onStartProgramm("dispatcher.json");
 
 		std::cout << "doing some stuff..." << std::endl;
 		Sleep(1000);
