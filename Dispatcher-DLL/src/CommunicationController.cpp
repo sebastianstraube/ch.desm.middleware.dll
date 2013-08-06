@@ -77,11 +77,11 @@ namespace desm {
 				fct = &Impl::runClient;
 				break;
 			default:
-				throw std::bad_alloc("invalid mode");
+				throw std::exception("invalid mode");
 			}
 			m_mainThread = new tMainThread(this, fct, m_zmqCtx);
 			if(!m_mainThread || !m_mainThread->start()) {
-				throw std::bad_alloc("unable to start main thread");
+				throw std::exception("unable to start main thread");
 			}
 		}
 

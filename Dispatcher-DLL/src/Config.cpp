@@ -36,7 +36,7 @@ namespace desm {
 			, m_timeout(s_DEFAULT_TIMEOUT)
 		{
 			if(!loadConfig(fname)) {
-				throw std::bad_alloc("unable to load config");
+				throw std::exception("unable to load config");
 			}
 		}
 

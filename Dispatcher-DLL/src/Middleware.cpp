@@ -89,7 +89,7 @@ namespace desm {
 
 			m_fetchThread = new tFetchThread(this, &Impl::fetch);
 			if(!m_fetchThread || !m_fetchThread->start()) {
-				throw std::bad_alloc("unable to start fetch thread");
+				throw std::exception("unable to start fetch thread");
 			}
 		}
 
