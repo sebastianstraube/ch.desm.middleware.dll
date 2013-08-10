@@ -2,22 +2,24 @@
 
 #include <string>
 #include <vector>
+
 #include "CommunicationController.h"
+#include "Events.h"
 
 namespace desm {
 
 	class Middleware
 	{
 	public: // types
-		typedef std::vector<std::pair<int, int>> tTypeList;
+		typedef std::vector<tChange> tChangeList;
 	public: // lifetime
 		Middleware(const std::string& configPath);
 		~Middleware();
 	public: // api - track setup
 		int onLoadStrecke();
-		int setTrack(int gleisId, double von, double bis, float abstand, const std::string& name);
+		int setTrack(int gleisId, double von, double bis, double abstand, const std::string& name);
 		int setTrackConnection(int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id);
-		int setSignal (int signalId, int gleisId, double position, int typ, float hoehe, float distanz, const std::string& name, int direction);
+		int setSignal (int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int direction);
 		int setBalise (int gleisId, double position, int baliseId, int direction);
 		int setLoop (int gleisId, double positionVon, double positionBis, int baliseId);
 		int setIsolierstoss (int gleisId, double position);
@@ -25,7 +27,7 @@ namespace desm {
 		int getKilometerDirection();
 	public: // api - simulation
 		int onStartSimulation();
-		int getEvents(tTypeList&);
+		int getEvents(tChangeList&);
 		int getSignal(int signalId, int& stellung);
 		int getBalise(int baliseId, int& stellung, std::string& protokoll);
 		int getLoop(int baliseId, int& stellung, std::string& protokoll);

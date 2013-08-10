@@ -71,7 +71,7 @@ extern "C" {
 		return s_middleware->onStopSimulation();
 	}
 
-	__declspec(dllexport) int stw_setTrack(int gleisId, double von, double bis, float abstand, char* name) {
+	__declspec(dllexport) int stw_setTrack(int gleisId, double von, double bis, double abstand, char* name) {
 		std::cout << "stw_setTrack"<< std::endl;
 		if(s_middleware == NULL) {
 			return desm::ERROR_API_MISUSE;
@@ -87,7 +87,7 @@ extern "C" {
 		return s_middleware->setTrackConnection(gleisId, gleis1, gleis2, von, bis, std::string(name), weiche1Id, weiche2Id);
 	}
 
-	__declspec(dllexport) int stw_setSignal(int signalId, int gleisId, double position, int typ, float hoehe, float distanz, char* name, int direction) {
+	__declspec(dllexport) int stw_setSignal(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int direction) {
 		std::cout << "stw_setSignal"<< std::endl;
 		if(s_middleware == NULL) {
 			return desm::ERROR_API_MISUSE;
@@ -153,24 +153,24 @@ extern "C" {
 		if(!number || !typeList || !idList) {
 			return desm::ERROR_API_MISUSE;
 		}
-		desm::Middleware::tTypeList types;
-		int rc = s_middleware->getEvents(types);
+		desm::Middleware::tChangeList changes;
+		int rc = s_middleware->getEvents(changes);
 		if(rc != desm::ERROR_OK) {
 			return rc;
 		}
-		if(types.empty()) {
+		if(changes.empty()) {
 			*number = 0;
 			return desm::ERROR_OK;
 		}
-		*number = types.size();
-		*typeList = (int*)::calloc(types.size(), sizeof(int));
-		*idList = (int*)::calloc(types.size(), sizeof(int));
+		*number = changes.size();
+		*typeList = (int*)::calloc(changes.size(), sizeof(int));
+		*idList = (int*)::calloc(changes.size(), sizeof(int));
 		if(!*typeList || !*idList) {
 			return desm::ERROR_API_MISUSE;
 		}
-		for(size_t i = 0; i < types.size(); ++i) {
-			(*typeList)[i] = types[i].first;
-			(*idList)[i] = types[i].second;
+		for(size_t i = 0; i < changes.size(); ++i) {
+			(*typeList)[i] = changes[i].event;
+			(*idList)[i] = changes[i].id1;
 		}
 		return desm::ERROR_OK;
 	}

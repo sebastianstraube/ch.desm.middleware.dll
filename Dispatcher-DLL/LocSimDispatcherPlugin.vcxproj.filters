@@ -27,5 +27,11 @@
     <ClInclude Include="src\Config.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\Events.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SimulationState.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

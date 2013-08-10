@@ -17,9 +17,9 @@ struct MwDll::Impl {
 	typedef const char* (*t_stw_infoDescription)(void);
 	typedef int (*t_stw_onStartSimulation)(void);
 	typedef int (*t_stw_onStopSimulation)(void);
-	typedef int (*t_stw_setTrack)(int gleisId, double von, double bis, float abstand, char* name);
+	typedef int (*t_stw_setTrack)(int gleisId, double von, double bis, double abstand, char* name);
 	typedef int (*t_stw_setTrackConnection)(int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int weiche1Id, int weiche2Id);
-	typedef int (*t_stw_setSignal)(int signalId, int gleisId, double position, int typ, float hoehe, float distanz, char* name, int direction);
+	typedef int (*t_stw_setSignal)(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int direction);
 	typedef int (*t_stw_setBalise)(int gleisId, double position, int baliseId, int direction);
 	typedef int (*t_stw_setLoop)(int gleisId, double positionVon, double positionBis, int baliseId);
 	typedef int (*t_stw_setIsolierstoss)(int gleisId, double position);
@@ -159,7 +159,7 @@ void MwDll::onStopProgramm() {
 	checkErrorCode(m_pImpl->m_stw_onStopProgramm());
 }
 
-bool MwDll::setTrack(int gleisId, double von, double bis, float abstand, const std::string& name) {
+bool MwDll::setTrack(int gleisId, double von, double bis, double abstand, const std::string& name) {
 	char* dup = _strdup(name.c_str());
 	bool success = checkErrorCode(m_pImpl->m_stw_setTrack(gleisId, von, bis, abstand, dup));
 	free(dup);
@@ -173,7 +173,7 @@ bool MwDll::setTrackConnection(int gleisId, int gleis1, int gleis2, double von, 
 	return success;
 }
 
-bool MwDll::setSignal(int signalId, int gleisId, double position, int typ, float hoehe, float distanz, const std::string& name, int direction) {
+bool MwDll::setSignal(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int direction) {
 	char* dup = _strdup(name.c_str());
 	bool success = checkErrorCode(m_pImpl->m_stw_setSignal(signalId, gleisId, position, typ, hoehe, distanz, dup, direction));
 	free(dup);
