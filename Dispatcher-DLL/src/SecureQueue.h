@@ -2,6 +2,7 @@
 
 #include <list>
 #include "CriticalSection.h"
+#include "Thread.h"
 
 namespace desm {
 

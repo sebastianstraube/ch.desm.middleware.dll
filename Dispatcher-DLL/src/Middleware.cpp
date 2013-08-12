@@ -17,6 +17,7 @@
 #include "Middleware.h"
 #include "SimulationState.h"
 #include "Thread.h"
+#include "SecureQueue.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -59,7 +60,7 @@ namespace desm {
 		typedef Thread<typename Middleware::Impl, void*> tFetchThread;
 		
 		struct CommandBase;
-		typedef std::vector<CommandBase*> tCommandList;
+		typedef SecureQueue<CommandBase*> tCommandList;
 
 		////////////////////////////////////////////////////////////////////////
 		// member
@@ -70,7 +71,6 @@ namespace desm {
 		bool m_fetchThreadStop;
 
 		SimulationState m_state;
-		tChangeList m_changes;
 		tCommandList m_incomingCommands;
 
 		////////////////////////////////////////////////////////////////////////
@@ -126,7 +126,7 @@ namespace desm {
 				return;
 			}
 			if(cmd->updateState(m_state)) {
-				m_incomingCommands.push_back(cmd);
+				m_incomingCommands.push(cmd);
 			}
 		}
 		
@@ -138,20 +138,21 @@ namespace desm {
 		}
 
 		void resetState() {
-			m_changes.clear();
 			m_state.reset();
+			tCommandList cmds;
+			m_incomingCommands.moveTo(cmds);
+			CommandBase* cmd;
+			while(cmds.pop(cmd)) {
+				delete cmd;
+			}
 		}
-
-		void logIncomingEvent(eEvent e, int id1 = INVALID_ID, int id2 = INVALID_ID) {
-			tChange c = { e, id1, id2 };
-			m_changes.push_back(c);
-		}
-
+		
 #pragma region begin commands
 
 		struct CommandBase {
 			eEvent type;
 			CommandBase(eEvent _type) : type(_type) {}
+			virtual int getId() const = 0;
 			virtual bool isValid(const SimulationState&) const = 0;
 			virtual Json::Value toJson() const = 0;
 			virtual bool updateState(SimulationState&) const = 0;
@@ -169,7 +170,6 @@ namespace desm {
 
 		template<> struct Command<EVT_TRACK> : CommandBase {
 			typedef Command<EVT_TRACK> tThisCommand;
-			static const eEvent type = EVT_TRACK;
 
 			int gleisId;
 			double von;
@@ -178,7 +178,10 @@ namespace desm {
 			std::string name;
 			
 			Command(int _gleisId, double _von, double _bis, double _abstand, const std::string& _name)
-				: CommandBase(type), gleisId(_gleisId), von(_von), bis(_bis), abstand(_abstand), name(_name) {
+				: CommandBase(EVT_TRACK), gleisId(_gleisId), von(_von), bis(_bis), abstand(_abstand), name(_name) {
+			}
+			int getId() const {
+				return gleisId;
 			}
 			bool isValid(const SimulationState& state) const {
 				return state.isValidGleisId(gleisId);
@@ -209,7 +212,6 @@ namespace desm {
 
 		template<> struct Command<EVT_TRACK_CONNECTION> : CommandBase {
 			typedef Command<EVT_TRACK_CONNECTION> tThisCommand;
-			static const eEvent type = EVT_TRACK_CONNECTION;
 
 			int gleisId;
 			int gleis1;
@@ -221,7 +223,10 @@ namespace desm {
 			int weiche2Id;
 			
 			Command(int _gleisId, int _gleis1, int _gleis2, double _von, double _bis, const std::string& _name, int _weiche1Id, int _weiche2Id)
-				: CommandBase(type), gleisId(_gleisId), gleis1(_gleis1), gleis2(_gleis2), von(_von), bis(_bis), name(_name), weiche1Id(_weiche1Id), weiche2Id(_weiche2Id) {
+				: CommandBase(EVT_TRACK_CONNECTION), gleisId(_gleisId), gleis1(_gleis1), gleis2(_gleis2), von(_von), bis(_bis), name(_name), weiche1Id(_weiche1Id), weiche2Id(_weiche2Id) {
+			}
+			int getId() const {
+				return gleisId;
 			}
 			bool isValid(const SimulationState& state) const {
 				return state.isValidGleisId(gleisId);
@@ -260,13 +265,16 @@ namespace desm {
 		
 		template<> struct Command<EVT_ISOLIERSTOSS> : CommandBase {
 			typedef Command<EVT_ISOLIERSTOSS> tThisCommand;
-			static const eEvent type = EVT_ISOLIERSTOSS;
 
 			int gleisId;
 			double position;
 			
 			Command(int _gleisId, double _position)
-				: CommandBase(type), gleisId(_gleisId), position(_position) {
+				: CommandBase(EVT_ISOLIERSTOSS), gleisId(_gleisId), position(_position) {
+			}
+			int getId() const {
+				// TODO is gleisId correct? i think we need the position as well to identify the isolierstoss.
+				return gleisId;
 			}
 			bool isValid(const SimulationState& state) const {
 				return state.isValidGleisId(gleisId);
@@ -293,12 +301,14 @@ namespace desm {
 		
 		template<> struct Command<EVT_KILOMETER_DIRECTION> : CommandBase {
 			typedef Command<EVT_KILOMETER_DIRECTION> tThisCommand;
-			static const eEvent type = EVT_KILOMETER_DIRECTION;
 
 			int direction;
 			
 			Command(int _direction)
-				: CommandBase(type), direction(_direction) {
+				: CommandBase(EVT_KILOMETER_DIRECTION), direction(_direction) {
+			}
+			int getId() const {
+				return INVALID_ID;
 			}
 			bool isValid(const SimulationState& state) const {
 				return true;
@@ -390,7 +400,20 @@ namespace desm {
 		return 0;
 	}
 
-	int Middleware::getEvents(tChangeList&) {
+	int Middleware::getEvents(std::vector<int>& types, std::vector<int>& ids) {
+		Impl::tCommandList cmds;
+		m_pImpl->m_incomingCommands.moveTo(cmds);
+
+		Impl::CommandBase* cmd;
+		while(cmds.pop(cmd)) {
+			if(!cmd) {
+				break;
+			}
+			types.push_back(cmd->type);
+			ids.push_back(cmd->getId());
+			delete cmd; // command not needed any longer, delete him.
+		}
+		
 		return 0;
 	}
 
