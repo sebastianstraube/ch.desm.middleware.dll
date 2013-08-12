@@ -212,8 +212,10 @@ bool MwDll::getEvents(std::vector<int>& typeList, std::vector<int>& idList) {
 			typeList.push_back(cTypeList[i]);
 			idList.push_back(cIdList[i]);
 		}
-		m_pImpl->m_stw_deallocate((void**)&cTypeList);
-		m_pImpl->m_stw_deallocate((void**)&cIdList);
+		if(num > 0) {
+			m_pImpl->m_stw_deallocate((void**)&cTypeList);
+			m_pImpl->m_stw_deallocate((void**)&cIdList);
+		}
 	}
 	return ret;
 }

@@ -1,5 +1,6 @@
 #include <Windows.h> // Sleep()
 #include <iostream>
+#include "Events.h"
 #include "MwDll.h"
 
 using namespace desm;
@@ -12,13 +13,25 @@ int main(int argc, char** argv) {
 		std::cout << "doing some stuff..." << std::endl;
 		Sleep(1000);
 
-		for(int i = 0; i < 30; ++i) {
-			int kilometerDirection = 0;
-			dll.getKilometerDirection(kilometerDirection);
-			std::cout << "kilometerDirection = " << kilometerDirection << std::endl;
-			Sleep(200);
-		}
+		while(true) {
+			std::vector<int> types;
+			std::vector<int> ids;
+			dll.getEvents(types, ids);
+			for(size_t i = 0; i < types.size(); ++i) {
+				switch(types[i]) {
+				case EVT_KILOMETER_DIRECTION:
+					int kmDir;
+					dll.getKilometerDirection(kmDir);
+					std::cout << "kilemeter direction: " << kmDir << std::endl;
+					break;
+				default:
+					std::cout << "event " << types[i] << ": " << ids[i] << std::endl;
+					break;
+				}
 
+			}
+		}
+		
 		dll.onStopProgramm();
 
 	} catch(std::exception& e) {
