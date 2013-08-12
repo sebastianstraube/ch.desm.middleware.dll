@@ -2,7 +2,7 @@
 
 namespace desm {
 
-	enum eErrorCodes {
+	enum eErrorCode {
 		ERROR_OK = 0,
 		ERROR_FATAL = 1,
 		ERROR_API_MISUSE = 2,

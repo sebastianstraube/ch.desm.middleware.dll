@@ -13,49 +13,43 @@
 
 #include "Config.h"
 #include "ErrorCodes.h"
+#include "Events.h"
 #include "Middleware.h"
+#include "SimulationState.h"
 #include "Thread.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace desm {
 
-	enum MESSAGE_TYPE {
-		MESSAGE_TYPE_SET_KILOMETER_DIRECTION = 1,
-		MESSAGE_TYPE_SET_BALISE,
-		MESSAGE_TYPE_SET_ISOLIERSTOSS
-	};
+#pragma region json helper
 
 	namespace {
+		template<class T> static T jsonGetAs(const Json::Value& v);
+		template<> static int jsonGetAs<int>(const Json::Value& v) { return v.asInt(); }
+		template<> static double jsonGetAs<double>(const Json::Value& v) { return v.asDouble(); }
+		template<> static unsigned jsonGetAs<unsigned>(const Json::Value& v) { return v.asUInt(); }
+		template<> static std::string jsonGetAs<std::string>(const Json::Value& v) { return v.asString(); }
+		
+		template<class T> static bool jsonIsOfType(const Json::Value& v);
+		template<> static bool jsonIsOfType<int>(const Json::Value& v) { return v.isInt(); }
+		template<> static bool jsonIsOfType<double>(const Json::Value& v) { return v.isDouble(); }
+		template<> static bool jsonIsOfType<unsigned>(const Json::Value& v) { return v.isUInt(); }
+		template<> static bool jsonIsOfType<std::string>(const Json::Value& v) { return v.isString(); }
 
-		template<class T>
-		void deleteContainerEntries(T& begin, T& end) {
-			for(; begin != end; ++begin) {
-				delete *begin;
+		template<class T> static T jsonGet(const Json::Value& v, const char* key) {
+			if(!v.isObject()) {
+				throw std::exception("invalid object provided for parsing");
 			}
+			Json::Value x = v.get(key, Json::Value::null);
+			if(!jsonIsOfType<T>(x) || x.isNull()) {
+				throw std::exception("json parser error");
+			}
+			return jsonGetAs<T>(x);
 		}
+	}
 
-		struct Balise {
-			Balise(int _id, double _position, int _direction) : id(_id), position(_position), direction(_direction) {}
-			int id;
-			double position;
-			int direction;
-		};
-
-		struct Gleis {
-			Gleis(int _id = std::numeric_limits<int>::max()) : id(_id) {}
-			~Gleis() { deleteContainerEntries(balise.begin(), balise.end()); }
-			bool isValid() const { return this->id != std::numeric_limits<int>::max(); }
-			int id;
-			std::set<double> isolierstoesse;
-			std::vector<Balise*> balise;
-		};
-
-		struct tState {
-			int kilometerDirection;
-			std::map<int, Gleis> gleise;
-		};
-	};
+#pragma endregion
 
 	struct Middleware::Impl {
 
@@ -63,6 +57,9 @@ namespace desm {
 		// types
 
 		typedef Thread<typename Middleware::Impl, void*> tFetchThread;
+		
+		struct CommandBase;
+		typedef std::vector<CommandBase*> tCommandList;
 
 		////////////////////////////////////////////////////////////////////////
 		// member
@@ -72,7 +69,9 @@ namespace desm {
 		tFetchThread* m_fetchThread;
 		bool m_fetchThreadStop;
 
-		tState m_state;
+		SimulationState m_state;
+		tChangeList m_changes;
+		tCommandList m_incomingCommands;
 
 		////////////////////////////////////////////////////////////////////////
 		// lifetime
@@ -89,7 +88,7 @@ namespace desm {
 
 			m_fetchThread = new tFetchThread(this, &Impl::fetch);
 			if(!m_fetchThread || !m_fetchThread->start()) {
-				throw std::bad_alloc("unable to start fetch thread");
+				throw std::exception("unable to start fetch thread");
 			}
 		}
 
@@ -111,21 +110,7 @@ namespace desm {
 			}
 			return 0;
 		}
-
-		void resetState() {
-			m_state.kilometerDirection = 0;
-		}
-
-#pragma region begin message parsing
-
-		void sendMessage(int msgType, const Json::Value& v) {
-			Json::FastWriter writer;
-			Json::Value root;
-			root["t"] = msgType;
-			root["v"] = v;
-			m_cc->send(writer.write(root));
-		}
-
+		
 		void parseMessage(const std::string& msg) {
 			Json::Value root;
 			Json::Reader reader;
@@ -133,96 +118,222 @@ namespace desm {
 				std::cerr << "INVALID MESSAGE RECEIVED!" << reader.getFormatedErrorMessages() << std::endl;
 				return;
 			}
-			unsigned msgType = root.get("t", Json::Value::maxInt).asInt();
-			if(msgType == Json::Value::maxInt) {
-				std::cerr << "INVALID MESSAGE (no message type available)" << std::endl;
+			int type = jsonGet<int>(root, "t");
+			Json::Value v = root.get("v", Json::Value());
+			CommandBase* cmd = CommandBase::fromJson(type, v);
+			if(!cmd) {
+				std::cerr << "UNKNOWN MESSAGE TYPE " << type << std::endl;
 				return;
 			}
-			parseJsonValue(msgType, root.get("v", Json::Value()));
+			if(cmd->updateState(m_state)) {
+				m_incomingCommands.push_back(cmd);
+			}
+		}
+		
+		void sendMessage(int msgType, const Json::Value& v) {
+			Json::Value root;
+			root["t"] = msgType;
+			root["v"] = v;
+			m_cc->send(Json::FastWriter().write(root));
 		}
 
-		void parseJsonValue(int msgType, const Json::Value& v) {
-			switch(msgType) {
-			case MESSAGE_TYPE_SET_KILOMETER_DIRECTION:
-				if(v.isInt()) {
-					m_state.kilometerDirection = v.asInt();
+		void resetState() {
+			m_changes.clear();
+			m_state.reset();
+		}
+
+		void logIncomingEvent(eEvent e, int id1 = INVALID_ID, int id2 = INVALID_ID) {
+			tChange c = { e, id1, id2 };
+			m_changes.push_back(c);
+		}
+
+#pragma region begin commands
+
+		struct CommandBase {
+			eEvent type;
+			CommandBase(eEvent _type) : type(_type) {}
+			virtual bool isValid(const SimulationState&) const = 0;
+			virtual Json::Value toJson() const = 0;
+			virtual bool updateState(SimulationState&) const = 0;
+			static CommandBase* fromJson(int type, const Json::Value& v) {
+				switch(type) {
+				case EVT_TRACK: return Command<EVT_TRACK>::fromJson(v);
+				case EVT_ISOLIERSTOSS: return Command<EVT_ISOLIERSTOSS>::fromJson(v);
+				case EVT_KILOMETER_DIRECTION: return Command<EVT_KILOMETER_DIRECTION>::fromJson(v);
+				default: return NULL;
 				}
-				break;
-			case MESSAGE_TYPE_SET_BALISE:
-				parseSetBalise(v);
-				break;
-			case MESSAGE_TYPE_SET_ISOLIERSTOSS:
-				parseSetIsolierstoss(v);
-				break;
-			default:
-				std::cerr << "RECEIVED UNKNOWN MESSAGE " << msgType << std::endl;
-				break;
 			}
-		}
+		};
 
-		void parseSetBalise(const Json::Value& v) {
-			if(!v.isObject()) {
-				return;
-			}
-			int gleisId = v.get("gleisId", Json::Value::maxInt).asInt();
-			int baliseId = v.get("baliseId", Json::Value::maxInt).asInt();
-			int direction = v.get("direction", Json::Value::maxInt).asInt();
-			double position = v.get("position", std::numeric_limits<double>::max()).asDouble();
-			if(gleisId == Json::Value::maxInt || 
-				baliseId == Json::Value::maxInt || 
-				direction == Json::Value::maxInt || 
-				position == std::numeric_limits<double>::max()) {
-					return;
-			}
-			if(setBaliseImpl(gleisId, position, baliseId, direction)) {
-				// TODO add balise event to event list for stw_getEvents();
-			}
-		}
+		template<int> struct Command {};
 
-		void parseSetIsolierstoss(const Json::Value& v) {
-			if(!v.isObject()) {
-				return;
-			}
-			int gleisId = v.get("gleisId", Json::Value::maxInt).asInt();
-			double position = v.get("position", std::numeric_limits<double>::max()).asDouble();
-			if(gleisId == Json::Value::maxInt || position == std::numeric_limits<double>::max()) {
-				return;
-			}
-			if(setIsolierstossImpl(gleisId, position)) {
-				// TODO add isolierstoss event to event list for stw_getEvents();
-			}
-		}
+		template<> struct Command<EVT_TRACK> : CommandBase {
+			typedef Command<EVT_TRACK> tThisCommand;
+			static const eEvent type = EVT_TRACK;
 
+			int gleisId;
+			double von;
+			double bis;
+			double abstand;
+			std::string name;
+			
+			Command(int _gleisId, double _von, double _bis, double _abstand, const std::string& _name)
+				: CommandBase(type), gleisId(_gleisId), von(_von), bis(_bis), abstand(_abstand), name(_name) {
+			}
+			bool isValid(const SimulationState& state) const {
+				return state.isValidGleisId(gleisId);
+			}
+			bool updateState(SimulationState& state) const {
+				Gleis gleis = { gleisId, von, bis, abstand, name };
+				state.gleise[gleisId] = gleis;
+				return true;
+			}
+			Json::Value toJson() const {
+				Json::Value v(Json::objectValue);
+				v["gleisId"] = Json::Value(gleisId);
+				v["von"] = Json::Value(von);
+				v["bis"] = Json::Value(bis);
+				v["abstand"] = Json::Value(abstand);
+				v["name"] = Json::Value(name);
+				return v;
+			}
+			static tThisCommand* fromJson(const Json::Value& v) {
+				int gleisId = jsonGet<int>(v, "gleisId");
+				double von = jsonGet<double>(v, "von");
+				double bis = jsonGet<double>(v, "bis");
+				double abstand = jsonGet<double>(v, "abstand");
+				std::string name = jsonGet<std::string>(v, "name");
+				return new tThisCommand(gleisId, von, bis, abstand, name);
+			}
+		};
+
+		template<> struct Command<EVT_TRACK_CONNECTION> : CommandBase {
+			typedef Command<EVT_TRACK_CONNECTION> tThisCommand;
+			static const eEvent type = EVT_TRACK_CONNECTION;
+
+			int gleisId;
+			int gleis1;
+			int gleis2;
+			double von;
+			double bis;
+			std::string name;
+			int weiche1Id;
+			int weiche2Id;
+			
+			Command(int _gleisId, int _gleis1, int _gleis2, double _von, double _bis, const std::string& _name, int _weiche1Id, int _weiche2Id)
+				: CommandBase(type), gleisId(_gleisId), gleis1(_gleis1), gleis2(_gleis2), von(_von), bis(_bis), name(_name), weiche1Id(_weiche1Id), weiche2Id(_weiche2Id) {
+			}
+			bool isValid(const SimulationState& state) const {
+				return state.isValidGleisId(gleisId);
+			}
+			bool updateState(SimulationState& state) const {
+				if(!state.isValidGleisId(gleisId)) {
+					return false;
+				}
+				// TODO
+				return true;
+			}
+			Json::Value toJson() const {
+				Json::Value v(Json::objectValue);
+				v["gleisId"] = Json::Value(gleisId);
+				v["gleis1"] = Json::Value(gleis1);
+				v["gleis2"] = Json::Value(gleis2);
+				v["von"] = Json::Value(von);
+				v["bis"] = Json::Value(bis);
+				v["name"] = Json::Value(name);
+				v["weiche1Id"] = Json::Value(weiche1Id);
+				v["weiche2Id"] = Json::Value(weiche2Id);
+				return v;
+			}
+			static tThisCommand* fromJson(const Json::Value& v) {
+				int gleisId = jsonGet<int>(v, "gleisId");
+				int gleis1 = jsonGet<int>(v, "gleis1");
+				int gleis2 = jsonGet<int>(v, "gleis2");
+				double von = jsonGet<double>(v, "von");
+				double bis = jsonGet<double>(v, "bis");
+				std::string name = jsonGet<std::string>(v, "name");
+				int weiche1Id = jsonGet<int>(v, "weiche1Id");
+				int weiche2Id = jsonGet<int>(v, "weiche2Id");
+				return new tThisCommand(gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id);
+			}
+		};
+		
+		template<> struct Command<EVT_ISOLIERSTOSS> : CommandBase {
+			typedef Command<EVT_ISOLIERSTOSS> tThisCommand;
+			static const eEvent type = EVT_ISOLIERSTOSS;
+
+			int gleisId;
+			double position;
+			
+			Command(int _gleisId, double _position)
+				: CommandBase(type), gleisId(_gleisId), position(_position) {
+			}
+			bool isValid(const SimulationState& state) const {
+				return state.isValidGleisId(gleisId);
+			}
+			bool updateState(SimulationState& state) const {
+				if(!state.isValidGleisId(gleisId)) {
+					return false;
+				}
+				state.gleise[gleisId].isolierstoesse.insert(position);
+				return true;
+			}
+			Json::Value toJson() const {
+				Json::Value v(Json::objectValue);
+				v["gleisId"] = Json::Value(gleisId);
+				v["position"] = Json::Value(position);
+				return v;
+			}
+			static tThisCommand* fromJson(const Json::Value& v) {
+				int gleisId = jsonGet<int>(v, "gleisId");
+				double position = jsonGet<double>(v, "position");
+				return new tThisCommand(gleisId, position);
+			}
+		};
+		
+		template<> struct Command<EVT_KILOMETER_DIRECTION> : CommandBase {
+			typedef Command<EVT_KILOMETER_DIRECTION> tThisCommand;
+			static const eEvent type = EVT_KILOMETER_DIRECTION;
+
+			int direction;
+			
+			Command(int _direction)
+				: CommandBase(type), direction(_direction) {
+			}
+			bool isValid(const SimulationState& state) const {
+				return true;
+			}
+			bool updateState(SimulationState& state) const {
+				state.kilometerDirection = direction;
+				return true;
+			}
+			Json::Value toJson() const {
+				Json::Value v(Json::objectValue);
+				v["direction"] = Json::Value(direction);
+				return v;
+			}
+			static tThisCommand* fromJson(const Json::Value& v) {
+				int direction = jsonGet<int>(v, "direction");
+				return new tThisCommand(direction);
+			}
+		};
+		
 #pragma endregion
-
-#pragma region stats checks
-
-		bool isValidGleisId(int gleisId) const {
-			return m_state.gleise.find(gleisId) != m_state.gleise.end();
+		
+#pragma region begin command related helper
+		
+		void sendEvent(const CommandBase& cmd) {
+			sendMessage(cmd.type, cmd.toJson());
 		}
 
-#pragma endregion
-
-#pragma region state update
-
-		bool setIsolierstossImpl(int gleisId, double position) {
-			if(!isValidGleisId(gleisId)) {
-				return false;
+		int applyLocalCommand(CommandBase* cmd) {
+			if(!cmd->isValid(m_state)) {
+				return desm::ERROR_API_MISUSE;
 			}
-			if(m_state.gleise[gleisId].isolierstoesse.find(position) != m_state.gleise[gleisId].isolierstoesse.end()) {
-				return false;
+			if(cmd->updateState(m_state)) {
+				sendEvent(*cmd);
 			}
-			m_state.gleise[gleisId].isolierstoesse.insert(position);
-			return true;
-		}
-
-		bool setBaliseImpl(int gleisId, double position, int baliseId, int direction) {
-			if(!isValidGleisId(gleisId)) {
-				return false;
-			}
-			// TODO check whether baliseId already exists. maybe switch from vector to map<id, Balise*> for that?
-			m_state.gleise[gleisId].balise.push_back(new Balise(baliseId, position, direction));
-			return true;
+			return desm::ERROR_OK;
 		}
 
 #pragma endregion
@@ -243,65 +354,32 @@ namespace desm {
 		return 0;
 	}
 
-	int Middleware::setTrack(int gleisId, double von, double bis, float abstand, const std::string& name) {
-		if(!m_pImpl->isValidGleisId(gleisId)) {
-			return desm::ERROR_UNKNOWN_ID;
-		}
-		return desm::ERROR_OK;
+	int Middleware::setTrack(int gleisId, double von, double bis, double abstand, const std::string& name) {
+		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_TRACK>(gleisId, von, bis, abstand, name));
 	}
 
 	int Middleware::setTrackConnection(int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
-		if(!m_pImpl->isValidGleisId(gleisId)) {
-			return desm::ERROR_UNKNOWN_ID;
-		}
 		return 0;
 	}
 
-	int Middleware::setSignal (int signalId, int gleisId, double position, int typ, float hoehe, float distanz, const std::string& name, int direction) {
-		if(!m_pImpl->isValidGleisId(gleisId)) {
-			return desm::ERROR_UNKNOWN_ID;
-		}
+	int Middleware::setSignal (int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int direction) {
 		return 0;
 	}
 
 	int Middleware::setBalise (int gleisId, double position, int baliseId, int direction) {
-		if(!m_pImpl->isValidGleisId(gleisId)) {
-			return desm::ERROR_UNKNOWN_ID;
-		}
-		if(m_pImpl->setBaliseImpl(gleisId, position, baliseId, direction)) {
-			Json::Value v(Json::objectValue);
-			v["gleisId"] = Json::Value(gleisId);
-			v["position"] = Json::Value(position);
-			v["baliseId"] = Json::Value(baliseId);
-			v["direction"] = Json::Value(direction);
-			m_pImpl->sendMessage(MESSAGE_TYPE_SET_BALISE, v);
-		}
 		return 0;
 	}
 
 	int Middleware::setLoop (int gleisId, double positionVon, double positionBis, int baliseId) {
-		if(!m_pImpl->isValidGleisId(gleisId)) {
-			return desm::ERROR_UNKNOWN_ID;
-		}
 		return 0;
 	}
 
 	int Middleware::setIsolierstoss (int gleisId, double position) {
-		if(!m_pImpl->isValidGleisId(gleisId)) {
-			return desm::ERROR_UNKNOWN_ID;
-		}
-		if(m_pImpl->setIsolierstossImpl(gleisId, position)) {
-			Json::Value v(Json::objectValue);
-			v["gleisId"] = Json::Value(gleisId);
-			v["position"] = Json::Value(position);
-			m_pImpl->sendMessage(MESSAGE_TYPE_SET_ISOLIERSTOSS, v);
-		}
-		return desm::ERROR_OK;
+		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_ISOLIERSTOSS>(gleisId, position));
 	}
 
 	void Middleware::setKilometerDirection(int direction) {
-		m_pImpl->m_state.kilometerDirection = direction;
-		m_pImpl->sendMessage(MESSAGE_TYPE_SET_KILOMETER_DIRECTION, Json::Value(direction));
+		/*return */m_pImpl->applyLocalCommand(new Impl::Command<EVT_KILOMETER_DIRECTION>(direction));
 	}
 
 	int Middleware::getKilometerDirection() {
@@ -312,7 +390,7 @@ namespace desm {
 		return 0;
 	}
 
-	int Middleware::getEvents(tTypeList&) {
+	int Middleware::getEvents(tChangeList&) {
 		return 0;
 	}
 
