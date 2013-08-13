@@ -15,7 +15,6 @@
 #include "ErrorCodes.h"
 #include "Events.h"
 #include "Middleware.h"
-#include "SimulationState.h"
 #include "Thread.h"
 #include "SecureQueue.h"
 
@@ -59,8 +58,12 @@ namespace desm {
 
 		typedef Thread<typename Middleware::Impl, void*> tFetchThread;
 		
+		typedef std::pair<eEvent, int> tChangeInfo;
+		typedef SecureQueue<tChangeInfo> tChangeList;
+
 		struct CommandBase;
-		typedef SecureQueue<CommandBase*> tCommandList;
+		typedef std::map<int, CommandBase*> tCommandMap;
+		typedef std::map<eEvent, tCommandMap> tState;
 
 		////////////////////////////////////////////////////////////////////////
 		// member
@@ -70,8 +73,8 @@ namespace desm {
 		tFetchThread* m_fetchThread;
 		bool m_fetchThreadStop;
 
-		SimulationState m_state;
-		tCommandList m_incomingCommands;
+		tState m_state;
+		tChangeList m_incomingChanges;
 
 		////////////////////////////////////////////////////////////////////////
 		// lifetime
@@ -125,9 +128,10 @@ namespace desm {
 				std::cerr << "UNKNOWN MESSAGE TYPE " << type << std::endl;
 				return;
 			}
-			if(cmd->updateState(m_state)) {
-				m_incomingCommands.push(cmd);
-			}
+
+			// TODO: ownership conflicts!
+			storeCommand(cmd);
+			m_incomingChanges.push(std::make_pair(cmd->type, cmd->getId()));
 		}
 		
 		void sendMessage(int msgType, const Json::Value& v) {
@@ -138,13 +142,8 @@ namespace desm {
 		}
 
 		void resetState() {
-			m_state.reset();
-			tCommandList cmds;
-			m_incomingCommands.moveTo(cmds);
-			CommandBase* cmd;
-			while(cmds.pop(cmd)) {
-				delete cmd;
-			}
+			m_state.clear(); // TODO: memory leak - in tCommandMap sind pointer
+			m_incomingChanges.moveTo(tChangeList());
 		}
 		
 #pragma region begin commands
@@ -153,12 +152,8 @@ namespace desm {
 			eEvent type;
 			CommandBase(eEvent _type) : type(_type) {}
 			virtual int getId() const = 0;
-			virtual bool isValid(const SimulationState&) const = 0;
 			virtual Json::Value toJson() const = 0;
-			virtual bool updateState(SimulationState&) const = 0;
 			static CommandBase* fromJson(int type, const Json::Value& v) {
-
-				//TODO: add function
 				switch(type) {
 					case EVT_SET_TRACK: return Command<EVT_SET_TRACK>::fromJson(v);
 					case EVT_SET_TRACK_CONNECTION: return Command<EVT_SET_TRACK_CONNECTION>::fromJson(v);
@@ -187,14 +182,6 @@ namespace desm {
 			}
 			int getId() const {
 				return gleisId;
-			}
-			bool isValid(const SimulationState& state) const {
-				return state.isValidGleisId(gleisId);
-			}
-			bool updateState(SimulationState& state) const {
-				Gleis gleis = { gleisId, von, bis, abstand, name };
-				state.gleise[gleisId] = gleis;
-				return true;
 			}
 			Json::Value toJson() const {
 				Json::Value v(Json::objectValue);
@@ -232,16 +219,6 @@ namespace desm {
 			}
 			int getId() const {
 				return gleisId;
-			}
-			bool isValid(const SimulationState& state) const {
-				return state.isValidGleisId(gleisId);
-			}
-			bool updateState(SimulationState& state) const {
-				if(!state.isValidGleisId(gleisId)) {
-					return false;
-				}
-				// TODO
-				return true;
 			}
 			Json::Value toJson() const {
 				Json::Value v(Json::objectValue);
@@ -281,16 +258,6 @@ namespace desm {
 				// TODO is gleisId correct? i think we need the position as well to identify the isolierstoss.
 				return gleisId;
 			}
-			bool isValid(const SimulationState& state) const {
-				return state.isValidGleisId(gleisId);
-			}
-			bool updateState(SimulationState& state) const {
-				if(!state.isValidGleisId(gleisId)) {
-					return false;
-				}
-				state.gleise[gleisId].isolierstoesse.insert(position);
-				return true;
-			}
 			Json::Value toJson() const {
 				Json::Value v(Json::objectValue);
 				v["gleisId"] = Json::Value(gleisId);
@@ -314,13 +281,6 @@ namespace desm {
 			}
 			int getId() const {
 				return INVALID_ID;
-			}
-			bool isValid(const SimulationState& state) const {
-				return true;
-			}
-			bool updateState(SimulationState& state) const {
-				state.kilometerDirection = direction;
-				return true;
 			}
 			Json::Value toJson() const {
 				Json::Value v(Json::objectValue);
@@ -346,14 +306,6 @@ namespace desm {
 			}
 			int getId() const {
 				return baliseId;
-			}
-			bool isValid(const SimulationState& state) const {
-				return state.isValidBaliseId(baliseId, gleisId);
-			}
-			bool updateState(SimulationState& state) const {
-				Balise balise = {baliseId, gleisId, position, direction};
-				state.balise = balise;
-				return true;
 			}
 			Json::Value toJson() const {
 				Json::Value v(Json::objectValue);
@@ -390,15 +342,6 @@ namespace desm {
 			int getId() const {
 				return signalId;
 			}
-			bool isValid(const SimulationState& state) const {
-				//TODO: isValid signalId
-				return true;
-			}
-			bool updateState(SimulationState& state) const {
-				Signal signal = {signalId, gleisId, position, typ, hoehe, distanz, name, direction};
-				state.signal = signal;
-				return true;
-			}
 			Json::Value toJson() const {
 				Json::Value v(Json::objectValue);
 				v["signalId"] = Json::Value(signalId);
@@ -417,7 +360,7 @@ namespace desm {
 				int typ = jsonGet<int>(v, "typ");
 				double hoehe = jsonGet<double>(v, "hoehe");
 				double distanz = jsonGet<double>(v, "distanz");
-				std::string name = jsonGet<std::string&>(v, "name");
+				std::string name = jsonGet<std::string>(v, "name");
 				int direction = jsonGet<int>(v, "direction");
 				return new tThisCommand(signalId, gleisId, position, typ, hoehe, distanz, name, direction);
 			}
@@ -430,14 +373,43 @@ namespace desm {
 			sendMessage(cmd.type, cmd.toJson());
 		}
 
+		int storeCommand(CommandBase* cmd) {
+			if(!cmd) {
+				return ERROR_API_MISUSE;
+			}
+			eEvent type = cmd->type;
+			int id = cmd->getId();
+			tState::iterator it = m_state.find(type);
+			if(it == m_state.end()) {
+				m_state[type] = tCommandMap();
+			}
+			tCommandMap& cmdMap = m_state[type];
+			tCommandMap::iterator cmdIt = cmdMap.find(id);
+			if(cmdIt != cmdMap.end()) {
+				delete cmdIt->second;
+			}
+			cmdMap[id] = cmd;
+			return ERROR_OK;
+		}
+
 		int applyLocalCommand(CommandBase* cmd) {
-			if(!cmd->isValid(m_state)) {
-				return desm::ERROR_API_MISUSE;
+			int rt = storeCommand(cmd);
+			sendEvent(*cmd);
+			return rt;
+		}
+
+		template<int CMD_TYPE>
+		Command<CMD_TYPE>* getCommandFromState(int id = INVALID_ID) {
+			tState::iterator it = m_state.find(static_cast<eEvent>(CMD_TYPE));
+			if(it == m_state.end()) {
+				return NULL;
 			}
-			if(cmd->updateState(m_state)) {
-				sendEvent(*cmd);
+			tCommandMap& cmdMap = it->second;
+			tCommandMap::iterator cmdIt = cmdMap.find(id);
+			if(cmdIt == cmdMap.end()) {
+				return NULL;
 			}
-			return desm::ERROR_OK;
+			return static_cast<Command<CMD_TYPE>*>(cmdIt->second);
 		}
 
 #pragma endregion
@@ -482,12 +454,17 @@ namespace desm {
 		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_SET_ISOLIERSTOSS>(gleisId, position));
 	}
 
-	void Middleware::setKilometerDirection(int direction) {
-		/*return */m_pImpl->applyLocalCommand(new Impl::Command<EVT_SET_KILOMETER_DIRECTION>(direction));
+	int Middleware::setKilometerDirection(int direction) {
+		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_SET_KILOMETER_DIRECTION>(direction));
 	}
 
-	int Middleware::getKilometerDirection() {
-		return m_pImpl->m_state.kilometerDirection;
+	int Middleware::getKilometerDirection(int& direction) {
+		Impl::Command<EVT_SET_KILOMETER_DIRECTION>* cmd = m_pImpl->getCommandFromState<EVT_SET_KILOMETER_DIRECTION>();
+		if(!cmd) {
+			return ERROR_FATAL;
+		}
+		direction = cmd->direction;
+		return ERROR_OK;
 	}
 
 	int Middleware::onStartSimulation() {
@@ -495,21 +472,15 @@ namespace desm {
 	}
 
 	int Middleware::getEvents(std::vector<int>& types, std::vector<int>& ids) {
-		Impl::tCommandList cmds;
-		m_pImpl->m_incomingCommands.moveTo(cmds);
+		Impl::tChangeList cmds;
+		m_pImpl->m_incomingChanges.moveTo(cmds);
 
-		Impl::CommandBase* cmd;
-		while(cmds.pop(cmd)) {
-			if(!cmd) {
-				break;
-			}
-			types.push_back(cmd->type);
-			ids.push_back(cmd->getId());
-			delete cmd; // command not needed any longer, delete him.
+		Impl::tChangeInfo change;
+		while(cmds.pop(change)) {
+			types.push_back(change.first);
+			ids.push_back(change.second);
 		}
-		
-		//TODO: return needs some value
-		return 0;
+		return ERROR_OK;
 	}
 
 	int Middleware::getSignal(int signalId, int& stellung) {

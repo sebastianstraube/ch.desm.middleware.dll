@@ -97,7 +97,6 @@
     <ClInclude Include="src\ErrorCodes.h" />
     <ClInclude Include="src\Events.h" />
     <ClInclude Include="src\Middleware.h" />
-    <ClInclude Include="src\SimulationState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

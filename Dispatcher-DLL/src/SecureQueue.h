@@ -9,9 +9,9 @@ namespace desm {
 	template<typename T>
 	class SecureQueue {
 	private: // types
-		typedef T                       tData;
-		typedef SecureQueue<typename T> tThis;
-		typedef std::list<typename T>   tQueue;
+		typedef T                  tData;
+		typedef SecureQueue<tData> tThis;
+		typedef std::list<tData>   tQueue;
 	public: // lifetime
 		SecureQueue() : m_queue(), m_csh() {}
 		~SecureQueue() {}

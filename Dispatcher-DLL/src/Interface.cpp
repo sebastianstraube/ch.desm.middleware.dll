@@ -100,7 +100,7 @@ extern "C" {
 		if(s_middleware == NULL) {
 			return desm::ERROR_API_MISUSE;
 		}
-		return s_middleware->setBalise(gleisId, position, baliseId, direction);
+		return s_middleware->setBalise(baliseId, gleisId, position, direction);
 	}
 
 	__declspec(dllexport) int stw_setLoop(int gleisId, double positionVon, double positionBis, int baliseId) {
@@ -124,8 +124,7 @@ extern "C" {
 		if(s_middleware == NULL) {
 			return desm::ERROR_API_MISUSE;
 		}
-		s_middleware->setKilometerDirection(direction);
-		return desm::ERROR_OK;
+		return s_middleware->setKilometerDirection(direction);
 	}
 
 	__declspec(dllexport) int stw_getKilometerDirection(int *direction) {
@@ -133,8 +132,7 @@ extern "C" {
 		if(s_middleware == NULL || direction == NULL) {
 			return desm::ERROR_API_MISUSE;
 		}
-		*direction = s_middleware->getKilometerDirection();
-		return desm::ERROR_OK;
+		return s_middleware->getKilometerDirection(*direction);
 	}
 
 	__declspec(dllexport) int stw_onLoadStrecke(void) {

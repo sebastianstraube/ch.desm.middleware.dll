@@ -8,6 +8,8 @@
 
 namespace desm {
 
+	static const int INVALID_ID = std::numeric_limits<int>::max();
+
 	class Middleware
 	{
 	public: // lifetime
@@ -22,8 +24,8 @@ namespace desm {
 		int setBalise (int baliseId, int gleisId, double position, int direction);
 		int setLoop (int gleisId, double positionVon, double positionBis, int baliseId);
 		int setIsolierstoss (int gleisId, double position);
-		void setKilometerDirection(int direction);
-		int getKilometerDirection();
+		int setKilometerDirection(int direction);
+		int getKilometerDirection(int& direction);
 	
 	public: // api - simulation
 		int onStartSimulation();

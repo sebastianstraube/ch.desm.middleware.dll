@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
 			dll.getEvents(types, ids);
 			for(size_t i = 0; i < types.size(); ++i) {
 				switch(types[i]) {
-				case EVT_KILOMETER_DIRECTION:
+				case EVT_SET_KILOMETER_DIRECTION:
 					int kmDir;
 					dll.getKilometerDirection(kmDir);
 					std::cout << "kilemeter direction: " << kmDir << std::endl;
