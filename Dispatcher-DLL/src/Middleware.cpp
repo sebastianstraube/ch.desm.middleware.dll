@@ -466,8 +466,7 @@ namespace desm {
 	}
 
 	int Middleware::setSignal (int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int direction) {
-		//TODO: setsignal
-		return 0;
+		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_SET_SIGNAL>(signalId, gleisId, position, typ, hoehe, distanz, name, direction));
 	}
 
 	int Middleware::setBalise (int baliseId, int gleisId, double position, int direction) {
