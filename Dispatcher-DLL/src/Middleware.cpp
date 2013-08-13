@@ -158,9 +158,10 @@ namespace desm {
 			virtual bool updateState(SimulationState&) const = 0;
 			static CommandBase* fromJson(int type, const Json::Value& v) {
 				switch(type) {
-				case EVT_TRACK: return Command<EVT_TRACK>::fromJson(v);
-				case EVT_ISOLIERSTOSS: return Command<EVT_ISOLIERSTOSS>::fromJson(v);
-				case EVT_KILOMETER_DIRECTION: return Command<EVT_KILOMETER_DIRECTION>::fromJson(v);
+					case EVT_SET_TRACK: return Command<EVT_SET_TRACK>::fromJson(v);
+					case EVT_SET_TRACK_CONNECTION: return Command<EVT_SET_TRACK_CONNECTION>::fromJson(v);
+					case EVT_SET_ISOLIERSTOSS: return Command<EVT_SET_ISOLIERSTOSS>::fromJson(v);
+					case EVT_SET_KILOMETER_DIRECTION: return Command<EVT_SET_KILOMETER_DIRECTION>::fromJson(v);
 				default: return NULL;
 				}
 			}
@@ -168,8 +169,8 @@ namespace desm {
 
 		template<int> struct Command {};
 
-		template<> struct Command<EVT_TRACK> : CommandBase {
-			typedef Command<EVT_TRACK> tThisCommand;
+		template<> struct Command<EVT_SET_TRACK> : CommandBase {
+			typedef Command<EVT_SET_TRACK> tThisCommand;
 
 			int gleisId;
 			double von;
@@ -178,7 +179,7 @@ namespace desm {
 			std::string name;
 			
 			Command(int _gleisId, double _von, double _bis, double _abstand, const std::string& _name)
-				: CommandBase(EVT_TRACK), gleisId(_gleisId), von(_von), bis(_bis), abstand(_abstand), name(_name) {
+				: CommandBase(EVT_SET_TRACK), gleisId(_gleisId), von(_von), bis(_bis), abstand(_abstand), name(_name) {
 			}
 			int getId() const {
 				return gleisId;
@@ -210,8 +211,8 @@ namespace desm {
 			}
 		};
 
-		template<> struct Command<EVT_TRACK_CONNECTION> : CommandBase {
-			typedef Command<EVT_TRACK_CONNECTION> tThisCommand;
+		template<> struct Command<EVT_SET_TRACK_CONNECTION> : CommandBase {
+			typedef Command<EVT_SET_TRACK_CONNECTION> tThisCommand;
 
 			int gleisId;
 			int gleis1;
@@ -223,7 +224,7 @@ namespace desm {
 			int weiche2Id;
 			
 			Command(int _gleisId, int _gleis1, int _gleis2, double _von, double _bis, const std::string& _name, int _weiche1Id, int _weiche2Id)
-				: CommandBase(EVT_TRACK_CONNECTION), gleisId(_gleisId), gleis1(_gleis1), gleis2(_gleis2), von(_von), bis(_bis), name(_name), weiche1Id(_weiche1Id), weiche2Id(_weiche2Id) {
+				: CommandBase(EVT_SET_TRACK_CONNECTION), gleisId(_gleisId), gleis1(_gleis1), gleis2(_gleis2), von(_von), bis(_bis), name(_name), weiche1Id(_weiche1Id), weiche2Id(_weiche2Id) {
 			}
 			int getId() const {
 				return gleisId;
@@ -263,14 +264,14 @@ namespace desm {
 			}
 		};
 		
-		template<> struct Command<EVT_ISOLIERSTOSS> : CommandBase {
-			typedef Command<EVT_ISOLIERSTOSS> tThisCommand;
+		template<> struct Command<EVT_SET_ISOLIERSTOSS> : CommandBase {
+			typedef Command<EVT_SET_ISOLIERSTOSS> tThisCommand;
 
 			int gleisId;
 			double position;
 			
 			Command(int _gleisId, double _position)
-				: CommandBase(EVT_ISOLIERSTOSS), gleisId(_gleisId), position(_position) {
+				: CommandBase(EVT_SET_ISOLIERSTOSS), gleisId(_gleisId), position(_position) {
 			}
 			int getId() const {
 				// TODO is gleisId correct? i think we need the position as well to identify the isolierstoss.
@@ -299,13 +300,13 @@ namespace desm {
 			}
 		};
 		
-		template<> struct Command<EVT_KILOMETER_DIRECTION> : CommandBase {
-			typedef Command<EVT_KILOMETER_DIRECTION> tThisCommand;
+		template<> struct Command<EVT_SET_KILOMETER_DIRECTION> : CommandBase {
+			typedef Command<EVT_SET_KILOMETER_DIRECTION> tThisCommand;
 
 			int direction;
 			
 			Command(int _direction)
-				: CommandBase(EVT_KILOMETER_DIRECTION), direction(_direction) {
+				: CommandBase(EVT_SET_KILOMETER_DIRECTION), direction(_direction) {
 			}
 			int getId() const {
 				return INVALID_ID;
@@ -328,6 +329,45 @@ namespace desm {
 			}
 		};
 		
+		template<> struct Command<EVT_SET_BALISE> : CommandBase {
+			typedef Command<EVT_SET_BALISE> tThisCommand;
+			
+			int id;
+			int gleisId;
+			double position;
+			int direction;
+			
+			Command(int _gleisId, double _position, int _baliseId, int _direction)
+				: CommandBase(EVT_SET_BALISE), id(_baliseId), gleisId(_gleisId), position(_position), direction(_direction) {
+			}
+			int getId() const {
+				return id;
+			}
+			bool isValid(const SimulationState& state) const {
+				//TODO: isValid Balise
+				return true;
+			}
+			bool updateState(SimulationState& state) const {
+				Balise balise = {id, gleisId, position, direction};
+				state.balise = balise;
+				return true;
+			}
+			Json::Value toJson() const {
+				Json::Value v(Json::objectValue);
+				v["id"] = Json::Value(id);
+				v["gleisId"] = Json::Value(gleisId);
+				v["position"] = Json::Value(position);
+				v["direction"] = Json::Value(direction);
+				return v;
+			}
+			static tThisCommand* fromJson(const Json::Value& v) {
+				int gleisId = jsonGet<int>(v, "gleisId");
+				int baliseId = jsonGet<int>(v, "baliseId");
+				double position = jsonGet<int>(v, "position");
+				int direction = jsonGet<int>(v, "direction");
+				return new tThisCommand(direction);
+			}
+		};
 #pragma endregion
 		
 #pragma region begin command related helper
@@ -365,7 +405,7 @@ namespace desm {
 	}
 
 	int Middleware::setTrack(int gleisId, double von, double bis, double abstand, const std::string& name) {
-		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_TRACK>(gleisId, von, bis, abstand, name));
+		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_SET_TRACK>(gleisId, von, bis, abstand, name));
 	}
 
 	int Middleware::setTrackConnection(int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
@@ -385,11 +425,11 @@ namespace desm {
 	}
 
 	int Middleware::setIsolierstoss (int gleisId, double position) {
-		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_ISOLIERSTOSS>(gleisId, position));
+		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_SET_ISOLIERSTOSS>(gleisId, position));
 	}
 
 	void Middleware::setKilometerDirection(int direction) {
-		/*return */m_pImpl->applyLocalCommand(new Impl::Command<EVT_KILOMETER_DIRECTION>(direction));
+		/*return */m_pImpl->applyLocalCommand(new Impl::Command<EVT_SET_KILOMETER_DIRECTION>(direction));
 	}
 
 	int Middleware::getKilometerDirection() {

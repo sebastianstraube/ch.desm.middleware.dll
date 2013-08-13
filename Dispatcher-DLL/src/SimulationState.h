@@ -9,6 +9,7 @@ namespace desm {
 
 	struct Balise {
 		int id;
+		int gleisId;
 		double position;
 		int direction;
 	};
@@ -23,16 +24,19 @@ namespace desm {
 		std::map<int, Balise> balise;
 	};
 	
-	//TODO Sebastian
+	//TODO: Sebastian
 	struct SimulationState {
 	public:
 		typedef std::map<int, Gleis> tGleisMap;
 	public:
 		int kilometerDirection;
+		Balise balise;
 		tGleisMap gleise;
 	public:
 		void reset() {
 			kilometerDirection = 0;
+			
+			//TODO: Balise
 			gleise.clear();
 		}
 	public:
