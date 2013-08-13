@@ -157,11 +157,13 @@ namespace desm {
 			virtual Json::Value toJson() const = 0;
 			virtual bool updateState(SimulationState&) const = 0;
 			static CommandBase* fromJson(int type, const Json::Value& v) {
+				//TODO: add function
 				switch(type) {
 					case EVT_SET_TRACK: return Command<EVT_SET_TRACK>::fromJson(v);
 					case EVT_SET_TRACK_CONNECTION: return Command<EVT_SET_TRACK_CONNECTION>::fromJson(v);
 					case EVT_SET_ISOLIERSTOSS: return Command<EVT_SET_ISOLIERSTOSS>::fromJson(v);
 					case EVT_SET_KILOMETER_DIRECTION: return Command<EVT_SET_KILOMETER_DIRECTION>::fromJson(v);
+					case EVT_SET_BALISE : return Command<EVT_SET_BALISE>::fromJson(v);
 				default: return NULL;
 				}
 			}
@@ -415,8 +417,8 @@ namespace desm {
 		return 0;
 	}
 
-	int Middleware::setBalise (int gleisId, double position, int baliseId, int direction) {
-		return 0;
+	int Middleware::setBalise (int id, int gleisId, double position, int direction) {
+		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_SET_BALISE>(id, gleisId, position, direction));
 	}
 
 	int Middleware::setLoop (int gleisId, double positionVon, double positionBis, int baliseId) {
