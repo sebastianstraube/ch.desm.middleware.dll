@@ -164,6 +164,7 @@ namespace desm {
 					case EVT_SET_ISOLIERSTOSS: return Command<EVT_SET_ISOLIERSTOSS>::fromJson(v);
 					case EVT_SET_KILOMETER_DIRECTION: return Command<EVT_SET_KILOMETER_DIRECTION>::fromJson(v);
 					case EVT_SET_BALISE : return Command<EVT_SET_BALISE>::fromJson(v);
+					case EVT_SET_SIGNAL : return Command<EVT_SET_BALISE>::fromJson(v);
 				default: return NULL;
 				}
 			}
@@ -334,39 +335,90 @@ namespace desm {
 		template<> struct Command<EVT_SET_BALISE> : CommandBase {
 			typedef Command<EVT_SET_BALISE> tThisCommand;
 			
-			int id;
+			int baliseId;
 			int gleisId;
 			double position;
 			int direction;
 			
-			Command(int _gleisId, double _position, int _baliseId, int _direction)
-				: CommandBase(EVT_SET_BALISE), id(_baliseId), gleisId(_gleisId), position(_position), direction(_direction) {
+			Command(int _baliseId, int _gleisId, double _position, int _direction)
+				: CommandBase(EVT_SET_BALISE), baliseId(_baliseId), gleisId(_gleisId), position(_position), direction(_direction) {
 			}
 			int getId() const {
-				return id;
+				return baliseId;
 			}
 			bool isValid(const SimulationState& state) const {
-				return state.isValidBaliseId(id, gleisId);
+				return state.isValidBaliseId(baliseId, gleisId);
 			}
 			bool updateState(SimulationState& state) const {
-				Balise balise = {id, gleisId, position, direction};
+				Balise balise = {baliseId, gleisId, position, direction};
 				state.balise = balise;
 				return true;
 			}
 			Json::Value toJson() const {
 				Json::Value v(Json::objectValue);
-				v["id"] = Json::Value(id);
+				v["baliseId"] = Json::Value(baliseId);
 				v["gleisId"] = Json::Value(gleisId);
 				v["position"] = Json::Value(position);
 				v["direction"] = Json::Value(direction);
 				return v;
 			}
 			static tThisCommand* fromJson(const Json::Value& v) {
-				int id = jsonGet<int>(v, "id");
+				int baliseId = jsonGet<int>(v, "baliseId");
 				int gleisId = jsonGet<int>(v, "gleisId");
-				double position = jsonGet<int>(v, "position");
+				double position = jsonGet<double>(v, "position");
 				int direction = jsonGet<int>(v, "direction");
-				return new tThisCommand(direction);
+				return new tThisCommand(baliseId, gleisId, position, direction);
+			}
+		};
+
+		template<> struct Command<EVT_SET_SIGNAL> : CommandBase {
+			typedef Command<EVT_SET_SIGNAL> tThisCommand;
+			
+			int signalId;
+			int gleisId;
+			double position;
+			int typ;
+			double hoehe;
+			double distanz;
+			std::string name;
+			int direction;
+			
+			Command(int _signalId, int _gleisId, double _position, int _typ, double _hoehe, double _distanz, const std::string& _name, int _direction)
+				: CommandBase(EVT_SET_SIGNAL), signalId(_signalId), gleisId(_gleisId), position(_position),  typ(_typ), hoehe(_hoehe), distanz(_distanz), name(_name), direction(_direction){
+			}
+			int getId() const {
+				return signalId;
+			}
+			bool isValid(const SimulationState& state) const {
+				//TODO: isValid signalId
+				return true;
+			}
+			bool updateState(SimulationState& state) const {
+				Signal signal = {signalId, gleisId, position, typ, hoehe, distanz, name, direction};
+				state.signal = signal;
+				return true;
+			}
+			Json::Value toJson() const {
+				Json::Value v(Json::objectValue);
+				v["signalId"] = Json::Value(signalId);
+				v["gleisId"] = Json::Value(gleisId);
+				v["position"] = Json::Value(position);
+				v["hoehe"] = Json::Value(hoehe);
+				v["distanz"] = Json::Value(distanz);
+				v["name"] = Json::Value(name);
+				v["direction"] = Json::Value(direction);
+				return v;
+			}
+			static tThisCommand* fromJson(const Json::Value& v) {
+				int signalId = jsonGet<int>(v, "signalId");
+				int gleisId = jsonGet<int>(v, "gleisId");
+				double position = jsonGet<double>(v, "position");
+				int typ = jsonGet<int>(v, "typ");
+				double hoehe = jsonGet<double>(v, "hoehe");
+				double distanz = jsonGet<double>(v, "distanz");
+				std::string name = jsonGet<std::string&>(v, "name");
+				int direction = jsonGet<int>(v, "direction");
+				return new tThisCommand(signalId, gleisId, position, typ, hoehe, distanz, name, direction);
 			}
 		};
 #pragma endregion
@@ -414,11 +466,12 @@ namespace desm {
 	}
 
 	int Middleware::setSignal (int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int direction) {
+		//TODO: setsignal
 		return 0;
 	}
 
-	int Middleware::setBalise (int id, int gleisId, double position, int direction) {
-		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_SET_BALISE>(id, gleisId, position, direction));
+	int Middleware::setBalise (int baliseId, int gleisId, double position, int direction) {
+		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_SET_BALISE>(baliseId, gleisId, position, direction));
 	}
 
 	int Middleware::setLoop (int gleisId, double positionVon, double positionBis, int baliseId) {

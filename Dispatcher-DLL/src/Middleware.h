@@ -13,6 +13,7 @@ namespace desm {
 	public: // lifetime
 		Middleware(const std::string& configPath);
 		~Middleware();
+	
 	public: // api - track setup
 		int onLoadStrecke();
 		int setTrack(int gleisId, double von, double bis, double abstand, const std::string& name);
@@ -23,6 +24,7 @@ namespace desm {
 		int setIsolierstoss (int gleisId, double position);
 		void setKilometerDirection(int direction);
 		int getKilometerDirection();
+	
 	public: // api - simulation
 		int onStartSimulation();
 		int getEvents(std::vector<int>& types, std::vector<int>& ids);
@@ -32,6 +34,7 @@ namespace desm {
 		int getWeiche(int weicheId, int& gleisId);
 		int setTrainPosition(int train, int direction, const std::vector<double>& positionList, const std::vector<int>& gleisList);
 		int onStopSimulation();
+	
 	private:
 		struct Impl;
 		Impl* m_pImpl;

@@ -13,6 +13,17 @@ namespace desm {
 		double position;
 		int direction;
 	};
+
+	struct Signal {
+		int id;
+		int gleisId;
+		double position;
+		int typ;
+		float hoehe;
+		float distanz;
+		std::string name;
+		int direction;
+	};
 	
 	struct Gleis {
 		int id;
@@ -31,12 +42,13 @@ namespace desm {
 	public:
 		int kilometerDirection;
 		Balise balise;
+		Signal signal;
 		tGleisMap gleise;
 	public:
 		void reset() {
 			kilometerDirection = 0;
 			
-			//TODO: Balise
+			//TODO: Balise, Signale
 			gleise.clear();
 		}
 	public:
@@ -53,6 +65,8 @@ namespace desm {
 			}
 			return it->second.balise.find(baliseId) != it->second.balise.end();
 		}
+
+		//TODO: isValidSignal
 
 		bool isValidIsolierstoss(int gleisId, double position) {
 			tGleisMap::const_iterator it = gleise.find(gleisId);
