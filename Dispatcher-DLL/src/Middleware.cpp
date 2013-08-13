@@ -344,8 +344,7 @@ namespace desm {
 				return id;
 			}
 			bool isValid(const SimulationState& state) const {
-				//TODO: isValid Balise
-				return true;
+				return state.isValidBaliseId(id, gleisId);
 			}
 			bool updateState(SimulationState& state) const {
 				Balise balise = {id, gleisId, position, direction};
@@ -361,8 +360,8 @@ namespace desm {
 				return v;
 			}
 			static tThisCommand* fromJson(const Json::Value& v) {
+				int id = jsonGet<int>(v, "id");
 				int gleisId = jsonGet<int>(v, "gleisId");
-				int baliseId = jsonGet<int>(v, "baliseId");
 				double position = jsonGet<int>(v, "position");
 				int direction = jsonGet<int>(v, "direction");
 				return new tThisCommand(direction);

@@ -40,9 +40,12 @@ namespace desm {
 			gleise.clear();
 		}
 	public:
+
 		bool isValidGleisId(int gleisId) const {
 			return gleise.find(gleisId) != gleise.end();
 		}
+
+		//TODO: need review
 		bool isValidBaliseId(int gleisId, int baliseId) const {
 			tGleisMap::const_iterator it = gleise.find(gleisId);
 			if(it == gleise.end()) {
@@ -50,6 +53,7 @@ namespace desm {
 			}
 			return it->second.balise.find(baliseId) != it->second.balise.end();
 		}
+
 		bool isValidIsolierstoss(int gleisId, double position) {
 			tGleisMap::const_iterator it = gleise.find(gleisId);
 			if(it == gleise.end()) {
