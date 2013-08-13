@@ -10,8 +10,6 @@ namespace desm {
 
 	class Middleware
 	{
-	public: // types
-		typedef std::vector<tChange> tChangeList;
 	public: // lifetime
 		Middleware(const std::string& configPath);
 		~Middleware();
@@ -27,7 +25,7 @@ namespace desm {
 		int getKilometerDirection();
 	public: // api - simulation
 		int onStartSimulation();
-		int getEvents(tChangeList&);
+		int getEvents(std::vector<int>& types, std::vector<int>& ids);
 		int getSignal(int signalId, int& stellung);
 		int getBalise(int baliseId, int& stellung, std::string& protokoll);
 		int getLoop(int baliseId, int& stellung, std::string& protokoll);
