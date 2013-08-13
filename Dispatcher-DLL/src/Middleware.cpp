@@ -157,6 +157,7 @@ namespace desm {
 			virtual Json::Value toJson() const = 0;
 			virtual bool updateState(SimulationState&) const = 0;
 			static CommandBase* fromJson(int type, const Json::Value& v) {
+
 				//TODO: add function
 				switch(type) {
 					case EVT_SET_TRACK: return Command<EVT_SET_TRACK>::fromJson(v);
@@ -164,7 +165,7 @@ namespace desm {
 					case EVT_SET_ISOLIERSTOSS: return Command<EVT_SET_ISOLIERSTOSS>::fromJson(v);
 					case EVT_SET_KILOMETER_DIRECTION: return Command<EVT_SET_KILOMETER_DIRECTION>::fromJson(v);
 					case EVT_SET_BALISE : return Command<EVT_SET_BALISE>::fromJson(v);
-					case EVT_SET_SIGNAL : return Command<EVT_SET_BALISE>::fromJson(v);
+					case EVT_SET_SIGNAL : return Command<EVT_SET_SIGNAL>::fromJson(v);
 				default: return NULL;
 				}
 			}
@@ -507,6 +508,7 @@ namespace desm {
 			delete cmd; // command not needed any longer, delete him.
 		}
 		
+		//TODO: return needs some value
 		return 0;
 	}
 
