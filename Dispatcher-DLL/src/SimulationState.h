@@ -23,6 +23,7 @@ namespace desm {
 		std::map<int, Balise> balise;
 	};
 	
+	//TODO Sebastian
 	struct SimulationState {
 	public:
 		typedef std::map<int, Gleis> tGleisMap;
