@@ -23,16 +23,16 @@ namespace desm {
 	};
 
 	struct CommunicationController::Impl {
-		
+
 		////////////////////////////////////////////////////////////////////////
 		// types
-		
+
 		typedef struct Connection;
 
 		typedef Thread<typename CommunicationController::Impl, void*>        tMainThread;
 		typedef CommunicationController::eMode                               eMode;
 		typedef SecureQueue<std::string>                                     tQueue;
-				
+
 		////////////////////////////////////////////////////////////////////////
 		// member
 
@@ -47,10 +47,9 @@ namespace desm {
 		tQueue                  m_sendQueue;
 		tQueue                  m_recvQueue;
 
-		zctx_t*                 m_zmqCtx;
 		tMainThread*            m_mainThread;
 		bool                    m_mainThreadStop;
-		
+
 		////////////////////////////////////////////////////////////////////////
 		// lifetime
 
@@ -63,7 +62,6 @@ namespace desm {
 			, m_lastPingTs(0)
 			, m_sendQueue()
 			, m_recvQueue()
-			, m_zmqCtx(zctx_new())
 			, m_mainThread(NULL)
 			, m_mainThreadStop(false)
 		{
@@ -78,7 +76,7 @@ namespace desm {
 			default:
 				throw std::exception("invalid mode");
 			}
-			m_mainThread = new tMainThread(this, fct, m_zmqCtx);
+			m_mainThread = new tMainThread(this, fct, NULL);
 			if(!m_mainThread || !m_mainThread->start()) {
 				throw std::exception("unable to start main thread");
 			}
@@ -88,12 +86,11 @@ namespace desm {
 			m_recvQueue.clear();
 			m_sendQueue.clear();
 			m_mainThreadStop = true;
-			zctx_destroy(&m_zmqCtx); // triggers termination on connected zeromq sockets
 			m_mainThread->interrupt();
 			m_mainThread->join();
 			delete m_mainThread;
 		}
-		
+
 		////////////////////////////////////////////////////////////////////////
 		// getter
 
@@ -108,7 +105,7 @@ namespace desm {
 		bool sendMessages(void* socket) {
 			zmsg_t* msg = zmsg_new();
 			zmsg_addstr(msg, PING_MESSAGE);
-			
+
 			std::string outMsg;
 			while(m_sendQueue.pop(outMsg)) {
 				zmsg_addstr(msg, const_cast<char*>(outMsg.c_str()));
@@ -138,7 +135,7 @@ namespace desm {
 					m_recvQueue.push(std::string(str));
 				}
 			}
-			
+
 			zmsg_destroy(&msg);
 
 			return true;
@@ -147,10 +144,11 @@ namespace desm {
 		////////////////////////////////////////////////////////////////////////
 		// socket thread helper
 
-		DWORD runClient(void* ctx) {
+		DWORD runClient(void*) {
 			int rc = 0;
+			zctx_t* ctx = zctx_new();
 			void *req = zsocket_new((zctx_t*)ctx, ZMQ_REQ);
-			
+
 			rc = zsocket_connect(req, "tcp://%s:%d", m_host.c_str(), m_port);
 			if(rc < 0)
 				return 1;
@@ -166,21 +164,24 @@ namespace desm {
 			}
 
 			m_connected = false;
+
 			zsocket_destroy((zctx_t*)ctx, req);
+			zctx_destroy(&ctx);
 
 			return (rc < 0) ? 1 : 0;
 		}
 
-		DWORD runServer(void* ctx) {
+		DWORD runServer(void*) {
 			int rc = 0;
+			zctx_t* ctx = zctx_new();
 			void *rep = zsocket_new((zctx_t*)ctx, ZMQ_REP);
-			
+
 			rc = zsocket_bind(rep, "tcp://*:%d", m_port);
 			if(rc < 0)
 				return 1;
 
 			m_connected = true;						
-			
+
 			while(!m_mainThreadStop && rc >= 0) {
 				if(!receiveMessages(rep))
 					break;
@@ -191,6 +192,7 @@ namespace desm {
 
 			m_connected = false;						
 			zsocket_destroy((zctx_t*)ctx, rep);
+			zctx_destroy(&ctx);
 
 			return (rc < 0) ? 1 : 0;
 		}
