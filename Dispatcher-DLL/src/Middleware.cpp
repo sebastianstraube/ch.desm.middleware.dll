@@ -129,7 +129,6 @@ namespace desm {
 				return;
 			}
 
-			// TODO: ownership conflicts!
 			storeCommand(cmd);
 			m_incomingChanges.push(std::make_pair(cmd->type, cmd->getId()));
 		}

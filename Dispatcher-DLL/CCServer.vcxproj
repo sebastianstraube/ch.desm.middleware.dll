@@ -60,7 +60,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration)\;..\3rdparty\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libzmq_d.lib;cc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libzmq_d.lib;czmqd.lib;Ws2_32.lib;cc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -79,7 +79,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration)\;..\3rdparty\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libzmq.lib;cc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libzmq.lib;czmq.lib;cc.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
