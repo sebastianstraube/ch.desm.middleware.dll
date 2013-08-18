@@ -1,6 +1,6 @@
 #include <Windows.h> // Sleep()
 #include <iostream>
-#include "Events.h"
+#include "Events.h"KilometerDirection
 #include "MwDll.h"
 
 using namespace desm;
@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
 			dll.getEvents(types, ids);
 			for(size_t i = 0; i < types.size(); ++i) {
 				switch(types[i]) {
-				case EVT_SET_KILOMETER_DIRECTION:
+				case ENUM_CMD_KILOMETER_DIRECTION:
 					int kmDir;
 					dll.getKilometerDirection(kmDir);
 					std::cout << "kilemeter direction: " << kmDir << std::endl;

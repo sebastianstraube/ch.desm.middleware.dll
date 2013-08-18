@@ -21,10 +21,10 @@ struct MwDll::Impl {
 	typedef int (*t_stw_setTrackConnection)(int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int weiche1Id, int weiche2Id);
 	typedef int (*t_stw_setSignal)(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int direction);
 	typedef int (*t_stw_setBalise)(int gleisId, double position, int baliseId, int direction);
-	typedef int (*t_stw_setLoop)(int gleisId, double positionVon, double positionBis, int baliseId);
+	typedef int (*t_stw_setLoop)(int baliseId, int gleisId, double positionVon, double positionBis);
 	typedef int (*t_stw_setIsolierstoss)(int gleisId, double position);
-	typedef int (*t_stw_setKilometerDirection)(int direction);
-	typedef int (*t_stw_getKilometerDirection)(int *direction);
+	typedef int (*t_stw_setKilometerDirection)(int richtung);
+	typedef int (*t_stw_getKilometerDirection)(int *richtung);
 	typedef int (*t_stw_onLoadStrecke)(void);
 	typedef int (*t_stw_getEvents)(int* number, int** typeList, int** idList);
 	typedef int (*t_stw_getSignal)(int signalId, int* stellung);
@@ -184,20 +184,20 @@ bool MwDll::setBalise(int gleisId, double position, int baliseId, int direction)
 	return checkErrorCode(m_pImpl->m_stw_setBalise(gleisId, position, baliseId, direction));
 }
 
-bool MwDll::setLoop(int gleisId, double positionVon, double positionBis, int baliseId) {
-	return checkErrorCode(m_pImpl->m_stw_setLoop(gleisId, positionVon, positionBis, baliseId));
+bool MwDll::setLoop(int baliseId, int gleisId, double positionVon, double positionBis) {
+	return checkErrorCode(m_pImpl->m_stw_setLoop(baliseId, gleisId, positionVon, positionBis));
 }
 
 bool MwDll::setIsolierstoss(int gleisId, double position) {
 	return checkErrorCode(m_pImpl->m_stw_setIsolierstoss(gleisId, position));
 }
 
-bool MwDll::setKilometerDirection(int direction) {
-	return checkErrorCode(m_pImpl->m_stw_setKilometerDirection(direction));
+bool MwDll::setKilometerDirection(int richtung) {
+	return checkErrorCode(m_pImpl->m_stw_setKilometerDirection(richtung));
 }
 
-bool MwDll::getKilometerDirection(int& direction) {
-	return checkErrorCode(m_pImpl->m_stw_getKilometerDirection(&direction));
+bool MwDll::getKilometerDirection(int& richtung) {
+	return checkErrorCode(m_pImpl->m_stw_getKilometerDirection(&richtung));
 }
 
 void MwDll::onLoadStrecke() {

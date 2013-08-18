@@ -155,12 +155,24 @@ namespace desm {
 			virtual Json::Value toJson() const = 0;
 			static CommandBase* fromJson(int type, const Json::Value& v) {
 				switch(type) {
-					case EVT_SET_TRACK: return Command<EVT_SET_TRACK>::fromJson(v);
-					case EVT_SET_TRACK_CONNECTION: return Command<EVT_SET_TRACK_CONNECTION>::fromJson(v);
-					case EVT_SET_ISOLIERSTOSS: return Command<EVT_SET_ISOLIERSTOSS>::fromJson(v);
-					case EVT_SET_KILOMETER_DIRECTION: return Command<EVT_SET_KILOMETER_DIRECTION>::fromJson(v);
-					case EVT_SET_BALISE : return Command<EVT_SET_BALISE>::fromJson(v);
-					case EVT_SET_SIGNAL : return Command<EVT_SET_SIGNAL>::fromJson(v);
+					case ENUM_CMD_BALISE : return Command<ENUM_CMD_BALISE>::fromJson(v);
+					case ENUM_CMD_TRACK: return Command<ENUM_CMD_TRACK>::fromJson(v);
+					case ENUM_CMD_TRACK_CONNECTION: return Command<ENUM_CMD_TRACK_CONNECTION>::fromJson(v);
+					case ENUM_CMD_ISOLIERSTOSS : return Command<ENUM_CMD_ISOLIERSTOSS>::fromJson(v);
+					case ENUM_CMD_KILOMETER_DIRECTION: return Command<ENUM_CMD_KILOMETER_DIRECTION>::fromJson(v);
+					case ENUM_CMD_SIGNAL : return Command<ENUM_CMD_SIGNAL>::fromJson(v);
+
+						/** TODO: 
+								ENUM_CMD_TRACK = 1,
+								ENUM_CMD_TRACK_CONNECTION = 2,
+								ENUM_CMD_ISOLIERSTOSS = 3,
+								ENUM_CMD_KILOMETER_DIRECTION = 4,
+								ENUM_CMD_BALISE = 5,
+								ENUM_CMD_SIGNAL = 6,
+								ENUM_CMD_LOOP = 7,
+								ENUM_CMD_WEICHE = 8,
+								ENUM_CMD_TRAINPOSITION
+						**/
 				default: return NULL;
 				}
 			}
@@ -168,8 +180,8 @@ namespace desm {
 
 		template<int> struct Command {};
 
-		template<> struct Command<EVT_SET_TRACK> : CommandBase {
-			typedef Command<EVT_SET_TRACK> tThisCommand;
+		template<> struct Command<ENUM_CMD_TRACK> : CommandBase {
+			typedef Command<ENUM_CMD_TRACK> tThisCommand;
 
 			int gleisId;
 			double von;
@@ -178,7 +190,7 @@ namespace desm {
 			std::string name;
 			
 			Command(int _gleisId, double _von, double _bis, double _abstand, const std::string& _name)
-				: CommandBase(EVT_SET_TRACK), gleisId(_gleisId), von(_von), bis(_bis), abstand(_abstand), name(_name) {
+				: CommandBase(ENUM_CMD_TRACK), gleisId(_gleisId), von(_von), bis(_bis), abstand(_abstand), name(_name) {
 			}
 			int getId() const {
 				return gleisId;
@@ -202,8 +214,8 @@ namespace desm {
 			}
 		};
 
-		template<> struct Command<EVT_SET_TRACK_CONNECTION> : CommandBase {
-			typedef Command<EVT_SET_TRACK_CONNECTION> tThisCommand;
+		template<> struct Command<ENUM_CMD_TRACK_CONNECTION> : CommandBase {
+			typedef Command<ENUM_CMD_TRACK_CONNECTION> tThisCommand;
 
 			int gleisId;
 			int gleis1;
@@ -215,7 +227,7 @@ namespace desm {
 			int weiche2Id;
 			
 			Command(int _gleisId, int _gleis1, int _gleis2, double _von, double _bis, const std::string& _name, int _weiche1Id, int _weiche2Id)
-				: CommandBase(EVT_SET_TRACK_CONNECTION), gleisId(_gleisId), gleis1(_gleis1), gleis2(_gleis2), von(_von), bis(_bis), name(_name), weiche1Id(_weiche1Id), weiche2Id(_weiche2Id) {
+				: CommandBase(ENUM_CMD_TRACK_CONNECTION), gleisId(_gleisId), gleis1(_gleis1), gleis2(_gleis2), von(_von), bis(_bis), name(_name), weiche1Id(_weiche1Id), weiche2Id(_weiche2Id) {
 			}
 			int getId() const {
 				return gleisId;
@@ -245,17 +257,17 @@ namespace desm {
 			}
 		};
 		
-		template<> struct Command<EVT_SET_ISOLIERSTOSS> : CommandBase {
-			typedef Command<EVT_SET_ISOLIERSTOSS> tThisCommand;
+		template<> struct Command<ENUM_CMD_ISOLIERSTOSS> : CommandBase {
+			typedef Command<ENUM_CMD_ISOLIERSTOSS> tThisCommand;
 
 			int gleisId;
 			double position;
 			
 			Command(int _gleisId, double _position)
-				: CommandBase(EVT_SET_ISOLIERSTOSS), gleisId(_gleisId), position(_position) {
+				: CommandBase(ENUM_CMD_ISOLIERSTOSS), gleisId(_gleisId), position(_position) {
 			}
 			int getId() const {
-				// TODO is gleisId correct? i think we need the position as well to identify the isolierstoss.
+				// TODO: is gleisId correct, i think we need the position as well to identify the isolierstoss.
 				return gleisId;
 			}
 			Json::Value toJson() const {
@@ -271,38 +283,72 @@ namespace desm {
 			}
 		};
 		
-		template<> struct Command<EVT_SET_KILOMETER_DIRECTION> : CommandBase {
-			typedef Command<EVT_SET_KILOMETER_DIRECTION> tThisCommand;
+		template<> struct Command<ENUM_CMD_KILOMETER_DIRECTION> : CommandBase {
+			typedef Command<ENUM_CMD_KILOMETER_DIRECTION> tThisCommand;
 
-			int direction;
+			int richtung;
 			
-			Command(int _direction)
-				: CommandBase(EVT_SET_KILOMETER_DIRECTION), direction(_direction) {
+			Command(int _richtung)
+				: CommandBase(ENUM_CMD_KILOMETER_DIRECTION), richtung(_richtung) {
 			}
 			int getId() const {
 				return INVALID_ID;
 			}
 			Json::Value toJson() const {
 				Json::Value v(Json::objectValue);
-				v["direction"] = Json::Value(direction);
+				v["richtung"] = Json::Value(richtung);
 				return v;
 			}
 			static tThisCommand* fromJson(const Json::Value& v) {
-				int direction = jsonGet<int>(v, "direction");
-				return new tThisCommand(direction);
+				int richtung = jsonGet<int>(v, "richtung");
+				return new tThisCommand(richtung);
 			}
 		};
 		
-		template<> struct Command<EVT_SET_BALISE> : CommandBase {
-			typedef Command<EVT_SET_BALISE> tThisCommand;
+		template<> struct Command<ENUM_CMD_LOOP> : CommandBase {
+			typedef Command<ENUM_CMD_LOOP> tThisCommand;
+
+			int gleisId;
+			int baliseId;
+			double positionVon;
+			double positionBis;
+
+			Command(int _gleisId, int _baliseId, double _positionVon, double _positionBis)
+				: CommandBase(ENUM_CMD_LOOP), gleisId(_gleisId), baliseId(_baliseId), positionVon(_positionVon), positionBis(_positionBis) {
+			}
+			int getId() const {
+				return INVALID_ID;
+			}
+			Json::Value toJson() const {
+				Json::Value v(Json::objectValue);
+				v["gleisId"] = Json::Value(gleisId);
+				v["baliseId"] = Json::Value(baliseId);
+				v["positionVon"] = Json::Value(positionVon);
+				v["positionBis"] = Json::Value(positionBis);
+				return v;
+			}
+			static tThisCommand* fromJson(const Json::Value& v) {
+				int gleisId = jsonGet<int>(v, "gleisId");
+				int baliseId = jsonGet<int>(v, "baliseId");
+				double positionVon = jsonGet<int>(v, "positionVon");
+				double positionBis= jsonGet<int>(v, "positionBis");
+				return new tThisCommand(gleisId, baliseId, positionVon, positionBis);
+			}
+		};
+
+		template<> struct Command<ENUM_CMD_BALISE> : CommandBase {
+			typedef Command<ENUM_CMD_BALISE> tThisCommand;
 			
 			int baliseId;
 			int gleisId;
 			double position;
-			int direction;
+			int stellung;
+			//TODO: needs review, only needed for getBalise
+			std::string& protokoll;
+
 			
-			Command(int _baliseId, int _gleisId, double _position, int _direction)
-				: CommandBase(EVT_SET_BALISE), baliseId(_baliseId), gleisId(_gleisId), position(_position), direction(_direction) {
+			Command(int _baliseId, int _gleisId, double _position, int _stellung, std::string _protokoll)
+				: CommandBase(ENUM_CMD_BALISE), baliseId(_baliseId), gleisId(_gleisId), position(_position), stellung(_stellung), protokoll(_protokoll) {
 			}
 			int getId() const {
 				return baliseId;
@@ -312,20 +358,23 @@ namespace desm {
 				v["baliseId"] = Json::Value(baliseId);
 				v["gleisId"] = Json::Value(gleisId);
 				v["position"] = Json::Value(position);
-				v["direction"] = Json::Value(direction);
+				v["stellung"] = Json::Value(stellung);
+				v["protokoll"] = Json::Value(protokoll);
 				return v;
 			}
 			static tThisCommand* fromJson(const Json::Value& v) {
 				int baliseId = jsonGet<int>(v, "baliseId");
 				int gleisId = jsonGet<int>(v, "gleisId");
 				double position = jsonGet<double>(v, "position");
-				int direction = jsonGet<int>(v, "direction");
-				return new tThisCommand(baliseId, gleisId, position, direction);
+				int stellung = jsonGet<int>(v, "stellung");
+				std::string protokoll = jsonGet<std::string>(v, "protokoll");
+
+				return new tThisCommand(baliseId, gleisId, position, stellung, protokoll);
 			}
 		};
 
-		template<> struct Command<EVT_SET_SIGNAL> : CommandBase {
-			typedef Command<EVT_SET_SIGNAL> tThisCommand;
+		template<> struct Command<ENUM_CMD_SIGNAL> : CommandBase {
+			typedef Command<ENUM_CMD_SIGNAL> tThisCommand;
 			
 			int signalId;
 			int gleisId;
@@ -334,10 +383,10 @@ namespace desm {
 			double hoehe;
 			double distanz;
 			std::string name;
-			int direction;
+			int stellung;
 			
-			Command(int _signalId, int _gleisId, double _position, int _typ, double _hoehe, double _distanz, const std::string& _name, int _direction)
-				: CommandBase(EVT_SET_SIGNAL), signalId(_signalId), gleisId(_gleisId), position(_position),  typ(_typ), hoehe(_hoehe), distanz(_distanz), name(_name), direction(_direction){
+			Command(int _signalId, int _gleisId, double _position, int _typ, double _hoehe, double _distanz, const std::string& _name, int _stellung)
+				: CommandBase(ENUM_CMD_SIGNAL), signalId(_signalId), gleisId(_gleisId), position(_position),  typ(_typ), hoehe(_hoehe), distanz(_distanz), name(_name), stellung(_stellung){
 			}
 			int getId() const {
 				return signalId;
@@ -350,7 +399,7 @@ namespace desm {
 				v["hoehe"] = Json::Value(hoehe);
 				v["distanz"] = Json::Value(distanz);
 				v["name"] = Json::Value(name);
-				v["direction"] = Json::Value(direction);
+				v["stellung"] = Json::Value(stellung);
 				return v;
 			}
 			static tThisCommand* fromJson(const Json::Value& v) {
@@ -361,8 +410,67 @@ namespace desm {
 				double hoehe = jsonGet<double>(v, "hoehe");
 				double distanz = jsonGet<double>(v, "distanz");
 				std::string name = jsonGet<std::string>(v, "name");
-				int direction = jsonGet<int>(v, "direction");
-				return new tThisCommand(signalId, gleisId, position, typ, hoehe, distanz, name, direction);
+				int stellung = jsonGet<int>(v, "stellung");
+				return new tThisCommand(signalId, gleisId, position, typ, hoehe, distanz, name, stellung);
+			}
+		};
+
+		template<> struct Command<ENUM_CMD_WEICHE> : CommandBase {
+			typedef Command<ENUM_CMD_WEICHE> tThisCommand;
+
+			int weicheId;
+			int& gleisId;
+			
+			Command(int _weicheId, int _gleisId)	
+				: CommandBase(ENUM_CMD_WEICHE), weicheId(_weicheId), gleisId(_gleisId) {
+			}
+			int getId() const {
+				// TODO: is gleisId correct, i think we need the position as well to identify the isolierstoss.
+				return gleisId;
+			}
+			Json::Value toJson() const {
+				Json::Value v(Json::objectValue);
+				v["weicheId"] = Json::Value(weicheId);
+				v["gleisId"] = Json::Value(gleisId);
+				return v;
+			}
+			static tThisCommand* fromJson(const Json::Value& v) {
+				int weicheId = jsonGet<int>(v, "weicheId");
+				double gleisId = jsonGet<double>(v, "gleisId");
+				return new tThisCommand(weicheId, gleisId);
+			}
+		};
+
+		template<> struct Command<ENUM_CMD_TRAINPOSITION> : CommandBase {
+			typedef Command<ENUM_CMD_TRAINPOSITION> tThisCommand;
+
+			int trainTyp;
+			int direction;
+			std::vector<double>& positionList;
+			std::vector<int>& gleisList;
+			
+			Command(int _trainTyp, int _direction, const std::vector<double> _positionList, const std::vector<int> _gleisList)	
+				: CommandBase(ENUM_CMD_TRAINPOSITION), trainTyp(_trainTyp), direction(_direction), positionList(_positionList), gleisList(_gleisList){
+			}
+			int getId() const {
+				return INVALID_ID;
+			}
+			Json::Value toJson() const {
+				Json::Value v(Json::objectValue);
+				v["trainTyp"] = Json::Value(trainTyp);
+				v["direction"] = Json::Value(direction);
+
+				//TODO: convertsion into Json::Value
+				v["positionList"] = Json::Value(positionList);
+				v["gleisList"] = Json::Value(gleisList);
+				return v;
+			}
+			static tThisCommand* fromJson(const Json::Value& v) {
+				int trainTyp = jsonGet<int>(v, "trainTyp");
+				double direction = jsonGet<double>(v, "direction");
+				std::vector<double> positionList = jsonGet<double>(v, "positionList");
+				std::vector<int> gleisList = jsonGet<double>(v, "gleisList");
+				return new tThisCommand(trainTyp, direction, positionList, gleisList);
 			}
 		};
 #pragma endregion
@@ -425,50 +533,54 @@ namespace desm {
 		delete m_pImpl;
 	}
 
+	int Middleware::onStartSimulation() {
+		return 0;
+	}
+
+	int Middleware::onStopSimulation() {
+		return 0;
+	}
+
 	int Middleware::onLoadStrecke() {
 		m_pImpl->resetState();
 		return 0;
 	}
 
 	int Middleware::setTrack(int gleisId, double von, double bis, double abstand, const std::string& name) {
-		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_SET_TRACK>(gleisId, von, bis, abstand, name));
+		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_TRACK>(gleisId, von, bis, abstand, name));
 	}
 
 	int Middleware::setTrackConnection(int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
-		return 0;
+		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_TRACK_CONNECTION>(gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id));
 	}
 
-	int Middleware::setSignal (int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int direction) {
-		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_SET_SIGNAL>(signalId, gleisId, position, typ, hoehe, distanz, name, direction));
+	int Middleware::setSignal (int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int stellung) {
+		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_SIGNAL>(signalId, gleisId, position, typ, hoehe, distanz, name, stellung));
 	}
 
-	int Middleware::setBalise (int baliseId, int gleisId, double position, int direction) {
-		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_SET_BALISE>(baliseId, gleisId, position, direction));
+	int Middleware::setBalise (int baliseId, int gleisId, double position, int stellung, std::string protokoll) {
+		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_BALISE>(baliseId, gleisId, position, stellung, protokoll));
 	}
 
-	int Middleware::setLoop (int gleisId, double positionVon, double positionBis, int baliseId) {
-		return 0;
+	int Middleware::setLoop (int baliseId, int gleisId, double positionVon, double positionBis) {
+		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_LOOP>(baliseId, gleisId, positionVon, positionBis));
 	}
 
 	int Middleware::setIsolierstoss (int gleisId, double position) {
-		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_SET_ISOLIERSTOSS>(gleisId, position));
+		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_ISOLIERSTOSS>(gleisId, position));
 	}
 
-	int Middleware::setKilometerDirection(int direction) {
-		return m_pImpl->applyLocalCommand(new Impl::Command<EVT_SET_KILOMETER_DIRECTION>(direction));
+	int Middleware::setKilometerDirection(int richtung) {
+		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_KILOMETER_DIRECTION>(richtung));
 	}
 
-	int Middleware::getKilometerDirection(int& direction) {
-		Impl::Command<EVT_SET_KILOMETER_DIRECTION>* cmd = m_pImpl->getCommandFromState<EVT_SET_KILOMETER_DIRECTION>();
+	int Middleware::getKilometerDirection(int& richtung) {
+		Impl::Command<ENUM_CMD_KILOMETER_DIRECTION>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_KILOMETER_DIRECTION>();
 		if(!cmd) {
 			return ERROR_FATAL;
 		}
-		direction = cmd->direction;
+		richtung = cmd->richtung;
 		return ERROR_OK;
-	}
-
-	int Middleware::onStartSimulation() {
-		return 0;
 	}
 
 	int Middleware::getEvents(std::vector<int>& types, std::vector<int>& ids) {
@@ -484,27 +596,58 @@ namespace desm {
 	}
 
 	int Middleware::getSignal(int signalId, int& stellung) {
-		return 0;
+		Impl::Command<ENUM_CMD_SIGNAL>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_SIGNAL>();
+		if(!cmd) {
+			return ERROR_FATAL;
+		}
+		signalId = cmd->signalId;
+		stellung = cmd->stellung;
+		return ERROR_OK;
 	}
 
+	//TODO: need review, is referenz int& stellung correct?
 	int Middleware::getBalise(int baliseId, int& stellung, std::string& protokoll) {
-		return 0;
+		Impl::Command<ENUM_CMD_BALISE>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_BALISE>();
+		if(!cmd) {
+			return ERROR_FATAL;
+		}
+		baliseId = cmd->baliseId;
+		stellung = cmd->stellung;
+		protokoll = cmd->protokoll;
+		return ERROR_OK;
 	}
 
 	int Middleware::getLoop(int baliseId, int& stellung, std::string& protokoll) {
-		return 0;
+		Impl::Command<ENUM_CMD_BALISE>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_BALISE>();
+		if(!cmd) {
+			return ERROR_FATAL;
+		}
+		baliseId = cmd->baliseId;
+		stellung = cmd->stellung;
+		protokoll = cmd->protokoll;
+		return ERROR_OK;
 	}
 
 	int Middleware::getWeiche(int weicheId, int& gleisId) {
-		return 0;
+		Impl::Command<ENUM_CMD_WEICHE>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_WEICHE>();
+		if(!cmd) {
+			return ERROR_FATAL;
+		}
+		weicheId = cmd->weicheId;
+		gleisId = cmd->gleisId;
+		return ERROR_OK;
 	}
 
-	int Middleware::setTrainPosition(int train, int direction, const std::vector<double>& positionList, const std::vector<int>& gleisList) {
-		return 0;
-	}
-
-	int Middleware::onStopSimulation() {
-		return 0;
+	int Middleware::setTrainPosition(int trainTyp, int direction, const std::vector<double>& positionList, const std::vector<int>& gleisList) {
+		Impl::Command<ENUM_CMD_TRAINPOSITION>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_TRAINPOSITION>();
+		if(!cmd) {
+			return ERROR_FATAL;
+		}
+		trainTyp = cmd->trainTyp;
+		direction = cmd->direction;
+		positionList = cmd->positionList;
+		gleisList = cmd->gleisList;
+		return ERROR_OK;
 	}
 
 };
