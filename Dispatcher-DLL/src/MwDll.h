@@ -42,9 +42,9 @@ namespace desm {
 		
 		// UNDOCUMENTED - MIDDLEWARE FUNCTIONS (HIGH LEVEL)
 		bool getTrainPosition(int& train, int& direction, std::vector<double>& positionList, std::vector<int>& gleisList);
-		bool getIsolierstoss(int& isolierstossId, int& gleisId, double& position);
-		bool getTrackConnection(int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id);
-		bool getTrack(int gleisId, double von, double bis, double abstand, const std::string& name);
+		bool getIsolierstoss(int isolierstossId, int& gleisId, double& position);
+		bool getTrackConnection(int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id);
+		bool getTrack(int gleisId, double& von, double& bis, double& abstand, std::string& name);
 
 	private:
 		struct Impl;

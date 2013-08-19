@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <iostream>
 #include <iterator>
+#include <string>
 #include "Events.h"
 #include "MwDll.h"
 #include "TestDesmMiddleware.h"
@@ -24,7 +25,7 @@ bool testKilometerDirection(MwDll& dll){
 
 //DOKU: OK
 bool testBalise(MwDll& dll){
-	int baliseId;
+	int baliseId = 42; // TODO was there a setter for this id before?
 	int stellung;
 	std::string protokoll;
 
@@ -42,17 +43,16 @@ bool testBalise(MwDll& dll){
 
 //DOKU: OK
 bool testIsolierstoss(MwDll& dll){
-	int baliseId;
+	int baliseId = 42; // TODO was there a setter for this id before?
 	int stellung;
-	std::string protokoll;
+	double position;
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testIsolierstoss" << std::endl;
-	dll.getIsolierstoss(baliseId, stellung, protokoll);
+	dll.getIsolierstoss(baliseId, stellung, position);
 	std::cout << "baliseId: " << baliseId << std::endl;
 	std::cout << "stellung:" << stellung << std::endl;
-	//TODO: String conversion
-	std::cout << "protokoll:" << protokoll << std::endl;
+	std::cout << "position:" << position << std::endl;
 	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
 
 	return true;
@@ -60,7 +60,7 @@ bool testIsolierstoss(MwDll& dll){
 
 //DOKU: OK
 bool testLoop(MwDll& dll){
-	int baliseId;
+	int baliseId = 42; // TODO was there a setter for this id before?
 	int stellung;
 	std::string protokoll;
 
@@ -68,7 +68,6 @@ bool testLoop(MwDll& dll){
 	std::cout << "testLoop" << std::endl;
 	dll.getLoop(baliseId, stellung, protokoll);
 	std::cout << "stellung:" << stellung << std::endl;
-	//TODO: String conversion
 	std::cout << "protokoll:" << protokoll << std::endl;
 	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
 	
@@ -77,7 +76,7 @@ bool testLoop(MwDll& dll){
 
 //DOKU: OK
 bool testSignal(MwDll& dll){
-	int signalId;
+	int signalId = 324; // TODO was there a setter for this id before?
 	int stellung;
 
 	std::cout << "==================   START   ==================" << std::endl;
@@ -92,7 +91,7 @@ bool testSignal(MwDll& dll){
 
 //DOKU: OK
 bool testTrackConnection(MwDll& dll){
-	int gleisId;
+	int gleisId = 42; // TODO was there a setter for this id before?
 	int gleis1;
 	int gleis2;
 	double von;
@@ -109,7 +108,6 @@ bool testTrackConnection(MwDll& dll){
 	std::cout << "gleis2:" << gleis2 << std::endl;
 	std::cout << "von:" << von << std::endl;
 	std::cout << "bis:" << bis << std::endl;
-	//TODO: String conversion
 	std::cout << "name:" << name << std::endl;
 	std::cout << "weiche1Id:" << weiche1Id << std::endl;
 	std::cout << "weiche2Id:" << weiche2Id << std::endl;
@@ -143,7 +141,7 @@ bool testTrainPosition(MwDll& dll){
 
 //DOKU: OK
 bool testWeiche(MwDll& dll){
-	int weicheId;
+	int weicheId = 42; // TODO was there a setter for this id before?
 	int gleisId;
 
 	std::cout << "==================   START   ==================" << std::endl;
@@ -158,7 +156,7 @@ bool testWeiche(MwDll& dll){
 
 //DOKU: OK
 bool testTrack(MwDll& dll){
-	int gleisId;
+	int gleisId = 42; // TODO was there a setter for this id before?
 	double von;
 	double bis;
 	double abstand;

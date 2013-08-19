@@ -179,7 +179,7 @@ bool MwDll::setTrack(int gleisId, double von, double bis, double abstand, const 
 	return success;
 }
 
-bool MwDll::getTrack(int gleisId, double von, double bis, double abstand, const std::string& name) {
+bool MwDll::getTrack(int gleisId, double& von, double& bis, double& abstand, std::string& name) {
 	char* dup = _strdup(name.c_str());
 	bool success = checkErrorCode(m_pImpl->m_stw_getTrack(gleisId, von, bis, abstand, dup));
 	free(dup);
@@ -193,11 +193,10 @@ bool MwDll::setTrackConnection(int gleisId, int gleis1, int gleis2, double von, 
 	return success;
 }
 
-bool MwDll::getTrackConnection(int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
-	char* cName;
+bool MwDll::getTrackConnection(int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
+	char* cName = NULL;
 	bool success = checkErrorCode(m_pImpl->m_stw_getTrackConnection(gleisId, gleis1, gleis2, von, bis, cName, weiche1Id, weiche2Id));
 	if(success) {
-		//TODO: String conversion
 		name = std::string(cName);
 		m_pImpl->m_stw_deallocate((void**)&cName);
 	}
@@ -321,6 +320,6 @@ bool MwDll::getTrainPosition(int& trainTyp, int& direction, std::vector<double>&
 	return success;
 }
 
-bool MwDll::getIsolierstoss(int& isolierstossId, int& gleisId, double& position){
+bool MwDll::getIsolierstoss(int isolierstossId, int& gleisId, double& position){
 	return checkErrorCode(m_pImpl->m_stw_getIsolierstoss(&isolierstossId, &gleisId, &position));
 }
