@@ -1,6 +1,7 @@
 #include <Windows.h> // Sleep()
 #include <iostream>
 #include <iterator>
+#include <string>
 #include "MwDll.h"
 
 using namespace desm;
@@ -11,7 +12,7 @@ void testTrainPosition(){
 
 int main(int argc, char** argv) {
 	try {
-		MwDll dll(L"LocsimDesmMiddlewarePlugin.dll");
+		MwDll dll(L"DesmMiddlewarePlugin.dll");
 		dll.onStartProgramm("locsim.json");
 
 		std::cout << "role is set to: LOCSIM" << std::endl;

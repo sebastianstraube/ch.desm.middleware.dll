@@ -335,6 +335,7 @@ namespace desm {
 				: CommandBase(ENUM_CMD_LOOP), gleisId(_gleisId), baliseId(_baliseId), positionVon(_positionVon), positionBis(_positionBis) {
 			}
 			int getId() const {
+				// TODO loop id!
 				return INVALID_ID;
 			}
 			Json::Value toJson() const {
@@ -362,10 +363,9 @@ namespace desm {
 			double position;
 			int stellung;
 			//TODO: needs review, only needed for getBalise
-			std::string& protokoll;
+			std::string protokoll;
 
-
-			Command(int _baliseId, int _gleisId, double _position, int _stellung, std::string _protokoll)
+			Command(int _baliseId, int _gleisId, double _position, int _stellung, const std::string& _protokoll)
 				: CommandBase(ENUM_CMD_BALISE), baliseId(_baliseId), gleisId(_gleisId), position(_position), stellung(_stellung), protokoll(_protokoll) {
 			}
 			int getId() const {
@@ -386,7 +386,6 @@ namespace desm {
 				double position = jsonGet<double>(v, "position");
 				int stellung = jsonGet<int>(v, "stellung");
 				std::string protokoll = jsonGet<std::string>(v, "protokoll");
-
 				return new tThisCommand(baliseId, gleisId, position, stellung, protokoll);
 			}
 		};
@@ -414,6 +413,7 @@ namespace desm {
 				v["signalId"] = Json::Value(signalId);
 				v["gleisId"] = Json::Value(gleisId);
 				v["position"] = Json::Value(position);
+				v["typ"] = Json::Value(typ);
 				v["hoehe"] = Json::Value(hoehe);
 				v["distanz"] = Json::Value(distanz);
 				v["name"] = Json::Value(name);
@@ -467,7 +467,7 @@ namespace desm {
 			std::vector<double> positionList;
 			std::vector<int> gleisList;
 
-			Command(int& _trainTyp, int& _direction, std::vector<double>& _positionList, std::vector<int>& _gleisList)	
+			Command(int _trainTyp, int _direction, const std::vector<double>& _positionList, const std::vector<int>& _gleisList)	
 				: CommandBase(ENUM_CMD_TRAINPOSITION), trainTyp(_trainTyp), direction(_direction), positionList(_positionList), gleisList(_gleisList){
 			}
 			int getId() const {
@@ -479,7 +479,6 @@ namespace desm {
 				v["direction"] = Json::Value(direction);
 				v["positionList"] = stlContainerToJsonArray(positionList);
 				v["gleisList"] = stlContainerToJsonArray(gleisList);
-
 				return v;
 			}
 			static tThisCommand* fromJson(const Json::Value& v) {
@@ -622,17 +621,14 @@ namespace desm {
 		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_TRACK>(gleisId, von, bis, abstand, name));
 	}
 
-	int Middleware::getTrack(int gleisId, double von, double bis, double abstand, const std::string& name) {
-		Impl::Command<ENUM_CMD_TRACK>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_TRACK>(gleisId, von, bis, abstand, name);
+	int Middleware::getTrack(int gleisId, double& von, double& bis, double& abstand, std::string& name) {
+		Impl::Command<ENUM_CMD_TRACK>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_TRACK>(gleisId);
 		if(!cmd) {
 			return ERROR_FATAL;
 		}
-
-		gleisId = cmd->gleisId;
 		von = cmd->von;
 		bis = cmd->bis;
 		abstand = cmd->abstand;
-		//TODO:conversion
 		name = cmd->name;
 		return ERROR_OK;
 	}
@@ -641,18 +637,16 @@ namespace desm {
 		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_TRACK_CONNECTION>(gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id));
 	}
 
-	int Middleware::getTrackConnection(int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
-		Impl::Command<ENUM_CMD_TRACK_CONNECTION>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_TRACK_CONNECTION>(gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id);
+	int Middleware::getTrackConnection(int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
+		// TODO is gleisId unique enough? track connection id!
+		Impl::Command<ENUM_CMD_TRACK_CONNECTION>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_TRACK_CONNECTION>(gleisId);
 		if(!cmd) {
 			return ERROR_FATAL;
 		}
-
-		gleisId = cmd->gleisId;
 		gleis1 = cmd->gleis1;
 		gleis2 = cmd->gleis2;
 		von = cmd->von;
 		bis = cmd->bis;
-		//TODO: String conversion
 		name = cmd->name;
 		weiche1Id = cmd->weiche1Id;
 		weiche2Id = cmd->weiche2Id;
@@ -663,7 +657,7 @@ namespace desm {
 		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_SIGNAL>(signalId, gleisId, position, typ, hoehe, distanz, name, stellung));
 	}
 
-	int Middleware::setBalise (int baliseId, int gleisId, double position, int stellung, std::string protokoll) {
+	int Middleware::setBalise (int baliseId, int gleisId, double position, int stellung, const std::string& protokoll) {
 		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_BALISE>(baliseId, gleisId, position, stellung, protokoll));
 	}
 
@@ -673,6 +667,16 @@ namespace desm {
 
 	int Middleware::setIsolierstoss (int isolierstossId, int gleisId, double position) {
 		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_ISOLIERSTOSS>(isolierstossId, gleisId, position));
+	}
+	
+	int Middleware::getIsolierstoss(int isolierstossId, int& gleisId, double& position) {
+		Impl::Command<ENUM_CMD_ISOLIERSTOSS>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_ISOLIERSTOSS>(isolierstossId);
+		if(!cmd) {
+			return ERROR_FATAL;
+		}
+		gleisId = cmd->gleisId;
+		position = cmd->position;
+		return ERROR_OK;
 	}
 
 	int Middleware::setKilometerDirection(int richtung) {
@@ -691,7 +695,6 @@ namespace desm {
 	int Middleware::getEvents(std::vector<int>& types, std::vector<int>& ids) {
 		Impl::tChangeList cmds;
 		m_pImpl->m_incomingChanges.moveTo(cmds);
-
 		Impl::tChangeInfo change;
 		while(cmds.pop(change)) {
 			types.push_back(change.first);
@@ -701,32 +704,30 @@ namespace desm {
 	}
 
 	int Middleware::getSignal(int signalId, int& stellung) {
-		Impl::Command<ENUM_CMD_SIGNAL>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_SIGNAL>();
+		Impl::Command<ENUM_CMD_SIGNAL>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_SIGNAL>(signalId);
 		if(!cmd) {
 			return ERROR_FATAL;
 		}
-		signalId = cmd->signalId;
 		stellung = cmd->stellung;
 		return ERROR_OK;
 	}
 
 	int Middleware::getBalise(int baliseId, int& stellung, std::string& protokoll) {
-		Impl::Command<ENUM_CMD_BALISE>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_BALISE>();
+		Impl::Command<ENUM_CMD_BALISE>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_BALISE>(baliseId);
 		if(!cmd) {
 			return ERROR_FATAL;
 		}
-		baliseId = cmd->baliseId;
 		stellung = cmd->stellung;
 		protokoll = cmd->protokoll;
 		return ERROR_OK;
 	}
 
-	int Middleware::getLoop(int gleisId, int baliseId, double positionVon, double positionBis) {
-		Impl::Command<ENUM_CMD_LOOP>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_LOOP>(gleisId, baliseId, positionVon, positionBis);
+	int Middleware::getLoop(int gleisId, int& baliseId, double& positionVon, double& positionBis) {
+		// TODO introduce loopId?
+		Impl::Command<ENUM_CMD_LOOP>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_LOOP>(gleisId);
 		if(!cmd) {
 			return ERROR_FATAL;
 		}
-		gleisId = cmd->gleisId;
 		baliseId = cmd->baliseId;
 		positionVon = cmd->positionVon;
 		positionBis = cmd->positionBis;
@@ -734,11 +735,10 @@ namespace desm {
 	}
 
 	int Middleware::getWeiche(int weicheId, int& gleisId) {
-		Impl::Command<ENUM_CMD_WEICHE>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_WEICHE>();
+		Impl::Command<ENUM_CMD_WEICHE>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_WEICHE>(weicheId);
 		if(!cmd) {
 			return ERROR_FATAL;
 		}
-		weicheId = cmd->weicheId;
 		gleisId = cmd->gleisId;
 		return ERROR_OK;
 	}
@@ -748,7 +748,7 @@ namespace desm {
 	}
 
 	int Middleware::getTrainPosition(int& trainTyp, int& direction, std::vector<double>& positionList, std::vector<int>& gleisList) {
-		Impl::Command<ENUM_CMD_TRAINPOSITION>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_TRAINPOSITION>(trainTyp, direction, positionList, gleisList);
+		Impl::Command<ENUM_CMD_TRAINPOSITION>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_TRAINPOSITION>();
 		if(!cmd) {
 			return ERROR_FATAL;
 		}
