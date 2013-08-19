@@ -14,7 +14,7 @@
     <ProjectGuid>{8FA8A492-0E1B-47A0-880C-3F2A71D3D07E}</ProjectGuid>
     <RootNamespace>LocSimDispatcherPlugin</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>LocsimDesmMiddlewarePlugin</ProjectName>
+    <ProjectName>DesmMiddlewarePlugin</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
