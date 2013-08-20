@@ -20,8 +20,8 @@ struct MwDll::Impl {
 	typedef int (*t_stw_setTrack)(int gleisId, double von, double bis, double abstand, char* name);
 	typedef int (*t_stw_getTrack)(int gleisId, double von, double bis, double abstand, char* name);
 	typedef int (*t_stw_setTrackConnection)(int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int weiche1Id, int weiche2Id);
-	typedef int (*t_stw_getTrackConnection)(int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int weiche1Id, int weiche2Id);
-	typedef int (*t_stw_setSignal)(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int direction);
+	typedef int (*t_stw_getTrackConnection)(int& trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int weiche1Id, int weiche2Id);
+	typedef int (*t_stw_setSignal)(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int stellung);
 	typedef int (*t_stw_setBalise)(int gleisId, double position, int baliseId, int direction);
 	typedef int (*t_stw_setLoop)(int baliseId, int gleisId, double positionVon, double positionBis);
 	typedef int (*t_stw_setIsolierstoss)(int isolierstossId, int gleisId, double position);
@@ -34,6 +34,7 @@ struct MwDll::Impl {
 	typedef int (*t_stw_getBalise)(int baliseId, int* stellung, char** protokoll);
 	typedef int (*t_stw_getLoop)(int baliseId, int* stellung, char** protokoll);
 	typedef int (*t_stw_getWeiche)(int weicheId, int* gleisId);
+	typedef int (*t_stw_setWeiche)(int weicheId, int gleisId);
 	typedef int (*t_stw_setTrainPosition)(int trainTyp, int direction, double* positionList, int positionListLen, int* gleisList, int gleisListLen);
 	typedef int (*t_stw_getTrainPosition)(int* trainTyp, int* direction, double** positionList, int* positionListLen, int** gleisList, int* gleisListLen);
 	typedef void (*t_stw_deallocate)(void** p);
@@ -66,6 +67,7 @@ struct MwDll::Impl {
 	t_stw_getBalise m_stw_getBalise;
 	t_stw_getLoop m_stw_getLoop;
 	t_stw_getWeiche m_stw_getWeiche;
+	t_stw_setWeiche m_stw_setWeiche;
 	t_stw_getTrainPosition m_stw_getTrainPosition;
 	t_stw_setTrainPosition m_stw_setTrainPosition;
 	t_stw_deallocate m_stw_deallocate;
@@ -112,6 +114,7 @@ struct MwDll::Impl {
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_getBalise);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_getLoop);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_getWeiche);
+		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_setWeiche);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_getTrainPosition);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_setTrainPosition);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_deallocate);
@@ -186,26 +189,27 @@ bool MwDll::getTrack(int gleisId, double& von, double& bis, double& abstand, std
 	return success;
 }
 
-bool MwDll::setTrackConnection(int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
+bool MwDll::setTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
 	char* dup = _strdup(name.c_str());
 	bool success = checkErrorCode(m_pImpl->m_stw_setTrackConnection(gleisId, gleis1, gleis2, von, bis, dup, weiche1Id, weiche2Id));
 	free(dup);
 	return success;
 }
 
-bool MwDll::getTrackConnection(int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
+bool MwDll::getTrackConnection(int& trackConnectionId, int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
 	char* cName = NULL;
-	bool success = checkErrorCode(m_pImpl->m_stw_getTrackConnection(gleisId, gleis1, gleis2, von, bis, cName, weiche1Id, weiche2Id));
+	bool success = checkErrorCode(m_pImpl->m_stw_getTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, cName, weiche1Id, weiche2Id));
 	if(success) {
 		name = std::string(cName);
 		m_pImpl->m_stw_deallocate((void**)&cName);
+		m_pImpl->m_stw_deallocate((void**)&trackConnectionId);
 	}
 	return success;
 }
 
-bool MwDll::setSignal(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int direction) {
+bool MwDll::setSignal(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int stellung) {
 	char* dup = _strdup(name.c_str());
-	bool success = checkErrorCode(m_pImpl->m_stw_setSignal(signalId, gleisId, position, typ, hoehe, distanz, dup, direction));
+	bool success = checkErrorCode(m_pImpl->m_stw_setSignal(signalId, gleisId, position, typ, hoehe, distanz, dup, stellung));
 	free(dup);
 	return success;
 }
@@ -277,6 +281,10 @@ bool MwDll::getLoop(int baliseId, int& stellung, std::string& protokoll) {
 
 bool MwDll::getWeiche(int weicheId, int& gleisId) {
 	return checkErrorCode(m_pImpl->m_stw_getWeiche(weicheId, &gleisId));
+}
+
+bool MwDll::setWeiche(int weicheId, int gleisId) {
+	return checkErrorCode(m_pImpl->m_stw_setWeiche(weicheId, gleisId));
 }
 
 bool MwDll::setTrainPosition(int trainTyp, int direction, const std::vector<double>& positionList, const std::vector<int>& gleisList) {

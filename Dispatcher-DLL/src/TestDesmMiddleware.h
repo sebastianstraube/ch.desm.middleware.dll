@@ -23,8 +23,8 @@ namespace desm {
 		void testOnLoadStrecke();
 		//SET command
 		bool testSetTrack(int gleisId, double von, double bis, double abstand, const std::string& name);
-		bool testSetTrackConnection(int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id);
-		bool testSetSignal(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int direction);
+		bool testSetTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id);
+		bool testSetSignal(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int stellung);
 		bool testSetBalise(int gleisId, double position, int baliseId, int direction);
 		bool testSetLoop(int baliseId, int gleisId, double positionVon, double positionBis);
 		bool testSetIsolierstoss(int isolierstossId, int gleisId, double position);
@@ -41,7 +41,8 @@ namespace desm {
 		// UNDOCUMENTED - MIDDLEWARE CLIENT FUNCTIONS
 		bool testGetTrainPosition(int& train, int& direction, std::vector<double>& positionList, std::vector<int>& gleisList);
 		bool testGetIsolierstoss(int& isolierstossId, int& gleisId, double& position);
-		bool testGetTrackConnection(int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id);
+		bool testGetTrackConnection(int& trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id);
 		bool testGetTrack(int gleisId, double von, double bis, double abstand, const std::string& name);
+		bool testSetWeiche(int weicheId, int gleisId);
 	};
 }

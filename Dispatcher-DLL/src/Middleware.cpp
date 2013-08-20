@@ -208,7 +208,7 @@ namespace desm {
 				: CommandBase(ENUM_CMD_TRACK), gleisId(_gleisId), von(_von), bis(_bis), abstand(_abstand), name(_name) {
 			}
 			int getId() const {
-				return gleisId;
+				return INVALID_ID;
 			}
 			Json::Value toJson() const {
 				Json::Value v(Json::objectValue);
@@ -232,6 +232,7 @@ namespace desm {
 		template<> struct Command<ENUM_CMD_TRACK_CONNECTION> : CommandBase {
 			typedef Command<ENUM_CMD_TRACK_CONNECTION> tThisCommand;
 
+			int trackConnectionId;
 			int gleisId;
 			int gleis1;
 			int gleis2;
@@ -241,14 +242,15 @@ namespace desm {
 			int weiche1Id;
 			int weiche2Id;
 
-			Command(int _gleisId, int _gleis1, int _gleis2, double _von, double _bis, const std::string& _name, int _weiche1Id, int _weiche2Id)
-				: CommandBase(ENUM_CMD_TRACK_CONNECTION), gleisId(_gleisId), gleis1(_gleis1), gleis2(_gleis2), von(_von), bis(_bis), name(_name), weiche1Id(_weiche1Id), weiche2Id(_weiche2Id) {
+			Command(int& _trackConnectionId, int _gleisId, int _gleis1, int _gleis2, double _von, double _bis, const std::string& _name, int _weiche1Id, int _weiche2Id)
+				: CommandBase(ENUM_CMD_TRACK_CONNECTION), trackConnectionId(_trackConnectionId), gleisId(_gleisId), gleis1(_gleis1), gleis2(_gleis2), von(_von), bis(_bis), name(_name), weiche1Id(_weiche1Id), weiche2Id(_weiche2Id) {
 			}
 			int getId() const {
-				return gleisId;
+				return trackConnectionId;
 			}
 			Json::Value toJson() const {
 				Json::Value v(Json::objectValue);
+				v["trackConnectionId"] = Json::Value(trackConnectionId);
 				v["gleisId"] = Json::Value(gleisId);
 				v["gleis1"] = Json::Value(gleis1);
 				v["gleis2"] = Json::Value(gleis2);
@@ -260,6 +262,7 @@ namespace desm {
 				return v;
 			}
 			static tThisCommand* fromJson(const Json::Value& v) {
+				int trackConnectionId = jsonGet<int>(v, "trackConnectionId");
 				int gleisId = jsonGet<int>(v, "gleisId");
 				int gleis1 = jsonGet<int>(v, "gleis1");
 				int gleis2 = jsonGet<int>(v, "gleis2");
@@ -268,7 +271,7 @@ namespace desm {
 				std::string name = jsonGet<std::string>(v, "name");
 				int weiche1Id = jsonGet<int>(v, "weiche1Id");
 				int weiche2Id = jsonGet<int>(v, "weiche2Id");
-				return new tThisCommand(gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id);
+				return new tThisCommand(trackConnectionId, gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id);
 			}
 		};
 
@@ -362,7 +365,7 @@ namespace desm {
 			int gleisId;
 			double position;
 			int stellung;
-			//TODO: needs review, only needed for getBalise
+			//TODO: needs review, only needed for getBalise ...
 			std::string protokoll;
 
 			Command(int _baliseId, int _gleisId, double _position, int _stellung, const std::string& _protokoll)
@@ -633,16 +636,17 @@ namespace desm {
 		return ERROR_OK;
 	}
 
-	int Middleware::setTrackConnection(int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
-		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_TRACK_CONNECTION>(gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id));
+	int Middleware::setTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
+		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_TRACK_CONNECTION>(trackConnectionId, gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id));
 	}
 
-	int Middleware::getTrackConnection(int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
+	int Middleware::getTrackConnection(int& trackConnectionId, int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
 		// TODO is gleisId unique enough? track connection id!
-		Impl::Command<ENUM_CMD_TRACK_CONNECTION>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_TRACK_CONNECTION>(gleisId);
+		Impl::Command<ENUM_CMD_TRACK_CONNECTION>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_TRACK_CONNECTION>(trackConnectionId);
 		if(!cmd) {
 			return ERROR_FATAL;
 		}
+		trackConnectionId = cmd->trackConnectionId;
 		gleis1 = cmd->gleis1;
 		gleis2 = cmd->gleis2;
 		von = cmd->von;
@@ -743,6 +747,10 @@ namespace desm {
 		return ERROR_OK;
 	}
 	
+	int Middleware::setWeiche(int weicheId, int gleisId) {
+		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_WEICHE>(weicheId, gleisId));
+
+	}
 	int Middleware::setTrainPosition(int trainTyp, int direction, const std::vector<double>& positionList, const std::vector<int>& gleisList) {
 		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_TRAINPOSITION>(trainTyp, direction, positionList, gleisList));
 	}

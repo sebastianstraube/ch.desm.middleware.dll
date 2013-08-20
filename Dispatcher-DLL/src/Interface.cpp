@@ -87,36 +87,36 @@ extern "C" {
 		return s_middleware->getTrack(gleisId, von, bis, abstand, std::string(name));
 	}
 
-	__declspec(dllexport) int stw_setTrackConnection(int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int weiche1Id, int weiche2Id) {
+	__declspec(dllexport) int stw_setTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int weiche1Id, int weiche2Id) {
 		//std::cout << "C INTERFACE: stw_setTrackConnection"<< std::endl;
 		if(s_middleware == NULL) {
 			return desm::ERROR_API_MISUSE;
 		}
-		return s_middleware->setTrackConnection(gleisId, gleis1, gleis2, von, bis, std::string(name), weiche1Id, weiche2Id);
+		return s_middleware->setTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, std::string(name), weiche1Id, weiche2Id);
 	}
 
-	__declspec(dllexport) int stw_getTrackConnection(int gleisId, int* gleis1, int* gleis2, double* von, double* bis, char** cName, int* weiche1Id, int* weiche2Id) {
+	__declspec(dllexport) int stw_getTrackConnection(int* trackConnectionId, int gleisId, int* gleis1, int* gleis2, double* von, double* bis, char** cName, int* weiche1Id, int* weiche2Id) {
 		//std::cout << "C INTERFACE: stw_getTrackConnection"<< std::endl;
 		if(s_middleware == NULL) {
 			return desm::ERROR_API_MISUSE;
 		}
-		if(!gleis1 || !gleis2 || !von || !bis || !cName || !weiche1Id || !weiche2Id) {
+		if(!trackConnectionId || !gleis1 || !gleis2 || !von || !bis || !cName || !weiche1Id || !weiche2Id) {
 			return desm::ERROR_API_MISUSE;
 		}
 		std::string name;
-		int rc = s_middleware->getTrackConnection(gleisId, *gleis1, *gleis2, *von, *bis, name, *weiche1Id, *weiche2Id);
+		int rc = s_middleware->getTrackConnection(*trackConnectionId, gleisId, *gleis1, *gleis2, *von, *bis, name, *weiche1Id, *weiche2Id);
 		if(rc == desm::ERROR_OK) {
 			*cName = _strdup(name.c_str());
 		}
 		return rc;
 	}
 
-	__declspec(dllexport) int stw_setSignal(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int direction) {
+	__declspec(dllexport) int stw_setSignal(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int stellung) {
 		//std::cout << "C INTERFACE: stw_setSignal"<< std::endl;
 		if(s_middleware == NULL) {
 			return desm::ERROR_API_MISUSE;
 		}
-		return s_middleware->setSignal(signalId, gleisId, position, typ, hoehe, distanz, std::string(name), direction);
+		return s_middleware->setSignal(signalId, gleisId, position, typ, hoehe, distanz, std::string(name), stellung);
 	}
 
 	__declspec(dllexport) int stw_setBalise(int gleisId, double position, int baliseId, int stellung) {
@@ -265,6 +265,17 @@ extern "C" {
 			return desm::ERROR_API_MISUSE;
 		}
 		return s_middleware->getWeiche(weicheId, *gleisId);
+	}
+
+	__declspec(dllexport) int stw_setWeiche(int weicheId, int gleisId) {
+		//std::cout << "C INTERFACE: stw_setWeiche"<< std::endl;
+		if(s_middleware == NULL) {
+			return desm::ERROR_API_MISUSE;
+		}
+		if(!weicheId || !gleisId) {
+			return desm::ERROR_API_MISUSE;
+		}
+		return s_middleware->setWeiche(weicheId, gleisId);
 	}
 
 	__declspec(dllexport) int stw_setTrainPosition(int trainTyp, int direction, double* positionList, int positionListLen, int* gleisList, int gleisListLen) {
