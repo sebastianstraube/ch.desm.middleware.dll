@@ -32,7 +32,7 @@ namespace desm {
 		bool setIsolierstoss(int isolierstossId, int gleisId, double position);
 		bool setKilometerDirection(int richtung);
 		bool setTrainPosition(int train, int direction, const std::vector<double>& positionList, const std::vector<int>& gleisList);
-		//GET command - ONLY VALID WHEN SET 
+		//GET command - BEFORE USE, DO SET
 		bool getKilometerDirection(int& richtung);
 		bool getEvents(std::vector<int>& typeList, std::vector<int>& idList);
 		bool getSignal(int signalId, int& stellung);
