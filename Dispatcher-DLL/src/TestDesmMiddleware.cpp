@@ -250,7 +250,7 @@ int main(int argc, char** argv) {
 					testKilometerDirection(dll);
 					break;
 				case ENUM_CMD_BALISE:
-					//testBalise(dll);
+					testBalise(dll);
 					break;
 				case ENUM_CMD_ISOLIERSTOSS:
 					testIsolierstoss(dll);
@@ -268,7 +268,7 @@ int main(int argc, char** argv) {
 					testWeiche(dll);
 					break;
 				case ENUM_CMD_TRACK_CONNECTION:
-					//testTrackConnection(dll);
+					testTrackConnection(dll);
 					break;
 				case ENUM_CMD_TRACK:
 					testTrack(dll);

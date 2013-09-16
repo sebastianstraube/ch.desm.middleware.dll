@@ -249,7 +249,7 @@ int main(int argc, char** argv) {
 		testSignal(dll);
 		testTrainPosition(dll);
 		testWeiche(dll);
-		//testTrackConnection(dll);
+		testTrackConnection(dll);
 		testTrack(dll);
 		//end tests
 

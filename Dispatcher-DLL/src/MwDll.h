@@ -41,9 +41,9 @@ namespace desm {
 		bool getWeiche(int weicheId, int& gleisId);
 		
 		// UNDOCUMENTED - MIDDLEWARE FUNCTIONS (HIGH LEVEL)
-		bool getTrainPosition(int& train, int& direction, std::vector<double>& positionList, std::vector<int>& gleisList);
+		bool getTrainPosition(int& trainTyp, int& direction, std::vector<double>& positionList, std::vector<int>& gleisList);
 		bool getIsolierstoss(int isolierstossId, int& gleisId, double& position);
-		bool getTrackConnection(int& trackConnectionId, int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id);
+		bool getTrackConnection(int trackConnectionId, int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id);
 		bool getTrack(int gleisId, double& von, double& bis, double& abstand, std::string& name);
 		bool setWeiche(int weicheId, int gleisId);
 

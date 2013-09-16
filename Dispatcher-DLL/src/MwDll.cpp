@@ -19,8 +19,8 @@ struct MwDll::Impl {
 	typedef int (*t_stw_onStopSimulation)(void);
 	typedef int (*t_stw_setTrack)(int gleisId, double von, double bis, double abstand, char* name);
 	typedef int (*t_stw_getTrack)(int gleisId, double von, double bis, double abstand, char* name);
-	typedef int (*t_stw_setTrackConnection)(int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int weiche1Id, int weiche2Id);
-	typedef int (*t_stw_getTrackConnection)(int& trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int weiche1Id, int weiche2Id);
+	typedef int (*t_stw_setTrackConnection)(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int weiche1Id, int weiche2Id);
+	typedef int (*t_stw_getTrackConnection)(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, char** name, int weiche1Id, int weiche2Id);
 	typedef int (*t_stw_setSignal)(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int stellung);
 	typedef int (*t_stw_setBalise)(int gleisId, double position, int baliseId, int direction);
 	typedef int (*t_stw_setLoop)(int baliseId, int gleisId, double positionVon, double positionBis);
@@ -191,18 +191,17 @@ bool MwDll::getTrack(int gleisId, double& von, double& bis, double& abstand, std
 
 bool MwDll::setTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
 	char* dup = _strdup(name.c_str());
-	bool success = checkErrorCode(m_pImpl->m_stw_setTrackConnection(gleisId, gleis1, gleis2, von, bis, dup, weiche1Id, weiche2Id));
+	bool success = checkErrorCode(m_pImpl->m_stw_setTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, dup, weiche1Id, weiche2Id));
 	free(dup);
 	return success;
 }
 
-bool MwDll::getTrackConnection(int& trackConnectionId, int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
+bool MwDll::getTrackConnection(int trackConnectionId, int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
 	char* cName = NULL;
-	bool success = checkErrorCode(m_pImpl->m_stw_getTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, cName, weiche1Id, weiche2Id));
+	bool success = checkErrorCode(m_pImpl->m_stw_getTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, &cName, weiche1Id, weiche2Id));
 	if(success) {
 		name = std::string(cName);
 		m_pImpl->m_stw_deallocate((void**)&cName);
-		m_pImpl->m_stw_deallocate((void**)&trackConnectionId);
 	}
 	return success;
 }
