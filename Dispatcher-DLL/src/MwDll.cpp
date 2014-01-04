@@ -189,9 +189,9 @@ bool MwDll::getTrack(int gleisId, double& von, double& bis, double& abstand, std
 	return success;
 }
 
-bool MwDll::setTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
+bool MwDll::setTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int nameLen, int weiche1Id, int weiche2Id) {
 	char* dup = _strdup(name.c_str());
-	bool success = checkErrorCode(m_pImpl->m_stw_setTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, dup, weiche1Id, weiche2Id));
+	bool success = checkErrorCode(m_pImpl->m_stw_setTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, dup, nameLen, weiche1Id, weiche2Id));
 	free(dup);
 	return success;
 }
@@ -261,16 +261,6 @@ bool MwDll::getSignal(int signalId, int& stellung) {
 bool MwDll::getBalise(int baliseId, int& stellung, std::string& protokoll) {
 	char* cProtokoll;
 	bool success = checkErrorCode(m_pImpl->m_stw_getBalise(baliseId, &stellung, &cProtokoll));
-	if(success) {
-		protokoll = std::string(cProtokoll);
-		m_pImpl->m_stw_deallocate((void**)&cProtokoll);
-	}
-	return success;
-}
-
-bool MwDll::getLoop(int baliseId, int& stellung, std::string& protokoll) {
-	char* cProtokoll;
-	bool success = checkErrorCode(m_pImpl->m_stw_getLoop(baliseId, &stellung, &cProtokoll));
 	if(success) {
 		protokoll = std::string(cProtokoll);
 		m_pImpl->m_stw_deallocate((void**)&cProtokoll);

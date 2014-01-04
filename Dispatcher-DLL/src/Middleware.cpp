@@ -636,12 +636,12 @@ namespace desm {
 		return ERROR_OK;
 	}
 
-	int Middleware::setTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
+	int Middleware::setTrackConnection(int& trackConnectionId, int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
 		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_TRACK_CONNECTION>(trackConnectionId, gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id));
 	}
 
 	int Middleware::getTrackConnection(int& trackConnectionId, int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
-		// TODO is gleisId unique enough? track connection id!
+		// TODO: is gleisId unique enough? track connection id!
 		Impl::Command<ENUM_CMD_TRACK_CONNECTION>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_TRACK_CONNECTION>(trackConnectionId);
 		if(!cmd) {
 			return ERROR_FATAL;
@@ -723,18 +723,6 @@ namespace desm {
 		}
 		stellung = cmd->stellung;
 		protokoll = cmd->protokoll;
-		return ERROR_OK;
-	}
-
-	int Middleware::getLoop(int gleisId, int& baliseId, double& positionVon, double& positionBis) {
-		// TODO introduce loopId?
-		Impl::Command<ENUM_CMD_LOOP>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_LOOP>(gleisId);
-		if(!cmd) {
-			return ERROR_FATAL;
-		}
-		baliseId = cmd->baliseId;
-		positionVon = cmd->positionVon;
-		positionBis = cmd->positionBis;
 		return ERROR_OK;
 	}
 

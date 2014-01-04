@@ -37,7 +37,6 @@ namespace desm {
 		bool getEvents(std::vector<int>& typeList, std::vector<int>& idList);
 		bool getSignal(int signalId, int& stellung);
 		bool getBalise(int baliseId, int& stellung, std::string& protokoll);
-		bool getLoop(int baliseId, int& stellung, std::string& protokoll);
 		bool getWeiche(int weicheId, int& gleisId);
 		
 		// UNDOCUMENTED - MIDDLEWARE FUNCTIONS (HIGH LEVEL)
