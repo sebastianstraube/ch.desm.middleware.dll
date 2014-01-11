@@ -8,7 +8,7 @@
 
 namespace desm {
 
-	static const int INVALID_ID = std::numeric_limits<int>::max();
+	static const int INVALID_ID = -999;
 
 	class Middleware
 	{
@@ -17,7 +17,6 @@ namespace desm {
 		~Middleware();
 	
 	public: // api - track setup
-		
 		int onLoadStrecke();
 
 		int setTrack(int gleisId, double von, double bis, double abstand, const std::string& name);
