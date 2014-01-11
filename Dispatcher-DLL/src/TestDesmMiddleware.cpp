@@ -89,7 +89,7 @@ bool testLoop(MwDll& dll){
 }
 
 bool testSignal(MwDll& dll){
-	int setSignalId = 324; // TODO was there a setter for this id before?
+	int setSignalId = 324; // TODO: was there a setter for this id before?
 	int setGleisId = 1;
 	double setPosition =343.432;
 	int setTyp = 1;
@@ -98,15 +98,18 @@ bool testSignal(MwDll& dll){
 	const std::string setName = "testSignal1";
 	int setStellung = 1;
 
-	int signalId = -1;
-	int stellung = -1;
-
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testSignal" << std::endl;
 	dll.setSignal(setSignalId, setGleisId, setPosition, setTyp, setHoehe, setDistanz, setName, setStellung);
 	//dll.getSignal(signalId, stellung);
-	std::cout << "signalId: " << signalId << std::endl;
-	std::cout << "stellung: " << stellung << std::endl;
+	std::cout << "signalId: " << setSignalId << std::endl;
+	std::cout << "gleisId: " << setGleisId << std::endl;
+	std::cout << "position: " << setPosition << std::endl;
+	std::cout << "typ: " << setTyp << std::endl;
+	std::cout << "hoehe: " << setHoehe << std::endl;
+	std::cout << "distanz: " << setDistanz << std::endl;
+	std::cout << "name: " << setName << std::endl;
+	std::cout << "stellung: " << setStellung << std::endl;
 	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
 
 	return true;

@@ -7,7 +7,7 @@
 static desm::Middleware* s_middleware = NULL;
 static const char* s_info_name = "DLL DESMMiddleware";
 static const char* s_info_version = "0.15";
-static const char* s_info_desc = "";
+static const char* s_info_desc = "This DLL provides a server to client communication via tcp/ip protocol.";
 
 extern "C" {
 
@@ -40,8 +40,6 @@ extern "C" {
 		return desm::ERROR_OK;
 	}
 
-	//infoVersion länge und char pointer
-
 	__declspec(dllexport) const char* stw_infoVersion(int* strLength) {
 		//std::cout << "C INTERFACE: stw_infoVersion"<< std::endl;
 		*strLength = strlen(s_info_version);
@@ -56,6 +54,7 @@ extern "C" {
 
 	__declspec(dllexport) const char* stw_infoName(int* strLength) {
 		//std::cout << "C INTERFACE: stw_infoName"<< std::endl;
+		*strLength = strlen(s_info_name);
 		return s_info_name;
 	}
 
@@ -82,7 +81,7 @@ extern "C" {
 	}
 
 	//!
-	//strlen(name) - correct value ?
+	//TODO: strlen(name) - correct value ?
 	__declspec(dllexport) int stw_setTrack(int gleisId, double von, double bis, double abstand, char* name, int* nameLen) {
 		//std::cout << "C INTERFACE: stw_setTrack"<< std::endl;
 		if(s_middleware == NULL) {
