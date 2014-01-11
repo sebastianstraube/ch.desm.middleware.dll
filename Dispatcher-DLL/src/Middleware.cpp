@@ -242,7 +242,7 @@ namespace desm {
 			int weiche1Id;
 			int weiche2Id;
 
-			Command(int& _trackConnectionId, int _gleisId, int _gleis1, int _gleis2, double _von, double _bis, const std::string& _name, int _weiche1Id, int _weiche2Id)
+			Command(int _trackConnectionId, int _gleisId, int _gleis1, int _gleis2, double _von, double _bis, const std::string& _name, int _weiche1Id, int _weiche2Id)
 				: CommandBase(ENUM_CMD_TRACK_CONNECTION), trackConnectionId(_trackConnectionId), gleisId(_gleisId), gleis1(_gleis1), gleis2(_gleis2), von(_von), bis(_bis), name(_name), weiche1Id(_weiche1Id), weiche2Id(_weiche2Id) {
 			}
 			int getId() const {
@@ -636,11 +636,11 @@ namespace desm {
 		return ERROR_OK;
 	}
 
-	int Middleware::setTrackConnection(int& trackConnectionId, int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
+	int Middleware::setTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, std::string& name, int weiche1Id, int weiche2Id) {
 		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_TRACK_CONNECTION>(trackConnectionId, gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id));
 	}
-
-	int Middleware::getTrackConnection(int& trackConnectionId, int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
+		
+	int Middleware::getTrackConnection(int trackConnectionId, int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
 		// TODO: is gleisId unique enough? track connection id!
 		Impl::Command<ENUM_CMD_TRACK_CONNECTION>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_TRACK_CONNECTION>(trackConnectionId);
 		if(!cmd) {
@@ -752,6 +752,19 @@ namespace desm {
 		direction = cmd->direction;
 		positionList = cmd->positionList;
 		gleisList = cmd->gleisList;
+		return ERROR_OK;
+	}
+	
+	int Middleware::getLoop (int baliseId, int gleisId, double positionVon, double positionBis) {
+		Impl::Command<ENUM_CMD_LOOP>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_LOOP>(baliseId);
+		if(!cmd) {
+			return ERROR_FATAL;
+		}
+		baliseId = cmd->baliseId;
+		gleisId = cmd->gleisId;
+		positionVon = cmd->positionVon;
+		positionBis = cmd->positionBis;
+		
 		return ERROR_OK;
 	}
 

@@ -38,7 +38,7 @@ namespace desm {
 		bool testGetLoop(int baliseId, int& stellung, std::string& protokoll);
 		bool testGetWeiche(int weicheId, int& gleisId);
 		
-		// UNDOCUMENTED - MIDDLEWARE CLIENT FUNCTIONS
+		// UNDOCUMENTED - MIDDLEWARE FUNCTIONS
 		bool testGetTrainPosition(int& train, int& direction, std::vector<double>& positionList, std::vector<int>& gleisList);
 		bool testGetIsolierstoss(int& isolierstossId, int& gleisId, double& position);
 		bool testGetTrackConnection(int& trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id);

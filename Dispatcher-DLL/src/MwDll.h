@@ -23,6 +23,7 @@ namespace desm {
 		void onStartSimulation();
 		void onStopSimulation();
 		void onLoadStrecke();
+		
 		//SET command
 		bool setTrack(int gleisId, double von, double bis, double abstand, const std::string& name);
 		bool setTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id);
@@ -32,6 +33,7 @@ namespace desm {
 		bool setIsolierstoss(int isolierstossId, int gleisId, double position);
 		bool setKilometerDirection(int richtung);
 		bool setTrainPosition(int train, int direction, const std::vector<double>& positionList, const std::vector<int>& gleisList);
+		
 		//GET command - BEFORE USE, DO SET
 		bool getKilometerDirection(int& richtung);
 		bool getEvents(std::vector<int>& typeList, std::vector<int>& idList);

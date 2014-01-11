@@ -6,7 +6,7 @@
 
 static desm::Middleware* s_middleware = NULL;
 static const char* s_info_name = "DLL DESMMiddleware";
-static const char* s_info_version = "0.13";
+static const char* s_info_version = "0.15";
 static const char* s_info_desc = "";
 
 extern "C" {
@@ -42,23 +42,26 @@ extern "C" {
 
 	//infoVersion länge und char pointer
 
-	__declspec(dllexport) const char* stw_infoVersion(void) {
+	__declspec(dllexport) const char* stw_infoVersion(int* strLength) {
 		//std::cout << "C INTERFACE: stw_infoVersion"<< std::endl;
+		*strLength = strlen(s_info_version);
 		return s_info_version;
 	}
 
-	__declspec(dllexport) const char* stw_infoConnectionStatus(void) {
+	__declspec(dllexport) const char* stw_infoConnectionStatus(int* strLength) {
 		//std::cout << "C INTERFACE: stw_infoDescription"<< std::endl;
+		*strLength = strlen(s_info_desc);
 		return s_info_desc;
 	}
 
-	__declspec(dllexport) const char* stw_infoName(void) {
+	__declspec(dllexport) const char* stw_infoName(int* strLength) {
 		//std::cout << "C INTERFACE: stw_infoName"<< std::endl;
 		return s_info_name;
 	}
 
-	__declspec(dllexport) const char* stw_infoDescription(void) {
+	__declspec(dllexport) const char* stw_infoDescription(int* strLength) {
 		//std::cout << "C INTERFACE: stw_infoDescription"<< std::endl;
+		*strLength = strlen(s_info_desc);
 		return s_info_desc;
 	}
 
@@ -85,14 +88,14 @@ extern "C" {
 		if(s_middleware == NULL) {
 			return desm::ERROR_API_MISUSE;
 		}
-		
+
 		*nameLen = strlen(name);
 
 		return s_middleware->setTrack(gleisId, von, bis, abstand, std::string(name));
 	}
 
 	//!
-	//strlen(name) - correct value ?
+	//TODO: strlen(name) - correct value ?
 	__declspec(dllexport) int stw_setTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int* nameLen, int weiche1Id, int weiche2Id) {
 		//std::cout << "C INTERFACE: stw_setTrackConnection"<< std::endl;
 		if(s_middleware == NULL) {
@@ -100,12 +103,13 @@ extern "C" {
 		}
 
 		*nameLen = strlen(name);
+		std::string _name = name;
 
-		return s_middleware->setTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, std::string(name), weiche1Id, weiche2Id);
+		return s_middleware->setTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, _name, weiche1Id, weiche2Id);
 	}
 
 	//!
-	//strlen(name) - correct value ?
+	//TODO: strlen(name) - correct value ?
 	__declspec(dllexport) int stw_setSignal(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int* nameLen, int stellung) {
 		//std::cout << "C INTERFACE: stw_setSignal"<< std::endl;
 		if(s_middleware == NULL) {
@@ -113,8 +117,9 @@ extern "C" {
 		}
 
 		*nameLen = strlen(name);
+		std::string _name = name;
 
-		return s_middleware->setSignal(signalId, gleisId, position, typ, hoehe, distanz, std::string(name), stellung);
+		return s_middleware->setSignal(signalId, gleisId, position, typ, hoehe, distanz, _name, stellung);
 	}
 
 	__declspec(dllexport) int stw_setBalise(int gleisId, double position, int baliseId, int stellung) {
@@ -141,12 +146,12 @@ extern "C" {
 		return s_middleware->setIsolierstoss(isolierstossId, gleisId, position);
 	}
 
-	__declspec(dllexport) int stw_getIsolierstoss(int* isolierstossId, int* gleisId, double* position) {
+	__declspec(dllexport) int stw_getIsolierstoss(int isolierstossId, int* gleisId, double* position) {
 		//std::cout << "C INTERFACE: stw_getIsolierstoss"<< std::endl;
 		if(s_middleware == NULL) {
 			return desm::ERROR_API_MISUSE;
 		}
-		return s_middleware->getIsolierstoss(*isolierstossId, *gleisId, *position);
+		return s_middleware->getIsolierstoss(isolierstossId, *gleisId, *position);
 	}
 	
 	__declspec(dllexport) int stw_setKilometerDirection(int richtung) {
@@ -157,7 +162,7 @@ extern "C" {
 		return s_middleware->setKilometerDirection(richtung);
 	}
 
-	__declspec(dllexport) int stw_getKilometerDirection(int *richtung) {
+	__declspec(dllexport) int stw_getKilometerDirection(int* richtung) {
 		//std::cout << "C INTERFACE: stw_getKilometerDirection"<< std::endl;
 		if(!richtung) {
 			return desm::ERROR_API_MISUSE;
@@ -208,8 +213,10 @@ extern "C" {
 			(*typeList)[i] = types[i];
 			(*idList)[i] = ids[i];
 		}
-		*typeListLen=types.size;
-		*idListLen=ids.size;
+
+		*typeListLen= types.size();
+		*idListLen= ids.size();
+
 		return desm::ERROR_OK;
 	}
 
@@ -240,7 +247,7 @@ extern "C" {
 			return rc;
 		}
 		*protokollList = ::_strdup(protokollTmp.c_str());
-		*protokollListLen=protokollTmp.length;
+		*protokollListLen=protokollTmp.length();
 		return desm::ERROR_OK;
 	}
 
@@ -330,7 +337,7 @@ extern "C" {
 	}
 
 	//!
-	__declspec(dllexport) int stw_getTrackConnection(int* trackConnectionId, int gleisId, int* gleis1, int* gleis2, double* von, double* bis, char* name, int* nameLen, int* weiche1Id, int* weiche2Id) {
+	__declspec(dllexport) int stw_getTrackConnection(int trackConnectionId, int gleisId, int* gleis1, int* gleis2, double* von, double* bis, char* name, int* nameLen, int* weiche1Id, int* weiche2Id) {
 		//std::cout << "C INTERFACE: stw_getTrackConnection"<< std::endl;
 		if(s_middleware == NULL) {
 			return desm::ERROR_API_MISUSE;
@@ -340,15 +347,26 @@ extern "C" {
 		}
 		
 		std::string _name = name;
-		*nameLen = _name.length;
+		*nameLen = _name.length();
 
-		int rc = s_middleware->getTrackConnection(*trackConnectionId, gleisId, *gleis1, *gleis2, *von, *bis, _name, *weiche1Id, *weiche2Id);
+		int rc = s_middleware->getTrackConnection(trackConnectionId, gleisId, *gleis1, *gleis2, *von, *bis, _name, *weiche1Id, *weiche2Id);
 
 		return rc;
 	}
 
-	//fehlende function
-	//TODO: stw_getLoop
+	__declspec(dllexport) int stw_getLoop(int baliseId, int gleisId, double positionVon, double positionBis) {
+		//std::cout << "C INTERFACE: stw_getLoop"<< std::endl;
+		if(s_middleware == NULL) {
+			return desm::ERROR_API_MISUSE;
+		}
+		if(!baliseId || !gleisId || !positionVon || !positionBis) {
+			return desm::ERROR_API_MISUSE;
+		}
+
+		int rc = s_middleware->getLoop(baliseId, gleisId, positionVon, positionBis);
+
+		return rc;
+	}
 
 	__declspec(dllexport) void stw_deallocate(void** p) {
 		//std::cout << "C INTERFACE: stw_deallocate"<< std::endl;

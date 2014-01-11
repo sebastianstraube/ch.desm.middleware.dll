@@ -79,8 +79,8 @@ bool testLoop(MwDll& dll){
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testLoop" << std::endl;
-	//dll.setLoop(setBaliseId, setGleisId, setPositionVon, setPositionBis);
-	dll.getLoop(baliseId, stellung, protokoll);
+	dll.setLoop(setBaliseId, setGleisId, setPositionVon, setPositionBis);
+	//dll.getLoop(baliseId, stellung, protokoll);
 	std::cout << "stellung: " << stellung << std::endl;
 	std::cout << "protokoll: " << protokoll << std::endl;
 	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
