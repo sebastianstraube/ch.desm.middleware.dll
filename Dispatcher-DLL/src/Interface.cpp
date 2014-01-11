@@ -122,7 +122,7 @@ extern "C" {
 		return s_middleware->setSignal(signalId, gleisId, position, typ, hoehe, distanz, _name, stellung);
 	}
 
-	__declspec(dllexport) int stw_setBalise(int gleisId, double position, int baliseId, int stellung) {
+	__declspec(dllexport) int stw_setBalise(int baliseId, double gleisId, int position, int stellung) {
 		//std::cout << "C INTERFACE: stw_setBalise"<< std::endl;
 		if(s_middleware == NULL) {
 			return desm::ERROR_API_MISUSE;

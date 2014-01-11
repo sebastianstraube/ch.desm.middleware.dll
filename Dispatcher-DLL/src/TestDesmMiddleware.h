@@ -25,7 +25,7 @@ namespace desm {
 		bool testSetTrack(int gleisId, double von, double bis, double abstand, const std::string& name);
 		bool testSetTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id);
 		bool testSetSignal(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int stellung);
-		bool testSetBalise(int gleisId, double position, int baliseId, int direction);
+		bool testSetBalise(int baliseId, int gleisId, double position, int stellung);
 		bool testSetLoop(int baliseId, int gleisId, double positionVon, double positionBis);
 		bool testSetIsolierstoss(int isolierstossId, int gleisId, double position);
 		bool testSetKilometerDirection(int richtung);
@@ -35,7 +35,7 @@ namespace desm {
 		bool testGetEvents(std::vector<int>& typeList, std::vector<int>& idList);
 		bool testGetSignal(int signalId, int& stellung);
 		bool testGetBalise(int baliseId, int& stellung, std::string& protokoll);
-		bool testGetLoop(int baliseId, int& stellung, std::string& protokoll);
+		bool testGetLoop(int baliseId, int stellung, std::string protokoll);
 		bool testGetWeiche(int weicheId, int& gleisId);
 		
 		// UNDOCUMENTED - MIDDLEWARE FUNCTIONS

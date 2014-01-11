@@ -16,8 +16,8 @@ bool testKilometerDirection(MwDll& dll){
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testKilometerDirection" << std::endl;
-	//dll.setKilometerDirection(setRichtung);
-	dll.getKilometerDirection(richtung);
+	dll.setKilometerDirection(setRichtung);
+	//dll.getKilometerDirection(richtung);
 	std::cout << "richtung: " << richtung << std::endl;
 	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
 	
@@ -36,8 +36,8 @@ bool testBalise(MwDll& dll){
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testBalise" << std::endl;
-	//dll.setBalise(setBaliseId, setGleisId, setPosition, setStellung);
-	dll.getBalise(baliseId, stellung, protokoll);
+	dll.setBalise(setBaliseId, setGleisId, setPosition, setStellung);
+	//dll.getBalise(baliseId, stellung, protokoll);
 	std::cout << "baliseId: " << baliseId << std::endl;
 	std::cout << "stellung: " << stellung << std::endl;
 	std::cout << "protokoll: " << protokoll << std::endl;
@@ -57,8 +57,8 @@ bool testIsolierstoss(MwDll& dll){
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testIsolierstoss" << std::endl;
-	//dll.setIsolierstoss(setIsolierstossId, setGleisId, setPosition);
-	dll.getIsolierstoss(isolierstossId, gleisId, position);
+	dll.setIsolierstoss(setIsolierstossId, setGleisId, setPosition);
+	//dll.getIsolierstoss(isolierstossId, gleisId, position);
 	std::cout << "isolierstossId: " << isolierstossId << std::endl;
 	std::cout << "gleisId: " << gleisId << std::endl;
 	std::cout << "position: " << position << std::endl;
@@ -80,7 +80,7 @@ bool testLoop(MwDll& dll){
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testLoop" << std::endl;
 	dll.setLoop(setBaliseId, setGleisId, setPositionVon, setPositionBis);
-	//dll.getLoop(baliseId, stellung, protokoll);
+	//dll.getLoop(setBaliseId, setGleisId, setPositionVon, setPositionBis);
 	std::cout << "stellung: " << stellung << std::endl;
 	std::cout << "protokoll: " << protokoll << std::endl;
 	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
@@ -103,8 +103,8 @@ bool testSignal(MwDll& dll){
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testSignal" << std::endl;
-	//dll.setSignal(setSignalId, setGleisId, setPosition, setTyp, setHoehe, setDistanz, setName, setStellung);
-	dll.getSignal(signalId, stellung);
+	dll.setSignal(setSignalId, setGleisId, setPosition, setTyp, setHoehe, setDistanz, setName, setStellung);
+	//dll.getSignal(signalId, stellung);
 	std::cout << "signalId: " << signalId << std::endl;
 	std::cout << "stellung: " << stellung << std::endl;
 	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
@@ -135,8 +135,8 @@ bool testTrackConnection(MwDll& dll){
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testTrackConnection" << std::endl;
-	//dll.setTrackConnection(trackConnectionId, setGleisId, setGleis1, setGleis2, setVon, setBis, setName, setWeiche1Id, setWeiche2Id);
-	dll.getTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id);
+	dll.setTrackConnection(trackConnectionId, setGleisId, setGleis1, setGleis2, setVon, setBis, setName, setWeiche1Id, setWeiche2Id);
+	//dll.getTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id);
 	std::cout << "gleisId: " << gleisId << std::endl;
 	std::cout << "gleis1: " << gleis1 << std::endl;
 	std::cout << "gleis2: " << gleis2 << std::endl;
@@ -172,8 +172,8 @@ bool testTrainPosition(MwDll& dll){
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testTrainPosition" << std::endl;
-	//dll.setTrainPosition(setTrainTyp, setDirection, setPositionList, setGleisList);
-	dll.getTrainPosition(trainTyp, direction, positionList, gleisList);
+	dll.setTrainPosition(setTrainTyp, setDirection, setPositionList, setGleisList);
+	//dll.getTrainPosition(trainTyp, direction, positionList, gleisList);
 	std::cout << "trainTyp: " << trainTyp << std::endl;
 	std::cout << "direction: " << direction << std::endl;
 	std::cout << "positions: ";
@@ -196,8 +196,8 @@ bool testWeiche(MwDll& dll){
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testWeiche" << std::endl;
-	//dll.setWeiche(setWeicheId, setGleisId);
-	dll.getWeiche(weicheId, gleisId);
+	dll.setWeiche(setWeicheId, setGleisId);
+	//dll.getWeiche(weicheId, gleisId);
 	std::cout << "weicheId: " << weicheId << std::endl;
 	std::cout << "gleisId: " << gleisId << std::endl;
 	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
@@ -220,8 +220,8 @@ bool testTrack(MwDll& dll){
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testTrack" << std::endl;
-	//dll.setTrack(setGleisId, setVon, setBis, setAbstand, setName);
-	dll.getTrack(gleisId, von, bis, abstand, name);
+	dll.setTrack(setGleisId, setVon, setBis, setAbstand, setName);
+	//dll.getTrack(gleisId, von, bis, abstand, name);
 	std::cout << "gleisId: " << gleisId << std::endl;
 	std::cout << "von: " << von << std::endl;
 	std::cout << "bis: " << bis << std::endl;

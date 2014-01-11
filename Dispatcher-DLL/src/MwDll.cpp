@@ -22,7 +22,7 @@ struct MwDll::Impl {
 	typedef int (*t_stw_setTrackConnection)(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int weiche1Id, int weiche2Id);
 	typedef int (*t_stw_getTrackConnection)(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int weiche1Id, int weiche2Id);
 	typedef int (*t_stw_setSignal)(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int stellung);
-	typedef int (*t_stw_setBalise)(int gleisId, double position, int baliseId, int direction);
+	typedef int (*t_stw_setBalise)(int baliseId, int gleisId, double position, int stellung);
 	typedef int (*t_stw_setLoop)(int baliseId, int gleisId, double positionVon, double positionBis);
 	typedef int (*t_stw_setIsolierstoss)(int isolierstossId, int gleisId, double position);
 	typedef int (*t_stw_getIsolierstoss)(int* isolierstossId, int* gleisId, double* position);
@@ -213,8 +213,8 @@ bool MwDll::setSignal(int signalId, int gleisId, double position, int typ, doubl
 	return success;
 }
 
-bool MwDll::setBalise(int gleisId, double position, int baliseId, int direction) {
-	return checkErrorCode(m_pImpl->m_stw_setBalise(gleisId, position, baliseId, direction));
+bool MwDll::setBalise(int baliseId, int gleisId, double position, int stellung) {
+	return checkErrorCode(m_pImpl->m_stw_setBalise(baliseId, gleisId, position, stellung));
 }
 
 bool MwDll::setLoop(int baliseId, int gleisId, double positionVon, double positionBis) {
