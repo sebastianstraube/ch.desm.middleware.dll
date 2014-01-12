@@ -12,10 +12,6 @@ using namespace desm;
 class TestFunctionsMiddleware{
 
 public:
-	TestFunctionsMiddleware(void);
-	~TestFunctionsMiddleware(void);
-
-public:
 	bool testSetKilometerDirection(MwDll dll){
 		int richtung = 1;
 
