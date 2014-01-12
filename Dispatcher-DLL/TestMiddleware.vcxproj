@@ -13,11 +13,11 @@
   <ItemGroup>
     <ClCompile Include="src\MwDll.cpp" />
     <ClCompile Include="src\TestDesmMiddleware.cpp" />
+    <ClCompile Include="src\TestFunctionsMiddleware.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="src\MwDll.h" />
-    <ClInclude Include="src\TestDesmMiddleware.h" />
+    <ClInclude Include="src\TestFunctionsMiddleware.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0CE5A6B9-4A57-4CC8-8EAA-4B55D540BF53}</ProjectGuid>
@@ -84,6 +84,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>src;..\3rdparty\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

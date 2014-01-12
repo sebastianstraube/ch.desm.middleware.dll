@@ -3,7 +3,7 @@
 #include <iterator>
 #include <string>
 #include "MwDll.h"
-#include "TestDesmMiddleware.h"
+#include "TestFunctionsMiddleware.h"
 
 using namespace desm;
 

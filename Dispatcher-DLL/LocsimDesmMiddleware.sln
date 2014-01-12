@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CC", "CC.vcxproj", "{CF74C6CB-2DED-42F9-8A13-A2522D1B9F70}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CCClient", "CCClient.vcxproj", "{94928FDF-99FB-46AB-89D5-890DCC264FE5}"
@@ -13,19 +13,22 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CCServer", "CCServer.vcxpro
 		{CF74C6CB-2DED-42F9-8A13-A2522D1B9F70} = {CF74C6CB-2DED-42F9-8A13-A2522D1B9F70}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LocsimDesmMiddlewarePlugin", "LocSimDispatcherPlugin.vcxproj", "{8FA8A492-0E1B-47A0-880C-3F2A71D3D07E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DesmMiddlewarePlugin", "LocSimDispatcherPlugin.vcxproj", "{8FA8A492-0E1B-47A0-880C-3F2A71D3D07E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CF74C6CB-2DED-42F9-8A13-A2522D1B9F70} = {CF74C6CB-2DED-42F9-8A13-A2522D1B9F70}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestMiddleware", "TestMiddleware.vcxproj", "{0CE5A6B9-4A57-4CC8-8EAA-4B55D540BF53}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestDesmMiddleware", "TestMiddleware.vcxproj", "{0CE5A6B9-4A57-4CC8-8EAA-4B55D540BF53}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8FA8A492-0E1B-47A0-880C-3F2A71D3D07E} = {8FA8A492-0E1B-47A0-880C-3F2A71D3D07E}
+		{CF74C6CB-2DED-42F9-8A13-A2522D1B9F70} = {CF74C6CB-2DED-42F9-8A13-A2522D1B9F70}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestLocSim", "TestLocSim.vcxproj", "{84928FDF-99FB-46AB-89D5-890DCC264FE5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8FA8A492-0E1B-47A0-880C-3F2A71D3D07E} = {8FA8A492-0E1B-47A0-880C-3F2A71D3D07E}
+		{0CE5A6B9-4A57-4CC8-8EAA-4B55D540BF53} = {0CE5A6B9-4A57-4CC8-8EAA-4B55D540BF53}
+		{CF74C6CB-2DED-42F9-8A13-A2522D1B9F70} = {CF74C6CB-2DED-42F9-8A13-A2522D1B9F70}
 	EndProjectSection
 EndProject
 Global

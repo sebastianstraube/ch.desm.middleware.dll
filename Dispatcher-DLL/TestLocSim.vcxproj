@@ -12,10 +12,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\MwDll.cpp" />
+    <ClCompile Include="src\TestFunctionsMiddleware.cpp" />
     <ClCompile Include="src\TestLocSim.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\MwDll.h" />
+    <ClInclude Include="src\TestFunctionsMiddleware.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{84928FDF-99FB-46AB-89D5-890DCC264FE5}</ProjectGuid>
@@ -82,6 +84,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>src;..\3rdparty\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
