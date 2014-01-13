@@ -3,16 +3,20 @@
 #include <iostream>
 #include <iterator>
 #include <string>
-#include "Events.h"
-#include "MwDll.h"
+
 #include "TestFunctionsMiddleware.h"
 
 using namespace desm;
 
 class TestFunctionsMiddleware{
-
+	static MwDll dll;
 public:
-	bool testSetKilometerDirection(MwDll dll){
+
+	TestFunctionsMiddleware::TestFunctionsMiddleware(MwDll _dll){
+		dll = _dll;
+	};
+
+	bool TestFunctionsMiddleware::testSetKilometerDirection(){
 		int richtung = 1;
 
 		std::cout << "==================   START   ==================" << std::endl;
@@ -22,9 +26,9 @@ public:
 		std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
 	
 		return true;
-	}
+	};
 
-	bool testGetKilometerDirection(MwDll dll){
+	bool TestFunctionsMiddleware::testGetKilometerDirection(){
 		int richtung = -1;
 
 		std::cout << "==================   START   ==================" << std::endl;
@@ -36,7 +40,7 @@ public:
 		return isSuccess;
 	}
 
-	bool testSetBalise(MwDll dll){
+	bool TestFunctionsMiddleware::testSetBalise(){
 		int baliseId = 12;
 		int gleisId = 2467;
 		double position = 124.12;
@@ -56,7 +60,7 @@ public:
 		return true;
 	}
 
-	bool testGetBalise(MwDll dll){
+	bool TestFunctionsMiddleware::testGetBalise(){
 		int baliseId = -1;
 		int stellung = -1;
 		std::string protokoll = "-1";
@@ -72,7 +76,7 @@ public:
 		return isSuccess;
 	}
 
-	bool testSetIsolierstoss(MwDll dll){
+	bool TestFunctionsMiddleware::testSetIsolierstoss(){
 		int isolierstossId= 42;
 		int gleisId = 1;
 		double position = 3421.23;
@@ -88,7 +92,7 @@ public:
 		return true;
 	}
 
-	bool testGetIsolierstoss(MwDll dll){
+	bool TestFunctionsMiddleware::testGetIsolierstoss(){
 		int isolierstossId= -1;
 		int gleisId = -1;
 		double position = -1.;
@@ -104,7 +108,7 @@ public:
 		return isSuccess;
 	}
 
-	bool testSetLoop(MwDll dll){
+	bool TestFunctionsMiddleware::testSetLoop(){
 		int baliseId = 27321;
 		int gleisId = 2382;
 		double positionVon = 89234.234;
@@ -122,7 +126,7 @@ public:
 		return true;
 	}
 
-	bool testGetLoop(MwDll dll){
+	bool TestFunctionsMiddleware::testGetLoop(){
 		int baliseId = -1;
 		int gleisId = -1;
 		double positionVon = -1;
@@ -140,7 +144,7 @@ public:
 		return isSuccess;
 	}
 
-	bool testSetSignal(MwDll dll){
+	bool TestFunctionsMiddleware::testSetSignal(){
 		int signalId = 324; // TODO: was there a setter for this id before?
 		int gleisId = 1;
 		double position =343.432;
@@ -166,7 +170,7 @@ public:
 		return true;
 	}
 
-	bool testGetSignal(MwDll dll){
+	bool TestFunctionsMiddleware::testGetSignal(){
 		int signalId = -1;
 		int gleisId = -1;
 		double position = -1.;
@@ -192,7 +196,7 @@ public:
 		return isSuccess;
 	}
 
-	bool testSetTrackConnection(MwDll dll){
+	bool TestFunctionsMiddleware::testSetTrackConnection(){
 		int trackConnectionId = 1;
 		int gleisId = 42;
 		int gleis1 = 23423;
@@ -219,7 +223,7 @@ public:
 		return true;
 	}
 
-	bool testGetTrackConnection(MwDll dll){
+	bool TestFunctionsMiddleware::testGetTrackConnection(){
 		int trackConnectionId = -1;
 		int gleisId = -1;
 		int gleis1 = -1;
@@ -246,7 +250,7 @@ public:
 		return isSuccess;
 	}
 
-	bool testSetTrainPosition(MwDll dll){
+	bool TestFunctionsMiddleware::testSetTrainPosition(){
 		int trainTyp = 1;
 		int direction = 0;
 		std::vector<double> positionList;
@@ -277,7 +281,7 @@ public:
 		return true;
 	}
 
-	bool testGetTrainPosition(MwDll dll){
+	bool TestFunctionsMiddleware::testGetTrainPosition(){
 		int trainTyp = -1;
 		int direction = -1;
 		std::vector<double> positionList;
@@ -301,7 +305,7 @@ public:
 		return isSuccess;
 	}
 
-	bool testSetWeiche(MwDll dll){
+	bool TestFunctionsMiddleware::testSetWeiche(){
 		int weicheId = 42;
 		int gleisId = 28713;
 
@@ -315,7 +319,7 @@ public:
 		return true;
 	}
 
-	bool testGetWeiche(MwDll dll){
+	bool TestFunctionsMiddleware::testGetWeiche(){
 		int weicheId = -1;
 		int gleisId = -1;
 
@@ -329,7 +333,7 @@ public:
 		return isSuccess;
 	}
 
-	bool testSetTrack(MwDll dll){
+	bool TestFunctionsMiddleware::testSetTrack(){
 		int gleisId = 138732;
 		double von = 3243.234;
 		double bis = 23423.234;
@@ -349,7 +353,7 @@ public:
 		return true;
 	}
 
-	bool testGetTrack(MwDll dll){
+	bool TestFunctionsMiddleware::testGetTrack(){
 		int gleisId = -1;
 		double von = -1.;
 		double bis = -1.;

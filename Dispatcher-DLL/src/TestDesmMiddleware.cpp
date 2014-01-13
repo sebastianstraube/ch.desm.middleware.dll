@@ -12,9 +12,10 @@ using namespace desm;
 
 int main(int argc, char** argv) {
 	try {
-		TestFunctionsMiddleware dispatcher;
 		MwDll dll(L"DesmMiddlewarePlugin.dll");
 		dll.onStartProgramm("dispatcher.json");
+		
+		TestFunctionsMiddleware dispatcher(dll);
 
 		std::cout << "role is: DESM_MIDDLEWARE" << std::endl;
 		Sleep(1000);
@@ -26,7 +27,7 @@ int main(int argc, char** argv) {
 			for(size_t i = 0; i < types.size(); ++i) {
 				switch(types[i]) {
 				case ENUM_CMD_KILOMETER_DIRECTION:
-					dispatcher.testGetKilometerDirection(dll);
+					dispatcher.testGetKilometerDirection();
 					break;
 				case ENUM_CMD_BALISE:
 					//dispatcher.testGetBalise(dll);

@@ -1,12 +1,14 @@
 #pragma once
 
+#include "Events.h"
+#include "MwDll.h"
+
 namespace desm {
 	class TestFunctionsMiddleware{
-	public:
-		TestFunctionsMiddleware(void);
-		~TestFunctionsMiddleware(void);
 
 	public:
+		TestFunctionsMiddleware(MwDll dll);
+
 		std::string testInfoVersion();
 		std::string testInfoName();
 		std::string testInfoDescription();
@@ -19,27 +21,27 @@ namespace desm {
 		void testOnStopSimulation();
 		void testOnLoadStrecke();
 		//SET command
-		bool testSetTrack(MwDll dll);
-		bool testSetTrackConnection(MwDll dll);
-		bool testSetSignal(MwDll dll);
-		bool testSetBalise(MwDll dll);
-		bool testSetLoop(MwDll dll);
-		bool testSetIsolierstoss(MwDll dll);
-		bool testSetKilometerDirection(MwDll dll);
-		bool testSetTrainPosition(MwDll dll);
+		bool testSetTrack();
+		bool testSetTrackConnection();
+		bool testSetSignal();
+		bool testSetBalise();
+		bool testSetLoop();
+		bool testSetIsolierstoss();
+		bool testSetKilometerDirection();
+		bool testSetTrainPosition();
 		//GET command - ONLY VALID WHEN SET 
-		bool testGetKilometerDirection(MwDll dll);
-		bool testGetEvents(MwDll dll);
-		bool testGetSignal(MwDll dll);
-		bool testGetBalise(MwDll dll);
-		bool testGetLoop(MwDll dll);
-		bool testGetWeiche(MwDll dll);
+		bool testGetKilometerDirection();
+		bool testGetEvents();
+		bool testGetSignal();
+		bool testGetBalise();
+		bool testGetLoop();
+		bool testGetWeiche();
 		
 		// UNDOCUMENTED - MIDDLEWARE FUNCTIONS
-		bool testGetTrainPosition(MwDll dll);
-		bool testGetIsolierstoss(MwDll dll);
-		bool testGetTrackConnection(MwDll dll);
-		bool testGetTrack(MwDll dll);
-		bool testSetWeiche(MwDll dll);
+		bool testGetTrainPosition();
+		bool testGetIsolierstoss();
+		bool testGetTrackConnection();
+		bool testGetTrack();
+		bool testSetWeiche();
 	};
 }
