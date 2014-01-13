@@ -9,11 +9,11 @@
 using namespace desm;
 
 class TestFunctionsMiddleware{
-	static MwDll dll;
+	static MwDll* dll;
 public:
 
-	TestFunctionsMiddleware::TestFunctionsMiddleware(MwDll _dll){
-		dll = _dll;
+	TestFunctionsMiddleware::TestFunctionsMiddleware(MwDll* dll){
+		this->dll = dll;
 	};
 
 	bool TestFunctionsMiddleware::testSetKilometerDirection(){
@@ -21,7 +21,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testSetKilometerDirection" << std::endl;
-		dll.setKilometerDirection(richtung);
+		dll->setKilometerDirection(richtung);
 		std::cout << "richtung: " << richtung << std::endl;
 		std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
 	
@@ -33,7 +33,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testGetKilometerDirection" << std::endl;
-		bool isSuccess = dll.getKilometerDirection(richtung);
+		bool isSuccess = dll->getKilometerDirection(richtung);
 		std::cout << "richtung: " << richtung << std::endl;
 		std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
 	
@@ -49,7 +49,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testSetBalise" << std::endl;
-		dll.setBalise(baliseId, gleisId, position, stellung);
+		dll->setBalise(baliseId, gleisId, position, stellung);
 		std::cout << "baliseId: " << baliseId << std::endl;
 		std::cout << "gleisId: " << gleisId << std::endl;
 		std::cout << "position: " << position << std::endl;
@@ -67,7 +67,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testGetBalise" << std::endl;
-		bool isSuccess = dll.getBalise(baliseId, stellung, protokoll);
+		bool isSuccess = dll->getBalise(baliseId, stellung, protokoll);
 		std::cout << "baliseId: " << baliseId << std::endl;
 		std::cout << "stellung: " << stellung << std::endl;
 		std::cout << "protokoll: " << protokoll << std::endl;
@@ -83,7 +83,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testSetIsolierstoss" << std::endl;
-		dll.setIsolierstoss(isolierstossId, gleisId, position);
+		dll->setIsolierstoss(isolierstossId, gleisId, position);
 		std::cout << "isolierstossId: " << isolierstossId << std::endl;
 		std::cout << "gleisId: " << gleisId << std::endl;
 		std::cout << "position: " << position << std::endl;
@@ -99,7 +99,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testGetIsolierstoss" << std::endl;
-		bool isSuccess = dll.getIsolierstoss(isolierstossId, gleisId, position);
+		bool isSuccess = dll->getIsolierstoss(isolierstossId, gleisId, position);
 		std::cout << "isolierstossId: " << isolierstossId << std::endl;
 		std::cout << "gleisId: " << gleisId << std::endl;
 		std::cout << "position: " << position << std::endl;
@@ -116,7 +116,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testSetLoop" << std::endl;
-		dll.setLoop(baliseId, gleisId, positionVon, positionBis);
+		dll->setLoop(baliseId, gleisId, positionVon, positionBis);
 		std::cout << "baliseId: " << baliseId << std::endl;
 		std::cout << "gleisId: " << gleisId << std::endl;
 		std::cout << "positionVon: " << positionVon << std::endl;
@@ -134,7 +134,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testGetLoop" << std::endl;
-		bool isSuccess = dll.getLoop(baliseId, gleisId, positionVon, positionBis);
+		bool isSuccess = dll->getLoop(baliseId, gleisId, positionVon, positionBis);
 		std::cout << "baliseId: " << baliseId << std::endl;
 		std::cout << "gleisId: " << gleisId << std::endl;
 		std::cout << "positionVon: " << positionVon << std::endl;
@@ -156,7 +156,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testSetSignal" << std::endl;
-		dll.setSignal(signalId, gleisId, position, typ, hoehe, distanz, name, stellung);
+		dll->setSignal(signalId, gleisId, position, typ, hoehe, distanz, name, stellung);
 		std::cout << "signalId: " << signalId << std::endl;
 		std::cout << "gleisId: " << gleisId << std::endl;
 		std::cout << "position: " << position << std::endl;
@@ -182,7 +182,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testGetSignal" << std::endl;
-		bool isSuccess = dll.getSignal(signalId, stellung);
+		bool isSuccess = dll->getSignal(signalId, stellung);
 		std::cout << "signalId: " << signalId << std::endl;
 		std::cout << "gleisId: " << gleisId << std::endl;
 		std::cout << "position: " << position << std::endl;
@@ -209,7 +209,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testSetTrackConnection" << std::endl;
-		dll.setTrackConnection(trackConnectionId, gleisId,gleis1,gleis2, von, bis, name, weiche1Id, weiche2Id);
+		dll->setTrackConnection(trackConnectionId, gleisId,gleis1,gleis2, von, bis, name, weiche1Id, weiche2Id);
 		std::cout << "gleisId: " << gleisId << std::endl;
 		std::cout << "gleis1: " << gleis1 << std::endl;
 		std::cout << "gleis2: " << gleis2 << std::endl;
@@ -236,7 +236,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testGetTrackConnection" << std::endl;
-		bool isSuccess = dll.getTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id);
+		bool isSuccess = dll->getTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id);
 		std::cout << "gleisId: " << gleisId << std::endl;
 		std::cout << "gleis1: " << gleis1 << std::endl;
 		std::cout << "gleis2: " << gleis2 << std::endl;
@@ -267,7 +267,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testSetTrainPosition" << std::endl;
-		dll.setTrainPosition(trainTyp, direction, positionList, gleisList);
+		dll->setTrainPosition(trainTyp, direction, positionList, gleisList);
 		std::cout << "trainTyp: " << trainTyp << std::endl;
 		std::cout << "direction: " << direction << std::endl;
 		std::cout << "positions: ";
@@ -291,7 +291,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testGetTrainPosition" << std::endl;
-		bool isSuccess = dll.getTrainPosition(trainTyp, direction, positionList, gleisList);
+		bool isSuccess = dll->getTrainPosition(trainTyp, direction, positionList, gleisList);
 		std::cout << "trainTyp: " << trainTyp << std::endl;
 		std::cout << "direction: " << direction << std::endl;
 		std::cout << "positions: ";
@@ -311,7 +311,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testSetWeiche" << std::endl;
-		dll.setWeiche(weicheId, gleisId);
+		dll->setWeiche(weicheId, gleisId);
 		std::cout << "weicheId: " << weicheId << std::endl;
 		std::cout << "gleisId: " << gleisId << std::endl;
 		std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
@@ -325,7 +325,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testGetWeiche" << std::endl;
-		bool isSuccess = dll.getWeiche(weicheId, gleisId);
+		bool isSuccess = dll->getWeiche(weicheId, gleisId);
 		std::cout << "weicheId: " << weicheId << std::endl;
 		std::cout << "gleisId: " << gleisId << std::endl;
 		std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
@@ -342,7 +342,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testSetTrack" << std::endl;
-		dll.setTrack(gleisId, von, bis, abstand, name);
+		dll->setTrack(gleisId, von, bis, abstand, name);
 		std::cout << "gleisId: " << gleisId << std::endl;
 		std::cout << "von: " << von << std::endl;
 		std::cout << "bis: " << bis << std::endl;
@@ -362,7 +362,7 @@ public:
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testGetTrack" << std::endl;
-		bool isSuccess = dll.getTrack(gleisId, von, bis, abstand, name);
+		bool isSuccess = dll->getTrack(gleisId, von, bis, abstand, name);
 		std::cout << "gleisId: " << gleisId << std::endl;
 		std::cout << "von: " << von << std::endl;
 		std::cout << "bis: " << bis << std::endl;

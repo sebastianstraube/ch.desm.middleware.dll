@@ -7,7 +7,7 @@ namespace desm {
 	class TestFunctionsMiddleware{
 
 	public:
-		TestFunctionsMiddleware(MwDll dll);
+		TestFunctionsMiddleware(MwDll* dll);
 
 		std::string testInfoVersion();
 		std::string testInfoName();
