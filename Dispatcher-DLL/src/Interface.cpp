@@ -8,6 +8,7 @@ static desm::Middleware* s_middleware = NULL;
 static const char* s_info_name = "DLL DESMMiddleware";
 static const char* s_info_version = "0.15";
 static const char* s_info_desc = "This DLL provides a server to client communication via tcp/ip protocol.";
+static char* s_info_connection_status = "[connection status]";
 
 extern "C" {
 
@@ -40,27 +41,37 @@ extern "C" {
 		return desm::ERROR_OK;
 	}
 
+	//DOCU
 	__declspec(dllexport) const char* stw_infoVersion(int* strLength) {
 		//std::cout << "C INTERFACE: stw_infoVersion"<< std::endl;
-		*strLength = strlen(s_info_version);
+		int length = strlen(s_info_version);
+		strLength = &length;
+
 		return s_info_version;
 	}
 
+	//TODO: implement state of the connection
 	__declspec(dllexport) const char* stw_infoConnectionStatus(int* strLength) {
 		//std::cout << "C INTERFACE: stw_infoDescription"<< std::endl;
-		*strLength = strlen(s_info_desc);
-		return s_info_desc;
+		int length = strlen(s_info_connection_status);
+		strLength = &length;
+
+		return s_info_connection_status;
 	}
 
 	__declspec(dllexport) const char* stw_infoName(int* strLength) {
 		//std::cout << "C INTERFACE: stw_infoName"<< std::endl;
-		*strLength = strlen(s_info_name);
+		int length = strlen(s_info_name);
+		strLength = &length;
+
 		return s_info_name;
 	}
 
 	__declspec(dllexport) const char* stw_infoDescription(int* strLength) {
 		//std::cout << "C INTERFACE: stw_infoDescription"<< std::endl;
-		*strLength = strlen(s_info_desc);
+		int length = strlen(s_info_desc);
+		strLength = &length;
+
 		return s_info_desc;
 	}
 
@@ -88,7 +99,8 @@ extern "C" {
 			return desm::ERROR_API_MISUSE;
 		}
 
-		*nameLen = strlen(name);
+		int length = strlen(name);
+		nameLen = &length;
 
 		return s_middleware->setTrack(gleisId, von, bis, abstand, std::string(name));
 	}
@@ -101,7 +113,8 @@ extern "C" {
 			return desm::ERROR_API_MISUSE;
 		}
 
-		*nameLen = strlen(name);
+		int length = strlen(name);
+		nameLen = &length;
 		std::string _name = name;
 
 		return s_middleware->setTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, _name, weiche1Id, weiche2Id);
@@ -115,7 +128,8 @@ extern "C" {
 			return desm::ERROR_API_MISUSE;
 		}
 
-		*nameLen = strlen(name);
+		int length = strlen(name);
+		nameLen = &length;
 		std::string _name = name;
 
 		return s_middleware->setSignal(signalId, gleisId, position, typ, hoehe, distanz, _name, stellung);
@@ -307,9 +321,13 @@ extern "C" {
 			return rc;
 		}
 
-		*positionListLen = _positionList.size();
+		int listLengthPosition = _positionList.size();
+		positionListLen = &listLengthPosition;
+
+		int listLengthGleis = _gleisList.size();
+		gleisListLen = &listLengthGleis;
+
 		*positionList = (double*)malloc(sizeof(double) * _positionList.size());
-		*gleisListLen = _gleisList.size();
 		*gleisList = (int*)malloc(sizeof(int) * _gleisList.size());
 
 		for(size_t i = 0; i < _positionList.size(); ++i) {
@@ -329,10 +347,12 @@ extern "C" {
 		if(s_middleware == NULL) {
 			return desm::ERROR_API_MISUSE;
 		}
+		
+		int nameLength = strlen(name);
+		nameLen= &nameLength;
+		std::string _name = name;
 
-		*nameLen=strlen(name);
-
-		return s_middleware->getTrack(gleisId, von, bis, abstand, std::string(name));
+		return s_middleware->getTrack(gleisId, von, bis, abstand, _name);
 	}
 
 	//!
@@ -346,7 +366,8 @@ extern "C" {
 		}
 		
 		std::string _name = name;
-		*nameLen = _name.length();
+		int nameLength = strlen(name);
+		nameLen= &nameLength;
 
 		int rc = s_middleware->getTrackConnection(trackConnectionId, gleisId, *gleis1, *gleis2, *von, *bis, _name, *weiche1Id, *weiche2Id);
 
