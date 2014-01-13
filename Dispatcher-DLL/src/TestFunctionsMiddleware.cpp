@@ -11,18 +11,18 @@ using namespace desm;
 class TestFunctionsMiddleware{
 	static MwDll* dll;
 public:
-
-	TestFunctionsMiddleware::TestFunctionsMiddleware(MwDll* dll){
-		this->dll = dll;
+	TestFunctionsMiddleware::TestFunctionsMiddleware(MwDll dll){
+		this->dll = &dll;
 	};
 
+public:
 	bool TestFunctionsMiddleware::testSetKilometerDirection(){
 		int richtung = 1;
 
 		std::cout << "==================   START   ==================" << std::endl;
 		std::cout << "testSetKilometerDirection" << std::endl;
 		dll->setKilometerDirection(richtung);
-		std::cout << "richtung: " << richtung << std::endl;
+		std::cout << "richtung: " << richtung << std::endl; 
 		std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
 	
 		return true;

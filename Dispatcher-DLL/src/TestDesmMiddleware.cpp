@@ -12,10 +12,10 @@ using namespace desm;
 
 int main(int argc, char** argv) {
 	try {
-		MwDll* dll = new MwDll(L"DesmMiddlewarePlugin.dll");
+		MwDll dll(L"DesmMiddlewarePlugin.dll");
 		TestFunctionsMiddleware* dispatcher = new TestFunctionsMiddleware(dll);
 
-		dll->onStartProgramm("dispatcher.json");
+		dll.onStartProgramm("dispatcher.json");
 				
 		std::cout << "role is: DESM_MIDDLEWARE" << std::endl;
 		Sleep(1000);
@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
 		while(true) {
 			std::vector<int> types;
 			std::vector<int> ids;
-			dll->getEvents(types, ids);
+			dll.getEvents(types, ids);
 			for(size_t i = 0; i < types.size(); ++i) {
 				switch(types[i]) {
 				case ENUM_CMD_KILOMETER_DIRECTION:
@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
 			}
 		}
 
-		dll->onStopProgramm();
+		dll.onStopProgramm();
 
 	} catch(std::exception& e) {
 		std::cerr << "EXCEPTION: " << e.what() << std::endl;
