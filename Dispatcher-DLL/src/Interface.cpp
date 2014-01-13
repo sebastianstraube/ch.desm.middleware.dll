@@ -29,6 +29,7 @@ extern "C" {
 			std::cerr << "UNKNOWN EXCEPTION!" << std::endl;
 			return desm::ERROR_FATAL;
 		}
+		//TODO: Catch config path is null
 	}
 
 	__declspec(dllexport) int stw_onStopProgramm(void) {
@@ -41,36 +42,36 @@ extern "C" {
 		return desm::ERROR_OK;
 	}
 
-	//DOCU
-	__declspec(dllexport) const char* stw_infoVersion(int* strLength) {
+	//
+	__declspec(dllexport) const char* stw_infoVersion(int* versionLen) {
 		//std::cout << "C INTERFACE: stw_infoVersion"<< std::endl;
 		int length = strlen(s_info_version);
-		strLength = &length;
+		versionLen = &length;
 
 		return s_info_version;
 	}
 
 	//TODO: implement state of the connection
-	__declspec(dllexport) const char* stw_infoConnectionStatus(int* strLength) {
+	__declspec(dllexport) const char* stw_infoConnectionStatus(int* infoConnectionStatusLen) {
 		//std::cout << "C INTERFACE: stw_infoDescription"<< std::endl;
 		int length = strlen(s_info_connection_status);
-		strLength = &length;
+		infoConnectionStatusLen = &length;
 
 		return s_info_connection_status;
 	}
 
-	__declspec(dllexport) const char* stw_infoName(int* strLength) {
+	__declspec(dllexport) const char* stw_infoName(int* infoNameLen) {
 		//std::cout << "C INTERFACE: stw_infoName"<< std::endl;
 		int length = strlen(s_info_name);
-		strLength = &length;
+		infoNameLen = &length;
 
 		return s_info_name;
 	}
 
-	__declspec(dllexport) const char* stw_infoDescription(int* strLength) {
+	__declspec(dllexport) const char* stw_infoDescription(int* descriptionLen) {
 		//std::cout << "C INTERFACE: stw_infoDescription"<< std::endl;
 		int length = strlen(s_info_desc);
-		strLength = &length;
+		descriptionLen = &length;
 
 		return s_info_desc;
 	}
