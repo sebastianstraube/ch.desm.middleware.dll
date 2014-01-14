@@ -24,7 +24,7 @@ namespace desm {
 		int setSignal (int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int direction);
 		int setBalise (int baliseId, int gleisId, double position, int stellung, const std::string& protokoll);
 		int setLoop (int baliseId, int gleisId, double positionVon, double positionBis);
-		int getLoop (int baliseId, int gleisId, double positionVon, double positionBis);
+		int getLoop (int& baliseId, int& gleisId, double& positionVon, double& positionBis);
 		int setIsolierstoss (int isolierstossId, int gleisId, double position);
 		int setKilometerDirection(int richtung);
 		int getKilometerDirection(int& richtung);

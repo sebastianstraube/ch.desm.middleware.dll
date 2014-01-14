@@ -92,8 +92,6 @@ extern "C" {
 		return s_middleware->onStopSimulation();
 	}
 
-	//!
-	//TODO: strlen(name) - correct value ?
 	__declspec(dllexport) int stw_setTrack(int gleisId, double von, double bis, double abstand, char* name, int* nameLen) {
 		//std::cout << "C INTERFACE: stw_setTrack"<< std::endl;
 		if(s_middleware == NULL) {
@@ -102,8 +100,9 @@ extern "C" {
 
 		int length = strlen(name);
 		nameLen = &length;
+		std::string _name = name;
 
-		return s_middleware->setTrack(gleisId, von, bis, abstand, std::string(name));
+		return s_middleware->setTrack(gleisId, von, bis, abstand, _name);
 	}
 
 	//!
@@ -150,6 +149,20 @@ extern "C" {
 			return desm::ERROR_API_MISUSE;
 		}
 		return s_middleware->setLoop(baliseId, gleisId, positionVon, positionBis);
+	}
+
+	__declspec(dllexport) int stw_getLoop(int* baliseId, int* gleisId, double* positionVon, double* positionBis) {
+		//std::cout << "C INTERFACE: stw_getLoop"<< std::endl;
+		if(s_middleware == NULL) {
+			return desm::ERROR_API_MISUSE;
+		}
+		if(!baliseId || !gleisId || !positionVon || !positionBis) {
+			return desm::ERROR_API_MISUSE;
+		}
+
+		int rc = s_middleware->getLoop(*baliseId, *gleisId, *positionVon, *positionBis);
+
+		return rc;
 	}
 
 	__declspec(dllexport) int stw_setIsolierstoss(int isolierstossId, int gleisId, double position) {
@@ -245,8 +258,6 @@ extern "C" {
 		return s_middleware->getSignal(signalId, *stellung);
 	}
 
-	//!
-	//protokollList
 	__declspec(dllexport) int stw_getBalise(int baliseId, int* stellung, char** protokollList, int* protokollListLen) {
 		//std::cout << "C INTERFACE: stw_getBalise"<< std::endl;
 		if(s_middleware == NULL) {
@@ -265,17 +276,6 @@ extern "C" {
 		return desm::ERROR_OK;
 	}
 
-	__declspec(dllexport) int stw_getWeiche(int weicheId, int* gleisId) {
-		//std::cout << "C INTERFACE: stw_getWeiche"<< std::endl;
-		if(s_middleware == NULL) {
-			return desm::ERROR_API_MISUSE;
-		}
-		if(!weicheId || !gleisId) {
-			return desm::ERROR_API_MISUSE;
-		}
-		return s_middleware->getWeiche(weicheId, *gleisId);
-	}
-
 	__declspec(dllexport) int stw_setWeiche(int weicheId, int gleisId) {
 		//std::cout << "C INTERFACE: stw_setWeiche"<< std::endl;
 		if(s_middleware == NULL) {
@@ -287,8 +287,17 @@ extern "C" {
 		return s_middleware->setWeiche(weicheId, gleisId);
 	}
 
-	//!
-	//int* positionListLen
+	__declspec(dllexport) int stw_getWeiche(int weicheId, int* gleisId) {
+		//std::cout << "C INTERFACE: stw_getWeiche"<< std::endl;
+		if(s_middleware == NULL) {
+			return desm::ERROR_API_MISUSE;
+		}
+		if(!weicheId || !gleisId) {
+			return desm::ERROR_API_MISUSE;
+		}
+		return s_middleware->getWeiche(weicheId, *gleisId);
+	}
+
 	__declspec(dllexport) int stw_setTrainPosition(int trainTyp, int direction, double* positionList, int* positionListLen, int* gleisList, int* gleisListLen) {
 		//std::cout << "C INTERFACE: stw_setTrainPosition"<< std::endl;
 		if(s_middleware == NULL) {
@@ -341,8 +350,6 @@ extern "C" {
 		return desm::ERROR_OK;
 	}
 
-	//!
-	//strlen(name) - correct value ?
 	__declspec(dllexport) int stw_getTrack(int gleisId, double von, double bis, double abstand, char* name, int* nameLen) {
 		//std::cout << "C INTERFACE: stw_getTrack"<< std::endl;
 		if(s_middleware == NULL) {
@@ -356,7 +363,6 @@ extern "C" {
 		return s_middleware->getTrack(gleisId, von, bis, abstand, _name);
 	}
 
-	//!
 	__declspec(dllexport) int stw_getTrackConnection(int trackConnectionId, int gleisId, int* gleis1, int* gleis2, double* von, double* bis, char* name, int* nameLen, int* weiche1Id, int* weiche2Id) {
 		//std::cout << "C INTERFACE: stw_getTrackConnection"<< std::endl;
 		if(s_middleware == NULL) {
@@ -371,20 +377,6 @@ extern "C" {
 		nameLen= &nameLength;
 
 		int rc = s_middleware->getTrackConnection(trackConnectionId, gleisId, *gleis1, *gleis2, *von, *bis, _name, *weiche1Id, *weiche2Id);
-
-		return rc;
-	}
-
-	__declspec(dllexport) int stw_getLoop(int baliseId, int gleisId, double positionVon, double positionBis) {
-		//std::cout << "C INTERFACE: stw_getLoop"<< std::endl;
-		if(s_middleware == NULL) {
-			return desm::ERROR_API_MISUSE;
-		}
-		if(!baliseId || !gleisId || !positionVon || !positionBis) {
-			return desm::ERROR_API_MISUSE;
-		}
-
-		int rc = s_middleware->getLoop(baliseId, gleisId, positionVon, positionBis);
 
 		return rc;
 	}

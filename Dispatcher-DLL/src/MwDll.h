@@ -40,7 +40,7 @@ namespace desm {
 		bool getSignal(int signalId, int& stellung);
 		bool getBalise(int baliseId, int& stellung, std::string& protokoll);
 		bool getWeiche(int weicheId, int& gleisId);
-		bool getLoop(int baliseId, int gleisId, double positionVon, double positionBis);
+		bool getLoop(int& baliseId, int& gleisId, double& positionVon, double& positionBis);
 
 		// UNDOCUMENTED - MIDDLEWARE FUNCTIONS (HIGH LEVEL)
 		bool getTrainPosition(int& trainTyp, int& direction, std::vector<double>& positionList, std::vector<int>& gleisList);

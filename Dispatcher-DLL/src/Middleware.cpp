@@ -755,7 +755,7 @@ namespace desm {
 		return ERROR_OK;
 	}
 	
-	int Middleware::getLoop (int baliseId, int gleisId, double positionVon, double positionBis) {
+	int Middleware::getLoop (int& baliseId, int& gleisId, double& positionVon, double& positionBis) {
 		Impl::Command<ENUM_CMD_LOOP>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_LOOP>(baliseId);
 		if(!cmd) {
 			return ERROR_FATAL;
