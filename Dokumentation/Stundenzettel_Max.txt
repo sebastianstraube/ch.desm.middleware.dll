@@ -1,0 +1,8 @@
+Topic			Hours		Date
+arch discussions	3
+external interface spec	2
+initial setup		5
+initial CC code		6
+CC done right		10
+specification		0
+...

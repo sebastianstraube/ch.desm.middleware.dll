@@ -1,6 +1,3 @@
-/Tools
-/UBW32
-Dokumentation
 *.suo
 obj
 Service References
@@ -10,5 +7,4 @@ Debug
 ipch
 *.sdf
 *.sdf
-
 *.opensdf
