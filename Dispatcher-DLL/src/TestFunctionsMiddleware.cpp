@@ -42,16 +42,16 @@ bool TestFunctionsMiddleware::testSetBalise(){
 	int gleisId = 2467;
 	double position = 124.12;
 	int stellung = 1;
-	std::string protokoll = "protokoll";
+	std::string protokoll = "protokoll1";
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testSetBalise" << std::endl;
-	dll.setBalise(baliseId, gleisId, position, stellung);
+	dll.setBalise(baliseId, gleisId, position, stellung, protokoll);
 	std::cout << "baliseId: " << baliseId << std::endl;
 	std::cout << "gleisId: " << gleisId << std::endl;
 	std::cout << "position: " << position << std::endl;
 	std::cout << "stellung: " << stellung << std::endl;
-	std::cout << "protokoll: " << NULL << std::endl;
+	std::cout << "protokoll: " << protokoll << std::endl;
 	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
 
 	return true;
@@ -59,6 +59,8 @@ bool TestFunctionsMiddleware::testSetBalise(){
 
 bool TestFunctionsMiddleware::testGetBalise(){
 	int baliseId = 12;
+	int gleisId = -1;
+	double position = -1;
 	int stellung = -1;
 	std::string protokoll = "-1";
 
@@ -66,6 +68,8 @@ bool TestFunctionsMiddleware::testGetBalise(){
 	std::cout << "testGetBalise" << std::endl;
 	bool isSuccess = dll.getBalise(baliseId, stellung, protokoll);
 	std::cout << "baliseId: " << baliseId << std::endl;
+	std::cout << "gleisId: " << gleisId << std::endl;
+	std::cout << "position: " << position << std::endl;
 	std::cout << "stellung: " << stellung << std::endl;
 	std::cout << "protokoll: " << protokoll << std::endl;
 	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;

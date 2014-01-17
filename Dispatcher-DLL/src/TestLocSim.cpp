@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
 
 		//start tests
 		locsim.testSetKilometerDirection();
-		//TODO: locsim.testSetBalise();
+		locsim.testSetBalise();
 		locsim.testSetIsolierstoss();
 		locsim.testSetLoop();
 		locsim.testSetSignal();

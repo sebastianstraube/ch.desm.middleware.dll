@@ -29,7 +29,7 @@ namespace desm {
 		bool setTrack(int gleisId, double von, double bis, double abstand, const std::string& name);
 		bool setTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id);
 		bool setSignal(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int stellung);
-		bool setBalise(int baliseId, int gleisId, double position, int stellung);
+		bool setBalise(int baliseId, int gleisId, double position, int stellung, std::string& protokoll);
 		bool setLoop(int baliseId, int gleisId, double positionVon, double positionBis);
 		bool setIsolierstoss(int isolierstossId, int gleisId, double position);
 		bool setKilometerDirection(int richtung);

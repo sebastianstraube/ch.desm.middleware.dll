@@ -6,6 +6,8 @@
 
 using namespace desm;
 
+static const int DEFAULT_BUF_LEN = 4096;
+
 struct MwDll::Impl {
 
 	// types
@@ -23,16 +25,16 @@ struct MwDll::Impl {
 	typedef int (*t_stw_onStopSimulation)(void);
 
 	typedef int (*t_stw_setTrack)(int gleisId, double von, double bis, double abstand, char* name, int nameLen);
-	typedef int (*t_stw_getTrack)(int gleisId, double* von, double* bis, double* abstand, char** name, int* nameLen);
+	typedef int (*t_stw_getTrack)(int gleisId, double* von, double* bis, double* abstand, char* name, int nameLen);
 
 	typedef int (*t_stw_setTrackConnection)(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int nameLen, int weiche1Id, int weiche2Id);
-	typedef int (*t_stw_getTrackConnection)(int trackConnectionId, int* gleisId, int* gleis1, int* gleis2, double* von, double* bis, char** name, int*nameLen, int* weiche1Id, int* weiche2Id);
+	typedef int (*t_stw_getTrackConnection)(int trackConnectionId, int* gleisId, int* gleis1, int* gleis2, double* von, double* bis, char* name, int nameLen, int* weiche1Id, int* weiche2Id);
 	
 	typedef int (*t_stw_setSignal)(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int nameLen, int stellung);
-	typedef int (*t_stw_getSignal)(int signalId, int* gleisId, double* position, int* typ, double* hoehe, double* distanz, char** name, int* nameLen, int* stellung);
+	typedef int (*t_stw_getSignal)(int signalId, int* gleisId, double* position, int* typ, double* hoehe, double* distanz, char* name, int nameLen, int* stellung);
 	
-	typedef int (*t_stw_setBalise)(int baliseId, int gleisId, double position, int stellung);
-	typedef int (*t_stw_getBalise)(int baliseId, int* stellung, char** protokoll);
+	typedef int (*t_stw_setBalise)(int baliseId, int gleisId, double position, int stellung, char* protokoll, int protokollLen);
+	typedef int (*t_stw_getBalise)(int baliseId, int* stellung, char* protokoll, int protokollLen);
 
 	typedef int (*t_stw_setLoop)(int baliseId, int gleisId, double positionVon, double positionBis);
 	typedef int (*t_stw_getLoop)(int baliseId, int* gleisId, double* positionVon, double* positionBis);
@@ -134,7 +136,6 @@ struct MwDll::Impl {
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_deallocate);
 
 #undef IMPORT_DLL_FUNCTION
-
 	}
 
 	~Impl() {
@@ -208,14 +209,11 @@ bool MwDll::setTrack(int gleisId, double von, double bis, double abstand, const 
 }
 
 bool MwDll::getTrack(int gleisId, double& von, double& bis, double& abstand, std::string& name) {
-	char* _name;
-	int nameLen;
-	bool success = checkErrorCode(m_pImpl->m_stw_getTrack(gleisId, &von, &bis, &abstand, &_name, &nameLen));
+	char _name[DEFAULT_BUF_LEN];
+	bool success = checkErrorCode(m_pImpl->m_stw_getTrack(gleisId, &von, &bis, &abstand, _name, DEFAULT_BUF_LEN));
 	
 	if(success) {
-		name.resize(nameLen);
-		name.assign(_name, nameLen);
-		m_pImpl->m_stw_deallocate((void**)&_name);
+		name = std::string(_name);
 	}
 
 	return success;
@@ -230,14 +228,11 @@ bool MwDll::setTrackConnection(int trackConnectionId, int gleisId, int gleis1, i
 }
 
 bool MwDll::getTrackConnection(int trackConnectionId, int& gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
-	char* _name = NULL;
-	int nameLen;
-	bool success = checkErrorCode(m_pImpl->m_stw_getTrackConnection(trackConnectionId, &gleisId, &gleis1, &gleis2, &von, &bis, &_name, &nameLen, &weiche1Id, &weiche2Id));
-	
-	//TODO:!
+	char _name[DEFAULT_BUF_LEN];
+	bool success = checkErrorCode(m_pImpl->m_stw_getTrackConnection(trackConnectionId, &gleisId, &gleis1, &gleis2, &von, &bis, _name, DEFAULT_BUF_LEN, &weiche1Id, &weiche2Id));
+
 	if(success) {
 		name = std::string(_name);
-		m_pImpl->m_stw_deallocate((void**)&_name);
 	}
 
 	return success;
@@ -248,35 +243,36 @@ bool MwDll::setSignal(int signalId, int gleisId, double position, int typ, doubl
 	bool success = checkErrorCode(m_pImpl->m_stw_setSignal(signalId, gleisId, position, typ, hoehe, distanz, _name, name.size(), stellung));
 	free(_name);
 
-
 	return success;
 }
 
 bool MwDll::getSignal(int signalId, int& gleisId, double& position, int& typ, double& hoehe, double& distanz, std::string& name, int& stellung) {
-	char* _name = NULL;
-	int nameLen;
-	bool success = checkErrorCode(m_pImpl->m_stw_getSignal(signalId, &gleisId, &position, &typ, &hoehe, &distanz, &_name, &nameLen, &stellung));
+	char _name[DEFAULT_BUF_LEN];
+	bool success = checkErrorCode(m_pImpl->m_stw_getSignal(signalId, &gleisId, &position, &typ, &hoehe, &distanz, _name, DEFAULT_BUF_LEN, &stellung));
 	
 	if(success) {
 		name = std::string(_name);
-		m_pImpl->m_stw_deallocate((void**)&_name);
 	}
 
 	return success;
 
 }
 
-bool MwDll::setBalise(int baliseId, int gleisId, double position, int stellung) {
-	return checkErrorCode(m_pImpl->m_stw_setBalise(baliseId, gleisId, position, stellung));
+bool MwDll::setBalise(int baliseId, int gleisId, double position, int stellung, std::string& protokoll) {
+	char* _protokoll = _strdup(protokoll.c_str());
+	bool success = checkErrorCode(m_pImpl->m_stw_setBalise(baliseId, gleisId, position, stellung, _protokoll, protokoll.size()));
+	free(_protokoll);
+
+	return success;
 }
 
 bool MwDll::getBalise(int baliseId, int& stellung, std::string& protokoll) {
-	char* cProtokoll;
-	bool success = checkErrorCode(m_pImpl->m_stw_getBalise(baliseId, &stellung, &cProtokoll));
+	char _protokoll[DEFAULT_BUF_LEN];
+	bool success = checkErrorCode(m_pImpl->m_stw_getBalise(baliseId, &stellung, _protokoll, DEFAULT_BUF_LEN));
 	if(success) {
-		protokoll = std::string(cProtokoll);
-		m_pImpl->m_stw_deallocate((void**)&cProtokoll);
+		protokoll = std::string(_protokoll);
 	}
+
 	return success;
 }
 

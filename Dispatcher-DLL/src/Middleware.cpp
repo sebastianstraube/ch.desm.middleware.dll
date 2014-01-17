@@ -660,8 +660,8 @@ namespace desm {
 		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_SIGNAL>(signalId, gleisId, position, typ, hoehe, distanz, name, stellung));
 	}
 
-	int Middleware::setBalise (int baliseId, int gleisId, double position, int stellung) {
-		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_BALISE>(baliseId, gleisId, position, stellung, NULL));
+	int Middleware::setBalise (int baliseId, int gleisId, double position, int stellung, const std::string& protokoll) {
+		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_BALISE>(baliseId, gleisId, position, stellung, protokoll));
 	}
 
 	int Middleware::setLoop (int baliseId, int gleisId, double positionVon, double positionBis) {
