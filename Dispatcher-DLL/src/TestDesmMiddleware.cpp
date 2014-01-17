@@ -13,7 +13,7 @@ using namespace desm;
 int main(int argc, char** argv) {
 	try {
 		MwDll dll(L"DesmMiddlewarePlugin.dll");
-		TestFunctionsMiddleware* dispatcher = new TestFunctionsMiddleware(dll);
+		TestFunctionsMiddleware dispatcher(dll);
 
 		dll.onStartProgramm("dispatcher.json");
 				
@@ -27,31 +27,31 @@ int main(int argc, char** argv) {
 			for(size_t i = 0; i < types.size(); ++i) {
 				switch(types[i]) {
 				case ENUM_CMD_KILOMETER_DIRECTION:
-					dispatcher->testGetKilometerDirection();
+					dispatcher.testGetKilometerDirection();
 					break;
 				case ENUM_CMD_BALISE:
-					//dispatcher.testGetBalise(dll);
+					dispatcher.testGetBalise();
 					break;
 				case ENUM_CMD_ISOLIERSTOSS:
-					//dispatcher.testGetIsolierstoss(dll);
+					dispatcher.testGetIsolierstoss();
 					break;
 				case ENUM_CMD_LOOP:
-					//dispatcher.testGetLoop(dll);
+					dispatcher.testGetLoop();
 					break;
 				case ENUM_CMD_SIGNAL:
-					//dispatcher.testGetSignal(dll);
+					dispatcher.testGetSignal();
 					break;
 				case ENUM_CMD_TRAINPOSITION:
-					//dispatcher.testGetTrainPosition(dll);
+					dispatcher.testGetTrainPosition();
 					break;
 				case ENUM_CMD_WEICHE:
-					//dispatcher.testGetWeiche(dll);
+					dispatcher.testGetWeiche();
 					break;
 				case ENUM_CMD_TRACK_CONNECTION:
-					//dispatcher.testGetTrackConnection(dll);
+					dispatcher.testGetTrackConnection();
 					break;
 				case ENUM_CMD_TRACK:
-					//dispatcher.testGetTrack(dll);
+					dispatcher.testGetTrack();
 					break;
 				default:
 					std::cout << "default command [type: " << types[i] << " id: " << ids[i] << "]" << std::endl;

@@ -208,7 +208,7 @@ namespace desm {
 				: CommandBase(ENUM_CMD_TRACK), gleisId(_gleisId), von(_von), bis(_bis), abstand(_abstand), name(_name) {
 			}
 			int getId() const {
-				return INVALID_ID;
+				return gleisId;
 			}
 			Json::Value toJson() const {
 				Json::Value v(Json::objectValue);
@@ -286,8 +286,7 @@ namespace desm {
 				: CommandBase(ENUM_CMD_ISOLIERSTOSS), isolierstossId(_isolierstossId), gleisId(_gleisId), position(_position) {
 			}
 			int getId() const {
-				// TODO: is gleisId correct, i think we need the position as well to identify the isolierstoss.
-				return gleisId;
+				return isolierstossId;
 			}
 			Json::Value toJson() const {
 				Json::Value v(Json::objectValue);
@@ -329,32 +328,32 @@ namespace desm {
 		template<> struct Command<ENUM_CMD_LOOP> : CommandBase {
 			typedef Command<ENUM_CMD_LOOP> tThisCommand;
 
-			int gleisId;
 			int baliseId;
+			int gleisId;
 			double positionVon;
 			double positionBis;
 
-			Command(int _gleisId, int _baliseId, double _positionVon, double _positionBis)
-				: CommandBase(ENUM_CMD_LOOP), gleisId(_gleisId), baliseId(_baliseId), positionVon(_positionVon), positionBis(_positionBis) {
+			Command(int _baliseId, int _gleisId, double _positionVon, double _positionBis)
+				: CommandBase(ENUM_CMD_LOOP), baliseId(_baliseId), gleisId(_gleisId), positionVon(_positionVon), positionBis(_positionBis) {
 			}
 			int getId() const {
-				// TODO loop id!
-				return INVALID_ID;
+				// TODO: loop id!
+				return baliseId;
 			}
 			Json::Value toJson() const {
 				Json::Value v(Json::objectValue);
-				v["gleisId"] = Json::Value(gleisId);
 				v["baliseId"] = Json::Value(baliseId);
+				v["gleisId"] = Json::Value(gleisId);
 				v["positionVon"] = Json::Value(positionVon);
 				v["positionBis"] = Json::Value(positionBis);
 				return v;
 			}
 			static tThisCommand* fromJson(const Json::Value& v) {
-				int gleisId = jsonGet<int>(v, "gleisId");
 				int baliseId = jsonGet<int>(v, "baliseId");
+				int gleisId = jsonGet<int>(v, "gleisId");
 				double positionVon = jsonGet<double>(v, "positionVon");
 				double positionBis= jsonGet<double>(v, "positionBis");
-				return new tThisCommand(gleisId, baliseId, positionVon, positionBis);
+				return new tThisCommand(baliseId, gleisId, positionVon, positionBis);
 			}
 		};
 
@@ -365,7 +364,6 @@ namespace desm {
 			int gleisId;
 			double position;
 			int stellung;
-			//TODO: needs review, only needed for getBalise ...
 			std::string protokoll;
 
 			Command(int _baliseId, int _gleisId, double _position, int _stellung, const std::string& _protokoll)
@@ -440,14 +438,14 @@ namespace desm {
 			typedef Command<ENUM_CMD_WEICHE> tThisCommand;
 
 			int weicheId;
-			int& gleisId;
+			int gleisId;
 
 			Command(int _weicheId, int _gleisId)	
 				: CommandBase(ENUM_CMD_WEICHE), weicheId(_weicheId), gleisId(_gleisId) {
 			}
 			int getId() const {
 				// TODO: is gleisId correct, i think we need the position as well to identify the isolierstoss.
-				return gleisId;
+				return weicheId;
 			}
 			Json::Value toJson() const {
 				Json::Value v(Json::objectValue);
@@ -629,24 +627,25 @@ namespace desm {
 		if(!cmd) {
 			return ERROR_FATAL;
 		}
+
 		von = cmd->von;
 		bis = cmd->bis;
 		abstand = cmd->abstand;
 		name = cmd->name;
+
 		return ERROR_OK;
 	}
 
-	int Middleware::setTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, std::string& name, int weiche1Id, int weiche2Id) {
+	int Middleware::setTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
 		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_TRACK_CONNECTION>(trackConnectionId, gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id));
 	}
 		
-	int Middleware::getTrackConnection(int trackConnectionId, int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
-		// TODO: is gleisId unique enough? track connection id!
+	int Middleware::getTrackConnection(int trackConnectionId, int& gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
 		Impl::Command<ENUM_CMD_TRACK_CONNECTION>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_TRACK_CONNECTION>(trackConnectionId);
 		if(!cmd) {
 			return ERROR_FATAL;
 		}
-		trackConnectionId = cmd->trackConnectionId;
+		gleisId = cmd->gleisId;
 		gleis1 = cmd->gleis1;
 		gleis2 = cmd->gleis2;
 		von = cmd->von;
@@ -661,8 +660,8 @@ namespace desm {
 		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_SIGNAL>(signalId, gleisId, position, typ, hoehe, distanz, name, stellung));
 	}
 
-	int Middleware::setBalise (int baliseId, int gleisId, double position, int stellung, const std::string& protokoll) {
-		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_BALISE>(baliseId, gleisId, position, stellung, protokoll));
+	int Middleware::setBalise (int baliseId, int gleisId, double position, int stellung) {
+		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_BALISE>(baliseId, gleisId, position, stellung, NULL));
 	}
 
 	int Middleware::setLoop (int baliseId, int gleisId, double positionVon, double positionBis) {
@@ -707,12 +706,20 @@ namespace desm {
 		return ERROR_OK;
 	}
 
-	int Middleware::getSignal(int signalId, int& stellung) {
+	int Middleware::getSignal(int signalId, int& gleisId, double& position, int& typ, double& hoehe, double& distanz, std::string& name, int& stellung) {
 		Impl::Command<ENUM_CMD_SIGNAL>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_SIGNAL>(signalId);
 		if(!cmd) {
 			return ERROR_FATAL;
 		}
+		signalId = cmd->signalId;
+		gleisId = cmd->gleisId;
+		position = cmd->position;
+		typ = cmd->typ;
+		hoehe = cmd->hoehe;
+		distanz = cmd->distanz;
+		name = cmd->name;
 		stellung = cmd->stellung;
+		
 		return ERROR_OK;
 	}
 
@@ -743,24 +750,24 @@ namespace desm {
 		return m_pImpl->applyLocalCommand(new Impl::Command<ENUM_CMD_TRAINPOSITION>(trainTyp, direction, positionList, gleisList));
 	}
 
-	int Middleware::getTrainPosition(int& trainTyp, int& direction, std::vector<double>& positionList, std::vector<int>& gleisList) {
+	int Middleware::getTrainPosition(int trainTyp, int& direction, std::vector<double>& positionList, std::vector<int>& gleisList) {
 		Impl::Command<ENUM_CMD_TRAINPOSITION>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_TRAINPOSITION>();
 		if(!cmd) {
 			return ERROR_FATAL;
 		}
-		trainTyp = cmd->trainTyp;
+
 		direction = cmd->direction;
 		positionList = cmd->positionList;
 		gleisList = cmd->gleisList;
+
 		return ERROR_OK;
 	}
 	
-	int Middleware::getLoop (int& baliseId, int& gleisId, double& positionVon, double& positionBis) {
+	int Middleware::getLoop (int baliseId, int& gleisId, double& positionVon, double& positionBis) {
 		Impl::Command<ENUM_CMD_LOOP>* cmd = m_pImpl->getCommandFromState<ENUM_CMD_LOOP>(baliseId);
 		if(!cmd) {
 			return ERROR_FATAL;
 		}
-		baliseId = cmd->baliseId;
 		gleisId = cmd->gleisId;
 		positionVon = cmd->positionVon;
 		positionBis = cmd->positionBis;

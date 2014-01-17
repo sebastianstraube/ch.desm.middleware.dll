@@ -12,31 +12,45 @@ struct MwDll::Impl {
 
 	typedef int (*t_stw_onStartProgramm)(char* configPath);
 	typedef int (*t_stw_onStopProgramm)(void);
-	typedef const char* (*t_stw_infoVersion)(void);
-	typedef const char* (*t_stw_infoName)(void);
-	typedef const char* (*t_stw_infoDescription)(void);
+	typedef int (*t_stw_onLoadStrecke)(void);
+	
+	typedef const char* (*t_stw_infoVersion)(int* versionLen);
+	typedef const char* (*t_stw_infoConnectionStatus)(int* infoConnectionStatusLen);
+	typedef const char* (*t_stw_infoName)(int* infoNameLen);
+	typedef const char* (*t_stw_infoDescription)(int* descriptionLen);
+	
 	typedef int (*t_stw_onStartSimulation)(void);
 	typedef int (*t_stw_onStopSimulation)(void);
-	typedef int (*t_stw_setTrack)(int gleisId, double von, double bis, double abstand, char* name);
-	typedef int (*t_stw_getTrack)(int gleisId, double von, double bis, double abstand, char* name);
-	typedef int (*t_stw_setTrackConnection)(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int weiche1Id, int weiche2Id);
-	typedef int (*t_stw_getTrackConnection)(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int weiche1Id, int weiche2Id);
-	typedef int (*t_stw_setSignal)(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int stellung);
+
+	typedef int (*t_stw_setTrack)(int gleisId, double von, double bis, double abstand, char* name, int nameLen);
+	typedef int (*t_stw_getTrack)(int gleisId, double* von, double* bis, double* abstand, char** name, int* nameLen);
+
+	typedef int (*t_stw_setTrackConnection)(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, char* name, int nameLen, int weiche1Id, int weiche2Id);
+	typedef int (*t_stw_getTrackConnection)(int trackConnectionId, int* gleisId, int* gleis1, int* gleis2, double* von, double* bis, char** name, int*nameLen, int* weiche1Id, int* weiche2Id);
+	
+	typedef int (*t_stw_setSignal)(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int nameLen, int stellung);
+	typedef int (*t_stw_getSignal)(int signalId, int* gleisId, double* position, int* typ, double* hoehe, double* distanz, char** name, int* nameLen, int* stellung);
+	
 	typedef int (*t_stw_setBalise)(int baliseId, int gleisId, double position, int stellung);
+	typedef int (*t_stw_getBalise)(int baliseId, int* stellung, char** protokoll);
+
 	typedef int (*t_stw_setLoop)(int baliseId, int gleisId, double positionVon, double positionBis);
-	typedef int (*t_stw_getLoop)(int* baliseId, int* gleisId, double* positionVon, double* positionBis);
+	typedef int (*t_stw_getLoop)(int baliseId, int* gleisId, double* positionVon, double* positionBis);
+
 	typedef int (*t_stw_setIsolierstoss)(int isolierstossId, int gleisId, double position);
-	typedef int (*t_stw_getIsolierstoss)(int* isolierstossId, int* gleisId, double* position);
+	typedef int (*t_stw_getIsolierstoss)(int isolierstossId, int* gleisId, double* position);
+
 	typedef int (*t_stw_setKilometerDirection)(int richtung);
 	typedef int (*t_stw_getKilometerDirection)(int* richtung);
-	typedef int (*t_stw_onLoadStrecke)(void);
-	typedef int (*t_stw_getEvents)(int* number, int** typeList, int** idList);
-	typedef int (*t_stw_getSignal)(int signalId, int* stellung);
-	typedef int (*t_stw_getBalise)(int baliseId, int* stellung, char** protokoll);
-	typedef int (*t_stw_getWeiche)(int weicheId, int* gleisId);
+	
 	typedef int (*t_stw_setWeiche)(int weicheId, int gleisId);
-	typedef int (*t_stw_setTrainPosition)(int trainTyp, int direction, double** positionList, int** gleisList);
-	typedef int (*t_stw_getTrainPosition)(int* trainTyp, int* direction, double** positionList, int** gleisList);
+	typedef int (*t_stw_getWeiche)(int weicheId, int* gleisId);
+
+	typedef int (*t_stw_setTrainPosition)(int trainTyp, int direction, double* positionList, int positionListLen, int* gleisList, int gleisListLen);
+	typedef int (*t_stw_getTrainPosition)(int trainTyp, int* direction, double** positionList, int* positionListLen, int** gleisList, int* gleisListLen);
+
+	typedef int (*t_stw_getEvents)(int* anzahlEvents, int** typeList, int** idList);
+
 	typedef void (*t_stw_deallocate)(void** p);
 	
 	// member
@@ -153,18 +167,6 @@ MwDll::~MwDll() {
 	delete m_pImpl;
 }
 
-std::string MwDll::infoVersion() {
-	return std::string(m_pImpl->m_stw_infoVersion());
-}
-
-std::string MwDll::infoName() {
-	return std::string(m_pImpl->m_stw_infoName());
-}
-
-std::string MwDll::infoDescription() {
-	return std::string(m_pImpl->m_stw_infoDescription());
-}
-
 void MwDll::onStartProgramm(const std::string& configPath) {
 	char* dup = _strdup(configPath.c_str());
 	checkErrorCode(m_pImpl->m_stw_onStartProgramm(dup));
@@ -175,87 +177,97 @@ void MwDll::onStopProgramm() {
 	checkErrorCode(m_pImpl->m_stw_onStopProgramm());
 }
 
-bool MwDll::setTrack(int gleisId, double von, double bis, double abstand, const std::string& name) {
-	char* dup = _strdup(name.c_str());
-	bool success = checkErrorCode(m_pImpl->m_stw_setTrack(gleisId, von, bis, abstand, dup));
-	free(dup);
-	return success;
-}
-
-bool MwDll::getTrack(int gleisId, double& von, double& bis, double& abstand, std::string& name) {
-	char* dup = _strdup(name.c_str());
-	bool success = checkErrorCode(m_pImpl->m_stw_getTrack(gleisId, von, bis, abstand, dup));
-	free(dup);
-	return success;
-}
-
-bool MwDll::setTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
-	char* cName = _strdup(name.c_str());
-	bool success = checkErrorCode(m_pImpl->m_stw_setTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, cName, weiche1Id, weiche2Id));
-	free(cName);
-	return success;
-}
-
-bool MwDll::getTrackConnection(int trackConnectionId, int gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
-	char* cName = NULL;
-	bool success = checkErrorCode(m_pImpl->m_stw_getTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, cName, weiche1Id, weiche2Id));
-	if(success) {
-		name = std::string(cName);
-		m_pImpl->m_stw_deallocate((void**)&cName);
-	}
-	return success;
-}
-
-bool MwDll::setSignal(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int stellung) {
-	char* cName = _strdup(name.c_str());
-	bool success = checkErrorCode(m_pImpl->m_stw_setSignal(signalId, gleisId, position, typ, hoehe, distanz, cName, stellung));
-	free(cName);
-	return success;
-}
-
-bool MwDll::setBalise(int baliseId, int gleisId, double position, int stellung) {
-	return checkErrorCode(m_pImpl->m_stw_setBalise(baliseId, gleisId, position, stellung));
-}
-
-bool MwDll::setLoop(int baliseId, int gleisId, double positionVon, double positionBis) {
-	return checkErrorCode(m_pImpl->m_stw_setLoop(baliseId, gleisId, positionVon, positionBis));
-}
-
-bool MwDll::setIsolierstoss(int isolierstossId, int gleisId, double position) {
-	return checkErrorCode(m_pImpl->m_stw_setIsolierstoss(isolierstossId, gleisId, position));
-}
-
-bool MwDll::setKilometerDirection(int richtung) {
-	return checkErrorCode(m_pImpl->m_stw_setKilometerDirection(richtung));
-}
-
-bool MwDll::getKilometerDirection(int& richtung) {
-	return checkErrorCode(m_pImpl->m_stw_getKilometerDirection(&richtung));
-}
-
 void MwDll::onLoadStrecke() {
 	checkErrorCode(m_pImpl->m_stw_onLoadStrecke());
 }
 
-bool MwDll::getEvents(std::vector<int>& typeList, std::vector<int>& idList) {
-	int num, *cTypeList, *cIdList;
-	bool success = checkErrorCode(m_pImpl->m_stw_getEvents(&num, &cTypeList, &cIdList));
-	if(!success) {
-		return false;
-	}
-	for(int i = 0; i < num; ++i) {
-		typeList.push_back(cTypeList[i]);
-		idList.push_back(cIdList[i]);
-	}
-	if(num > 0) {
-		m_pImpl->m_stw_deallocate((void**)&cTypeList);
-		m_pImpl->m_stw_deallocate((void**)&cIdList);
-	}
+std::string MwDll::infoVersion() {
+	int versionLen;
+	return std::string(m_pImpl->m_stw_infoVersion(&versionLen));
+}
+
+std::string MwDll::infoConnectionStatus() {
+	return "";
+}
+
+std::string MwDll::infoName() {
+	int infoNameLen;
+	return std::string(m_pImpl->m_stw_infoName(&infoNameLen));
+}
+
+std::string MwDll::infoDescription() {
+	int infoDescriptionLen;
+	return std::string(m_pImpl->m_stw_infoDescription(&infoDescriptionLen));
+}
+
+bool MwDll::setTrack(int gleisId, double von, double bis, double abstand, const std::string& name) {
+	char* _name = _strdup(name.c_str());
+	bool success = checkErrorCode(m_pImpl->m_stw_setTrack(gleisId, von, bis, abstand, _name, name.size()));
+	free(_name);
 	return success;
 }
 
-bool MwDll::getSignal(int signalId, int& stellung) {
-	return checkErrorCode(m_pImpl->m_stw_getSignal(signalId, &stellung));
+bool MwDll::getTrack(int gleisId, double& von, double& bis, double& abstand, std::string& name) {
+	char* _name;
+	int nameLen;
+	bool success = checkErrorCode(m_pImpl->m_stw_getTrack(gleisId, &von, &bis, &abstand, &_name, &nameLen));
+	
+	if(success) {
+		name.resize(nameLen);
+		name.assign(_name, nameLen);
+		m_pImpl->m_stw_deallocate((void**)&_name);
+	}
+
+	return success;
+}
+
+bool MwDll::setTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
+	char* _name = _strdup(name.c_str());
+	bool success = checkErrorCode(m_pImpl->m_stw_setTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, _name, name.size(), weiche1Id, weiche2Id));
+	free(_name);
+
+	return success;
+}
+
+bool MwDll::getTrackConnection(int trackConnectionId, int& gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
+	char* _name = NULL;
+	int nameLen;
+	bool success = checkErrorCode(m_pImpl->m_stw_getTrackConnection(trackConnectionId, &gleisId, &gleis1, &gleis2, &von, &bis, &_name, &nameLen, &weiche1Id, &weiche2Id));
+	
+	//TODO:!
+	if(success) {
+		name = std::string(_name);
+		m_pImpl->m_stw_deallocate((void**)&_name);
+	}
+
+	return success;
+}
+
+bool MwDll::setSignal(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int stellung) {
+	char* _name = _strdup(name.c_str());
+	bool success = checkErrorCode(m_pImpl->m_stw_setSignal(signalId, gleisId, position, typ, hoehe, distanz, _name, name.size(), stellung));
+	free(_name);
+
+
+	return success;
+}
+
+bool MwDll::getSignal(int signalId, int& gleisId, double& position, int& typ, double& hoehe, double& distanz, std::string& name, int& stellung) {
+	char* _name = NULL;
+	int nameLen;
+	bool success = checkErrorCode(m_pImpl->m_stw_getSignal(signalId, &gleisId, &position, &typ, &hoehe, &distanz, &_name, &nameLen, &stellung));
+	
+	if(success) {
+		name = std::string(_name);
+		m_pImpl->m_stw_deallocate((void**)&_name);
+	}
+
+	return success;
+
+}
+
+bool MwDll::setBalise(int baliseId, int gleisId, double position, int stellung) {
+	return checkErrorCode(m_pImpl->m_stw_setBalise(baliseId, gleisId, position, stellung));
 }
 
 bool MwDll::getBalise(int baliseId, int& stellung, std::string& protokoll) {
@@ -266,6 +278,34 @@ bool MwDll::getBalise(int baliseId, int& stellung, std::string& protokoll) {
 		m_pImpl->m_stw_deallocate((void**)&cProtokoll);
 	}
 	return success;
+}
+
+bool MwDll::setLoop(int baliseId, int gleisId, double positionVon, double positionBis) {
+	return checkErrorCode(m_pImpl->m_stw_setLoop(baliseId, gleisId, positionVon, positionBis));
+}
+
+bool MwDll::getLoop(int baliseId, int& gleisId, double& positionVon, double& positionBis) {
+	bool success = checkErrorCode(m_pImpl->m_stw_getLoop(baliseId, &gleisId, &positionVon, &positionBis));
+
+	return success;
+}
+
+bool MwDll::setIsolierstoss(int isolierstossId, int gleisId, double position) {
+	return checkErrorCode(m_pImpl->m_stw_setIsolierstoss(isolierstossId, gleisId, position));
+}
+
+bool MwDll::getIsolierstoss(int isolierstossId, int& gleisId, double& position){
+	bool success = checkErrorCode(m_pImpl->m_stw_getIsolierstoss(isolierstossId, &gleisId, &position));
+
+	return success;
+}
+
+bool MwDll::setKilometerDirection(int richtung) {
+	return checkErrorCode(m_pImpl->m_stw_setKilometerDirection(richtung));
+}
+
+bool MwDll::getKilometerDirection(int& richtung) {
+	return checkErrorCode(m_pImpl->m_stw_getKilometerDirection(&richtung));
 }
 
 bool MwDll::getWeiche(int weicheId, int& gleisId) {
@@ -289,18 +329,18 @@ bool MwDll::setTrainPosition(int trainTyp, int direction, const std::vector<doub
 	for(size_t i = 0; i < gleisListLen; ++i) {
 		cGleisList[i] = gleisList[i];
 	}
-	bool success = checkErrorCode(m_pImpl->m_stw_setTrainPosition(trainTyp, direction, &cPositionList, &cGleisList));
+	bool success = checkErrorCode(m_pImpl->m_stw_setTrainPosition(trainTyp, direction, cPositionList, positionListLen, cGleisList, gleisListLen));
 	free(cPositionList);
 	free(cGleisList);
 	return success;
 }
 
-bool MwDll::getTrainPosition(int& trainTyp, int& direction, std::vector<double>& positionList, std::vector<int>& gleisList) {
+bool MwDll::getTrainPosition(int trainTyp, int& direction, std::vector<double>& positionList, std::vector<int>& gleisList) {
 	int positionListLen = 0;
 	int gleisListLen = 0;
 	double* cPositionList;
 	int* cGleisList;
-	bool success = checkErrorCode(m_pImpl->m_stw_getTrainPosition(&trainTyp, &direction, &cPositionList, &cGleisList));
+	bool success = checkErrorCode(m_pImpl->m_stw_getTrainPosition(trainTyp, &direction, &cPositionList, &positionListLen, &cGleisList, &gleisListLen));
 	
 	positionList.clear();
 	for(int i = 0; i < positionListLen; ++i) {
@@ -318,14 +358,19 @@ bool MwDll::getTrainPosition(int& trainTyp, int& direction, std::vector<double>&
 	return success;
 }
 
-bool MwDll::getIsolierstoss(int isolierstossId, int& gleisId, double& position){
-	bool success = checkErrorCode(m_pImpl->m_stw_getIsolierstoss(&isolierstossId, &gleisId, &position));
-
-	return success;
-}
-
-bool MwDll::getLoop(int& baliseId, int& gleisId, double& positionVon, double& positionBis) {
-	bool success = checkErrorCode(m_pImpl->m_stw_getLoop(&baliseId, &gleisId, &positionVon, &positionBis));
-
+bool MwDll::getEvents(std::vector<int>& typeList, std::vector<int>& idList) {
+	int num, *cTypeList, *cIdList;
+	bool success = checkErrorCode(m_pImpl->m_stw_getEvents(&num, &cTypeList, &cIdList));
+	if(!success) {
+		return false;
+	}
+	for(int i = 0; i < num; ++i) {
+		typeList.push_back(cTypeList[i]);
+		idList.push_back(cIdList[i]);
+	}
+	if(num > 0) {
+		m_pImpl->m_stw_deallocate((void**)&cTypeList);
+		m_pImpl->m_stw_deallocate((void**)&cIdList);
+	}
 	return success;
 }

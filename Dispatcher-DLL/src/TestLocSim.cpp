@@ -9,8 +9,8 @@ using namespace desm;
 
 int main(int argc, char** argv) {
 	try {
-		//TestFunctionsMiddleware locsim;
 		MwDll dll(L"DesmMiddlewarePlugin.dll");
+		TestFunctionsMiddleware locsim(dll);
 
 		dll.onStartProgramm("locsim.json");
 
@@ -18,19 +18,18 @@ int main(int argc, char** argv) {
 		Sleep(1000);
 		std::cout << "starting tests ..." << std::endl;
 
-		/*
 		//start tests
-		locsim.testSetKilometerDirection(dll);
-		//TODO: locsim.testSetBalise(dll);
-		locsim.testSetIsolierstoss(dll);
-		locsim.testSetLoop(dll);
-		locsim.testSetSignal(dll);
-		locsim.testSetTrainPosition(dll);
-		locsim.testSetWeiche(dll);
-		locsim.testSetTrackConnection(dll);
-		locsim.testSetTrack(dll);
+		locsim.testSetKilometerDirection();
+		//TODO: locsim.testSetBalise();
+		locsim.testSetIsolierstoss();
+		locsim.testSetLoop();
+		locsim.testSetSignal();
+		locsim.testSetTrainPosition();
+		locsim.testSetWeiche();
+		locsim.testSetTrackConnection();
+		locsim.testSetTrack();
 		//end tests
-		*/
+
 		dll.onStopProgramm();
 
 	} catch(std::exception& e) {
