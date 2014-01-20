@@ -8,7 +8,7 @@ static desm::Middleware* s_middleware = NULL;
 static const char* s_info_name = "DLL DESMMiddleware";
 static const char* s_info_version = "0.15";
 static const char* s_info_desc = "This DLL provides a server to client communication via tcp/ip protocol.";
-static char* s_info_connection_status = "[connection status]";
+static char* s_info_connection_status = "[connection status not implemented]";
 
 extern "C" {
 
@@ -24,7 +24,6 @@ extern "C" {
 		}
 		try {
 			s_middleware = new desm::Middleware(configPath);
-			return desm::ERROR_OK;
 		} catch(const std::bad_alloc& e) {
 			s_middleware = NULL;
 			std::cerr << "EXCEPTION: " << e.what() << std::endl;
@@ -35,6 +34,8 @@ extern "C" {
 			return desm::ERROR_FATAL;
 		}
 		//TODO: Catch config path is null
+
+		return desm::ERROR_OK;
 	}
 
 	__declspec(dllexport) int stw_onStopProgramm(void) {
@@ -47,21 +48,13 @@ extern "C" {
 		return desm::ERROR_OK;
 	}
 
-	__declspec(dllexport) int stw_onLoadStrecke(void) {
-		//std::cout << "C INTERFACE: stw_onLoadStrecke"<< std::endl;
-		if(s_middleware == NULL) {
-			return desm::ERROR_API_MISUSE;
-		}
-		return s_middleware->onLoadStrecke();
-	}
-	// int len;
-	// const char* str = stw_infoVersion(&len);
 	__declspec(dllexport) const char* stw_infoVersion(int* versionLen) {
 		//std::cout << "C INTERFACE: stw_infoVersion"<< std::endl;
 		*versionLen = strlen(s_info_version);
+
 		return s_info_version;
 	}
-
+	
 	//TODO: implement state of the connection
 	__declspec(dllexport) const char* stw_infoConnectionStatus(int* infoConnectionStatusLen) {
 		//std::cout << "C INTERFACE: stw_infoDescription"<< std::endl;
@@ -100,6 +93,14 @@ extern "C" {
 		return s_middleware->onStopSimulation();
 	}
 
+	__declspec(dllexport) int stw_onLoadStrecke(void) {
+		//std::cout << "C INTERFACE: stw_onLoadStrecke"<< std::endl;
+		if(s_middleware == NULL) {
+			return desm::ERROR_API_MISUSE;
+		}
+		return s_middleware->onLoadStrecke();
+	}
+
 	__declspec(dllexport) int stw_setTrack(int gleisId, double von, double bis, double abstand, char* name, int nameLen) {
 		//std::cout << "C INTERFACE: stw_setTrack"<< std::endl;
 		if(s_middleware == NULL) {
@@ -107,7 +108,6 @@ extern "C" {
 		}
 
 		std::string _name = name;
-
 		return s_middleware->setTrack(gleisId, von, bis, abstand, _name);
 	}
 
