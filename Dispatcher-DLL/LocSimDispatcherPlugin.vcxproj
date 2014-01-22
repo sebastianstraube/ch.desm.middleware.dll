@@ -59,14 +59,12 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>src;..\3rdparty\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>jsoncpp.lib;libzmq.lib;Ws2_32.lib;czmq.lib;CC.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -78,7 +76,6 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>src;..\3rdparty\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -86,19 +83,23 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>jsoncpp.lib;libzmq.lib;czmq.lib;Ws2_32.lib;CC.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\CommunicationController.cpp" />
     <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\Interface.cpp" />
     <ClCompile Include="src\Middleware.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CommunicationController.h" />
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\ErrorCodes.h" />
     <ClInclude Include="src\Events.h" />
     <ClInclude Include="src\Middleware.h" />
+    <ClInclude Include="src\util\CriticalSection.h" />
+    <ClInclude Include="src\util\SecureQueue.h" />
+    <ClInclude Include="src\util\Thread.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

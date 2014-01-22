@@ -9,9 +9,9 @@
 #include <sstream>
 
 #include "CommunicationController.h"
-#include "CriticalSection.h"
-#include "SecureQueue.h"
-#include "Thread.h"
+#include "util/CriticalSection.h"
+#include "util/SecureQueue.h"
+#include "util/Thread.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <list>
-#include "CriticalSection.h"
-#include "Thread.h"
+#include "util/CriticalSection.h"
+#include "util/Thread.h"
 
 namespace desm {
 

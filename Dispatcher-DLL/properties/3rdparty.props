@@ -6,7 +6,12 @@
   <ItemDefinitionGroup>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration)\;..\3rdparty\lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>czmq.lib;jsoncpp.lib;libzmq.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>src;test;..\3rdparty\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;CZMQ_AS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>

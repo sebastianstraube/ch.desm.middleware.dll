@@ -15,8 +15,9 @@
 #include "ErrorCodes.h"
 #include "Events.h"
 #include "Middleware.h"
-#include "Thread.h"
-#include "SecureQueue.h"
+#include "CommunicationController.h"
+#include "util/Thread.h"
+#include "util/SecureQueue.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -11,13 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\MwDll.cpp" />
-    <ClCompile Include="src\TestFunctionsMiddleware.cpp" />
-    <ClCompile Include="src\TestLocSim.cpp" />
+    <ClCompile Include="test\MwDll.cpp" />
+    <ClCompile Include="test\TestFunctionsMiddleware.cpp" />
+    <ClCompile Include="test\TestLocSim.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\MwDll.h" />
-    <ClInclude Include="src\TestFunctionsMiddleware.h" />
+    <ClInclude Include="test\MwDll.h" />
+    <ClInclude Include="test\TestFunctionsMiddleware.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{84928FDF-99FB-46AB-89D5-890DCC264FE5}</ProjectGuid>
@@ -67,6 +67,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>src;test</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -84,7 +85,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;test</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

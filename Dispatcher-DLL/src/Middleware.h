@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 
-#include "CommunicationController.h"
 #include "Events.h"
 
 namespace desm {
