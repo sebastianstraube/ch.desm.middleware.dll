@@ -12,9 +12,10 @@ static char* s_info_connection_status = "[connection status not implemented]";
 
 extern "C" {
 
-	static void desm_strlcpy(char* dst, const char* src, int len) {
+	static int desm_strlcpy(char* dst, const char* src, int len) {
 		::strncpy_s(dst, len, src, len - 1);
 		dst[len - 1] = '\0';
+		return std::min<int>(strlen(src), len - 1);
 	}
 
 	__declspec(dllexport) int stw_onStartProgramm(char* configPath) {
@@ -111,16 +112,19 @@ extern "C" {
 		return s_middleware->setTrack(gleisId, von, bis, abstand, _name);
 	}
 
-	__declspec(dllexport) int stw_getTrack(int gleisId, double* von, double* bis, double* abstand, char* name, int nameLen) {
+	__declspec(dllexport) int stw_getTrack(int gleisId, double* von, double* bis, double* abstand, char* nameBuf, int nameBufLen, int* nameStrLen) {
 		//std::cout << "C INTERFACE: stw_getTrack"<< std::endl;
 		if(s_middleware == NULL) {
 			return desm::ERROR_API_MISUSE;
 		}
+		if(!nameBuf || !nameStrLen) {
+			return desm::ERROR_API_MISUSE;
+		}
 		
-		std::string _name;
-		int res = s_middleware->getTrack(gleisId, *von, *bis, *abstand, _name);
+		std::string name;
+		int res = s_middleware->getTrack(gleisId, *von, *bis, *abstand, name);
 		if(res == desm::ERROR_OK) {
-			desm_strlcpy(name, _name.c_str(), nameLen);
+			*nameStrLen = desm_strlcpy(nameBuf, name.c_str(), nameBufLen);
 		}
 		
 		return res;
@@ -164,20 +168,20 @@ extern "C" {
 		return s_middleware->setSignal(signalId, gleisId, position, typ, hoehe, distanz, _name, stellung);
 	}
 
-	__declspec(dllexport) int stw_getSignal(int signalId, int* gleisId, double* position, int* typ, double* hoehe, double* distanz, char* name, int nameLen, int* stellung) {
+	__declspec(dllexport) int stw_getSignal(int signalId, int* gleisId, double* position, int* typ, double* hoehe, double* distanz, char* nameBuf, int nameBufLen, int* nameStrLen, int* stellung) {
 		//std::cout << "C INTERFACE: stw_getSignal"<< std::endl
 		if(s_middleware == NULL) {
 			return desm::ERROR_API_MISUSE;
 		}
-		if(!stellung) {
+		if(!nameBuf || !nameStrLen || !stellung) {
 			return desm::ERROR_API_MISUSE;
 		}
 
-		std::string _name;
-		int rc = s_middleware->getSignal(signalId, *gleisId, *position, *typ, *hoehe, *distanz, _name, *stellung);
+		std::string name;
+		int rc = s_middleware->getSignal(signalId, *gleisId, *position, *typ, *hoehe, *distanz, name, *stellung);
 		
 		if(rc == desm::ERROR_OK) {
-			desm_strlcpy(name, _name.c_str(), nameLen);
+			*nameStrLen = desm_strlcpy(nameBuf, name.c_str(), nameBufLen);
 		}
 
 		return rc;
@@ -192,18 +196,18 @@ extern "C" {
 		return s_middleware->setBalise(baliseId, gleisId, position, stellung, _protokoll);
 	}
 
-	__declspec(dllexport) int stw_getBalise(int baliseId, int* stellung, char* protokoll, int protokollLen) {
+	__declspec(dllexport) int stw_getBalise(int baliseId, int* stellung, char* protokollBuf, int protokollBufLen, int* protokollStrLen) {
 		//std::cout << "C INTERFACE: stw_getBalise"<< std::endl;
 		if(s_middleware == NULL) {
 			return desm::ERROR_API_MISUSE;
 		}
-		if(!baliseId || !stellung || !protokoll) {
+		if(!baliseId || !stellung || !protokollBuf || !protokollStrLen) {
 			return desm::ERROR_API_MISUSE;
 		}
 		std::string protokollTmp;
 		int rc = s_middleware->getBalise(baliseId, *stellung, protokollTmp);
 		if(rc == desm::ERROR_OK) {
-			desm_strlcpy(protokoll, protokollTmp.c_str(), protokollLen);
+			*protokollStrLen = desm_strlcpy(protokollBuf, protokollTmp.c_str(), protokollBufLen);
 		}
 		return rc;
 	}
