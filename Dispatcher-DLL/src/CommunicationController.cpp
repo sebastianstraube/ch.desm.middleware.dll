@@ -1,3 +1,5 @@
+#include <stdafx.h>
+
 #include <tchar.h>
 #include <stdio.h>
 #include <string.h>
@@ -30,7 +32,6 @@ namespace desm {
 		typedef struct Connection;
 
 		typedef Thread<typename CommunicationController::Impl, void*>        tMainThread;
-		typedef CommunicationController::eMode                               eMode;
 		typedef SecureQueue<std::string>                                     tQueue;
 
 		////////////////////////////////////////////////////////////////////////
@@ -201,7 +202,7 @@ namespace desm {
 
 	////////////////////////////////////////////////////////////////////////////
 
-	CommunicationController::CommunicationController(CommunicationController::eMode mode, const std::string& host, unsigned short port, unsigned int timeout)
+	CommunicationController::CommunicationController(eMode mode, const std::string& host, unsigned short port, unsigned int timeout)
 		: pimpl(new Impl(mode, host, port, timeout))
 	{
 	}

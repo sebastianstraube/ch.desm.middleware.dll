@@ -66,7 +66,7 @@ bool TestFunctionsMiddleware::testGetBalise(){
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testGetBalise" << std::endl;
-	bool isSuccess = dll.getBalise(baliseId, stellung, protokoll);
+	bool isSuccess = dll.getBalise(baliseId, gleisId, position, stellung, protokoll);
 	std::cout << "baliseId: " << baliseId << std::endl;
 	std::cout << "gleisId: " << gleisId << std::endl;
 	std::cout << "position: " << position << std::endl;

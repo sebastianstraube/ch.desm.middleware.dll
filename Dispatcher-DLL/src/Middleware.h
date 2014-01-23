@@ -1,55 +1,60 @@
 #pragma once
 
+#include <map>
 #include <string>
 #include <vector>
 
-#include "Events.h"
+#include <json/json.h>
+
+#include "Desm.h"
+#include "util/Thread.h"
+#include "util/SecureQueue.h"
 
 namespace desm {
 
-	static const int INVALID_ID = -999;
+	class CommunicationController;
 
 	class Middleware
 	{
-	public: // lifetime
-		Middleware(const std::string& configPath);
-		~Middleware();
-	
-	public:
-		//ON command
-		int onStartSimulation();
-		int onStopSimulation();
-		int onLoadStrecke();
-		
-		//SET command
-		int setTrack(int gleisId, double von, double bis, double abstand, const std::string& name);
-		int setTrackConnection(int trackConnectionId, int gleisId, int gleis1, int gleis2, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id);
-		int setSignal(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int stellung);
-		int setBalise(int baliseId, int gleisId, double position, int stellung, const std::string &protokoll);
-		int setLoop(int baliseId, int gleisId, double positionVon, double positionBis);
-		int setIsolierstoss(int isolierstossId, int gleisId, double position);
-		int setKilometerDirection(int richtung);
-		int setTrainPosition(int train, int direction, const std::vector<double>& positionList, const std::vector<int>& gleisList);
-		
-		//GET command - BEFORE USE, DO SET
-		int getSignal(int signalId, int& gleisId, double& position, int& typ, double& hoehe, double& distanz, std::string& name, int& stellung);
-		int getBalise(int baliseId, int& stellung, std::string& protokoll);
-		int getLoop(int baliseId, int& gleisId, double& positionVon, double& positionBis);
-		int getKilometerDirection(int& richtung);
-		int getWeiche(int weicheId, int& gleisId);
-		
-		int getEvents(std::vector<int>& typeList, std::vector<int>& idList);
-
-		// UNDOCUMENTED - MIDDLEWARE FUNCTIONS (HIGH LEVEL)
-		int getTrack(int gleisId, double& von, double& bis, double& abstand, std::string& name);
-		int getTrackConnection(int trackConnectionId, int& gleisId, int& gleis1, int& gleis2, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id);
-		int getIsolierstoss(int isolierstossId, int& gleisId, double& position);
-		int setWeiche(int weicheId, int gleisId);
-		int getTrainPosition(int trainTyp, int& direction, std::vector<double>& positionList, std::vector<int>& gleisList);
-
+	public: // singleton
+		static bool init(const std::string& configPath);
+		static void deinit();
+		static Middleware& get();
 	private:
-		struct Impl;
-		Impl* m_pImpl;
+		static Middleware* s_singleton;
+
+	private: // lifetime
+		Middleware(const std::string& configPath);
+	public:
+		~Middleware();
+
+	public:
+		void getEvents(std::vector<int>& types, std::vector<int>& ids);
+		bool sendCommand(int type, int id, const Json::Value& v);
+		bool getCommand(int type, int id, Json::Value& v);
+
+	private: // types
+		typedef Thread<typename Middleware, void*> tFetchThread;
+
+		typedef std::pair<int, int> tChangeInfo;
+		typedef SecureQueue<tChangeInfo> tChangeList;
+
+		typedef std::map<int, Json::Value> tCommandMap;
+		typedef std::map<int, tCommandMap> tState;
+
+	private: // communication helper
+		DWORD fetch(void*);
+		void parseMessage(const std::string& msg);
+		void storeCommand(int type, int id, const Json::Value& v);
+		bool sendMessage(const Json::Value& v);
+		void resetState();
+		
+	private: // member
+		CommunicationController* m_cc;
+		tFetchThread* m_fetchThread;
+		bool m_fetchThreadStop;
+		tState m_state;
+		tChangeList m_incomingChanges;
 	};
 
 };

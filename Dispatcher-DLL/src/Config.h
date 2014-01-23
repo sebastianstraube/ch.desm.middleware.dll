@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CommunicationController.h"
+#include "Desm.h"
 
 namespace desm {
 
@@ -8,13 +8,17 @@ namespace desm {
 	{
 	public:
 		Config(const std::string& name);
-		CommunicationController::eMode getMode() const;
+		eMode getMode() const;
 		const std::string getHost() const;
 		unsigned short getPort() const;
 		unsigned int getTimeout() const;
 	private:
-		struct Impl;
-		Impl* pImpl;
+		bool loadConfig(const std::string& fname);
+	private:
+		eMode m_mode;
+		std::string m_host;
+		unsigned short m_port;
+		unsigned int m_timeout;
 	};
 
 };
