@@ -22,13 +22,79 @@
     <ClCompile Include="src\CommunicationController.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\infoVersion.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\onLoadStrecke.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
     <ClCompile Include="src\cmd\onStartProgramm.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\onStartSimulation.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\onStopProgramm.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\onStopSimulation.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setBalise.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setKilometerDirection.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setLoop.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setSignal.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setTrack.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setTrackConnection.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setTrainPosition.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setWeiche.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\deallocate.cpp">
       <Filter>src\cmd</Filter>
     </ClCompile>
     <ClCompile Include="src\cmd\getBalise.cpp">
       <Filter>src\cmd</Filter>
     </ClCompile>
-    <ClCompile Include="src\cmd\setBalise.cpp">
+    <ClCompile Include="src\cmd\getEvents.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getKilometerDirection.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getLoop.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getSignal.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getTrack.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getTrackConnection.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getTrainPosition.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getWeiche.cpp">
       <Filter>src\cmd</Filter>
     </ClCompile>
     <ClCompile Include="src\cmd\infoDescription.cpp">
@@ -37,19 +103,10 @@
     <ClCompile Include="src\cmd\infoName.cpp">
       <Filter>src\cmd</Filter>
     </ClCompile>
-    <ClCompile Include="src\cmd\infoVersion.cpp">
+    <ClCompile Include="src\cmd\setIsolierstoss.cpp">
       <Filter>src\cmd</Filter>
     </ClCompile>
-    <ClCompile Include="src\stdafx.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\cmd\onStopProgramm.cpp">
-      <Filter>src\cmd</Filter>
-    </ClCompile>
-    <ClCompile Include="src\cmd\getEvents.cpp">
-      <Filter>src\cmd</Filter>
-    </ClCompile>
-    <ClCompile Include="src\cmd\deallocate.cpp">
+    <ClCompile Include="src\cmd\getIsolierstoss.cpp">
       <Filter>src\cmd</Filter>
     </ClCompile>
   </ItemGroup>

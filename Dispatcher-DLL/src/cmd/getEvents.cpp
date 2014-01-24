@@ -6,7 +6,8 @@
 #include "util/String.h"
 
 extern "C" {
-	__declspec(dllexport) int stw_getEvents(int* anzahlEvents, int** typeList, int** idList) {
+	__declspec(dllexport) int stw_getEvents(int* anzahlEvents, int** typeList, int** idList)
+	{
 		if(!anzahlEvents || !typeList || !idList) {
 			return desm::ERROR_API_MISUSE;
 		}

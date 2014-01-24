@@ -6,7 +6,8 @@
 #include "util/String.h"
 
 extern "C" {
-	__declspec(dllexport) int stw_getBalise(int baliseId, int* gleisId, double* position, int* stellung, char* protokollBuf, int protokollBufLen, int* protokollStrLen)
+	__declspec(dllexport) int stw_getBalise(int baliseId, int* gleisId, double* position,
+		int* stellung, char* protokollBuf, int protokollBufLen, int* protokollStrLen)
 	{
 		if(!gleisId || !position || !stellung || !protokollBuf || !protokollStrLen) {
 			return desm::ERROR_API_MISUSE;

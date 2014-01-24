@@ -111,28 +111,28 @@ struct MwDll::Impl {
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_infoVersion);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_infoName);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_infoDescription);
-		/*IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_onStartSimulation);
+		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_onStartSimulation);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_onStopSimulation);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_setTrack);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_getTrack);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_setTrackConnection);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_getTrackConnection);
-		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_setSignal);*/
+		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_setSignal);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_setBalise);
-		/*IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_setLoop);
+		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_setLoop);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_setIsolierstoss);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_getIsolierstoss);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_setKilometerDirection);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_getKilometerDirection);
-		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_onLoadStrecke);*/
+		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_onLoadStrecke);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_getEvents);
-		//IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_getSignal);
+		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_getSignal);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_getBalise);
-		/*IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_getLoop);
+		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_getLoop);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_getWeiche);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_setWeiche);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_getTrainPosition);
-		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_setTrainPosition);*/
+		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_setTrainPosition);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_deallocate);
 
 #undef IMPORT_DLL_FUNCTION
@@ -215,7 +215,7 @@ bool MwDll::getTrack(int gleisId, double& von, double& bis, double& abstand, std
 	
 	if(success) {
 		name = std::string(_name);
-		// dont care about nameStrLen. we only could assert name.size() == nameStrLen
+		assert(name.size() == nameStrLen);
 	}
 
 	return success;
@@ -236,7 +236,7 @@ bool MwDll::getTrackConnection(int trackConnectionId, int& gleisId, int& gleis1,
 
 	if(success) {
 		name = std::string(_name);
-		// dont care about nameStrLen. we only could assert name.size() == nameStrLen
+		assert(name.size() == nameStrLen);
 	}
 
 	return success;
@@ -257,7 +257,7 @@ bool MwDll::getSignal(int signalId, int& gleisId, double& position, int& typ, do
 	
 	if(success) {
 		name = std::string(_name);
-		// dont care about nameStrLen. we only could assert name.size() == nameStrLen
+		assert(name.size() == nameStrLen);
 	}
 
 	return success;
@@ -278,8 +278,7 @@ bool MwDll::getBalise(int baliseId, int& gleisId, double& position, int& stellun
 	bool success = checkErrorCode(m_pImpl->m_stw_getBalise(baliseId, &gleisId, &position, &stellung, _protokoll, DEFAULT_BUF_LEN, &strLen));
 	if(success) {
 		protokoll = std::string(_protokoll);
-		// ignore strLen since we depend on null-termination
-		// we only could do an assert: assert(strLen == protokoll.size());
+		assert(protokoll.size() == strLen);
 	}
 
 	return success;

@@ -6,7 +6,8 @@
 #include "util/String.h"
 
 extern "C" {
-	__declspec(dllexport) int stw_setBalise(int baliseId, int gleisId, double position, int stellung, char* protokoll, int protokollLen)
+	__declspec(dllexport) int stw_setBalise(int baliseId, int gleisId,
+		double position, int stellung, char* protokoll, int protokollLen)
 	{
 		Json::Value v(Json::objectValue);
 		v["gleisId"] = Json::Value(gleisId);

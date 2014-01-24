@@ -30,7 +30,7 @@ namespace desm {
 
 	public:
 		void getEvents(std::vector<int>& types, std::vector<int>& ids);
-		bool sendCommand(int type, int id, const Json::Value& v);
+		bool sendCommand(int type, int id = INVALID_ID, const Json::Value& v = Json::Value());
 		bool getCommand(int type, int id, Json::Value& v);
 
 	private: // types
