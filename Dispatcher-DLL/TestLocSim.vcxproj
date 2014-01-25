@@ -11,13 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\MwDll.cpp" />
-    <ClCompile Include="src\TestFunctionsMiddleware.cpp" />
-    <ClCompile Include="src\TestLocSim.cpp" />
+    <ClCompile Include="test\MwDll.cpp" />
+    <ClCompile Include="test\TestFunctionsMiddleware.cpp" />
+    <ClCompile Include="test\TestLocSim.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\MwDll.h" />
-    <ClInclude Include="src\TestFunctionsMiddleware.h" />
+    <ClInclude Include="test\MwDll.h" />
+    <ClInclude Include="test\TestFunctionsMiddleware.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{84928FDF-99FB-46AB-89D5-890DCC264FE5}</ProjectGuid>
@@ -71,7 +71,6 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>cc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -84,14 +83,12 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>src;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

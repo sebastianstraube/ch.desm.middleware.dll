@@ -1,27 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\MwDll.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestDesmMiddleware.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TestFunctionsMiddleware.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\MwDll.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\TestFunctionsMiddleware.h">
-      <Filter>src</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="src">
       <UniqueIdentifier>{bc0d1497-055f-4eee-913d-ae608406f252}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="test\TestFunctionsMiddleware.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="test\MwDll.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="test\TestDesmMiddleware.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="test\TestFunctionsMiddleware.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="test\MwDll.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

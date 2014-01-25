@@ -11,13 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\MwDll.cpp" />
-    <ClCompile Include="src\TestDesmMiddleware.cpp" />
-    <ClCompile Include="src\TestFunctionsMiddleware.cpp" />
+    <ClCompile Include="test\MwDll.cpp" />
+    <ClCompile Include="test\TestDesmMiddleware.cpp" />
+    <ClCompile Include="test\TestFunctionsMiddleware.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\MwDll.h" />
-    <ClInclude Include="src\TestFunctionsMiddleware.h" />
+    <ClInclude Include="test\MwDll.h" />
+    <ClInclude Include="test\TestFunctionsMiddleware.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0CE5A6B9-4A57-4CC8-8EAA-4B55D540BF53}</ProjectGuid>
@@ -71,7 +71,6 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libzmq.lib;cc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -84,14 +83,12 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>src;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libzmq.lib;cc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

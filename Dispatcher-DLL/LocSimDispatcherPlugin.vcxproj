@@ -59,14 +59,13 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>src;..\3rdparty\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>jsoncpp.lib;libzmq.lib;Ws2_32.lib;czmq.lib;CC.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -78,7 +77,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>src;..\3rdparty\include</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -86,19 +85,56 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>jsoncpp.lib;libzmq.lib;czmq.lib;Ws2_32.lib;CC.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\cmd\deallocate.cpp" />
+    <ClCompile Include="src\cmd\getBalise.cpp" />
+    <ClCompile Include="src\cmd\getEvents.cpp" />
+    <ClCompile Include="src\cmd\getIsolierstoss.cpp" />
+    <ClCompile Include="src\cmd\getKilometerDirection.cpp" />
+    <ClCompile Include="src\cmd\getLoop.cpp" />
+    <ClCompile Include="src\cmd\getSignal.cpp" />
+    <ClCompile Include="src\cmd\getTrack.cpp" />
+    <ClCompile Include="src\cmd\getTrackConnection.cpp" />
+    <ClCompile Include="src\cmd\getTrainPosition.cpp" />
+    <ClCompile Include="src\cmd\getWeiche.cpp" />
+    <ClCompile Include="src\cmd\infoDescription.cpp" />
+    <ClCompile Include="src\cmd\infoName.cpp" />
+    <ClCompile Include="src\cmd\infoVersion.cpp" />
+    <ClCompile Include="src\cmd\onLoadStrecke.cpp" />
+    <ClCompile Include="src\cmd\onStartProgramm.cpp" />
+    <ClCompile Include="src\cmd\onStartSimulation.cpp" />
+    <ClCompile Include="src\cmd\onStopProgramm.cpp" />
+    <ClCompile Include="src\cmd\onStopSimulation.cpp" />
+    <ClCompile Include="src\cmd\setBalise.cpp" />
+    <ClCompile Include="src\cmd\setIsolierstoss.cpp" />
+    <ClCompile Include="src\cmd\setKilometerDirection.cpp" />
+    <ClCompile Include="src\cmd\setLoop.cpp" />
+    <ClCompile Include="src\cmd\setSignal.cpp" />
+    <ClCompile Include="src\cmd\setTrack.cpp" />
+    <ClCompile Include="src\cmd\setTrackConnection.cpp" />
+    <ClCompile Include="src\cmd\setTrainPosition.cpp" />
+    <ClCompile Include="src\cmd\setWeiche.cpp" />
+    <ClCompile Include="src\CommunicationController.cpp" />
     <ClCompile Include="src\Config.cpp" />
-    <ClCompile Include="src\Interface.cpp" />
     <ClCompile Include="src\Middleware.cpp" />
+    <ClCompile Include="src\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\CommunicationController.h" />
     <ClInclude Include="src\Config.h" />
-    <ClInclude Include="src\ErrorCodes.h" />
-    <ClInclude Include="src\Events.h" />
+    <ClInclude Include="src\Desm.h" />
     <ClInclude Include="src\Middleware.h" />
+    <ClInclude Include="src\stdafx.h" />
+    <ClInclude Include="src\util\CriticalSection.h" />
+    <ClInclude Include="src\util\Json.h" />
+    <ClInclude Include="src\util\SecureQueue.h" />
+    <ClInclude Include="src\util\String.h" />
+    <ClInclude Include="src\util\Thread.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

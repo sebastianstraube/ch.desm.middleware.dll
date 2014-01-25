@@ -2,7 +2,7 @@
 #include <string>
 
 #include "MwDll.h"
-#include "ErrorCodes.h"
+#include "Desm.h"
 
 using namespace desm;
 
@@ -34,7 +34,7 @@ struct MwDll::Impl {
 	typedef int (*t_stw_getSignal)(int signalId, int* gleisId, double* position, int* typ, double* hoehe, double* distanz, char* nameBuf, int nameBufLen, int* nameStrLen, int* stellung);
 	
 	typedef int (*t_stw_setBalise)(int baliseId, int gleisId, double position, int stellung, char* protokoll, int protokollLen);
-	typedef int (*t_stw_getBalise)(int baliseId, int* stellung, char* protokollBuf, int protokollBufLen, int* protokollStrLen);
+	typedef int (*t_stw_getBalise)(int baliseId, int* gleisId, double* position, int* stellung, char* protokollBuf, int protokollBufLen, int* protokollStrLen);
 
 	typedef int (*t_stw_setLoop)(int baliseId, int gleisId, double positionVon, double positionBis);
 	typedef int (*t_stw_getLoop)(int baliseId, int* gleisId, double* positionVon, double* positionBis);
@@ -215,7 +215,7 @@ bool MwDll::getTrack(int gleisId, double& von, double& bis, double& abstand, std
 	
 	if(success) {
 		name = std::string(_name);
-		// dont care about nameStrLen. we only could assert name.size() == nameStrLen
+		assert(name.size() == nameStrLen);
 	}
 
 	return success;
@@ -236,7 +236,7 @@ bool MwDll::getTrackConnection(int trackConnectionId, int& gleisId, int& gleis1,
 
 	if(success) {
 		name = std::string(_name);
-		// dont care about nameStrLen. we only could assert name.size() == nameStrLen
+		assert(name.size() == nameStrLen);
 	}
 
 	return success;
@@ -257,7 +257,7 @@ bool MwDll::getSignal(int signalId, int& gleisId, double& position, int& typ, do
 	
 	if(success) {
 		name = std::string(_name);
-		// dont care about nameStrLen. we only could assert name.size() == nameStrLen
+		assert(name.size() == nameStrLen);
 	}
 
 	return success;
@@ -272,14 +272,13 @@ bool MwDll::setBalise(int baliseId, int gleisId, double position, int stellung, 
 	return success;
 }
 
-bool MwDll::getBalise(int baliseId, int& stellung, std::string& protokoll) {
+bool MwDll::getBalise(int baliseId, int& gleisId, double& position, int& stellung, std::string& protokoll) {
 	char _protokoll[DEFAULT_BUF_LEN];
 	int strLen;
-	bool success = checkErrorCode(m_pImpl->m_stw_getBalise(baliseId, &stellung, _protokoll, DEFAULT_BUF_LEN, &strLen));
+	bool success = checkErrorCode(m_pImpl->m_stw_getBalise(baliseId, &gleisId, &position, &stellung, _protokoll, DEFAULT_BUF_LEN, &strLen));
 	if(success) {
 		protokoll = std::string(_protokoll);
-		// ignore strLen since we depend on null-termination
-		// we only could do an assert: assert(strLen == protokoll.size());
+		assert(protokoll.size() == strLen);
 	}
 
 	return success;

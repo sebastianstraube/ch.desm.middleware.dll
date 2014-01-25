@@ -5,29 +5,140 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="src\util">
+      <UniqueIdentifier>{d76ae249-80a1-45f5-9160-e0d659875e20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\cmd">
+      <UniqueIdentifier>{170fd88a-04a0-4468-9b1e-78c81629c5ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Middleware.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Interface.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\Config.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CommunicationController.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\infoVersion.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\onLoadStrecke.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\onStartProgramm.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\onStartSimulation.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\onStopProgramm.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\onStopSimulation.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setBalise.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setKilometerDirection.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setLoop.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setSignal.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setTrack.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setTrackConnection.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setTrainPosition.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setWeiche.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\deallocate.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getBalise.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getEvents.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getKilometerDirection.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getLoop.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getSignal.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getTrack.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getTrackConnection.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getTrainPosition.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getWeiche.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\infoDescription.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\infoName.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\setIsolierstoss.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cmd\getIsolierstoss.cpp">
+      <Filter>src\cmd</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Middleware.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\ErrorCodes.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\Config.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Events.h">
+    <ClInclude Include="src\util\CriticalSection.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\SecureQueue.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\Thread.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CommunicationController.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Desm.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\String.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\Json.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stdafx.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

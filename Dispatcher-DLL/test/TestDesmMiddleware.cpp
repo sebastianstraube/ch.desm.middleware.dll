@@ -3,9 +3,9 @@
 #include <iterator>
 #include <string>
 #include <Windows.h> // Sleep()
-#include "Events.h"
+
+#include "Desm.h"
 #include "MwDll.h"
-#include "Middleware.h"
 #include "TestFunctionsMiddleware.h"
 
 using namespace desm;

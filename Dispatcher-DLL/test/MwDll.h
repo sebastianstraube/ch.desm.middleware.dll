@@ -37,7 +37,7 @@ namespace desm {
 		
 		//GET command - BEFORE USE, DO SET
 		bool getSignal(int signalId, int& gleisId, double& position, int& typ, double& hoehe, double& distanz, std::string& name, int& stellung);
-		bool getBalise(int baliseId, int& stellung, std::string& protokoll);
+		bool getBalise(int baliseId, int& gleisId, double& position, int& stellung, std::string& protokoll);
 		bool getLoop(int baliseId, int& gleisId, double& positionVon, double& positionBis);
 		bool getKilometerDirection(int& richtung);
 		bool getWeiche(int weicheId, int& gleisId);

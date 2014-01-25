@@ -462,7 +462,7 @@ static inline void *
 
 //- DLL exports -------------------------------------------------------------
 
-#if defined (_WINDLL)
+#if defined (_WINDLL) && !defined(CZMQ_AS_LIB)
 #   if defined LIBCZMQ_EXPORTS
 #       define CZMQ_EXPORT __declspec(dllexport)
 #   else
