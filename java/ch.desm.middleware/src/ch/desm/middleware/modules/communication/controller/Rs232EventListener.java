@@ -24,7 +24,16 @@ public class Rs232EventListener implements SerialPortEventListener {
             if(event.getEventValue() > 1){
                 try {
                 	byte buffer[]  = serialPort.readBytes();
-    				System.out.println(buffer.toString());
+                	String returnString = "";
+                	
+                	for(int i=0; i<buffer.length; i++){
+                		if( ((char)buffer[i]) != '\n' &&
+                			((char)buffer[i]) != '\r'){
+                			returnString += (char)buffer[i];
+                		}
+                	}
+                	
+                	System.out.println(returnString);
                 }
                 catch (SerialPortException ex) {
                     System.out.println(ex);
