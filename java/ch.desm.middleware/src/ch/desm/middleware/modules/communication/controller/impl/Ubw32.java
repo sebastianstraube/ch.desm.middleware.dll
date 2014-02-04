@@ -2,7 +2,7 @@ package ch.desm.middleware.modules.communication.controller.impl;
 
 import ch.desm.middleware.modules.communication.controller.Rs232;
 
-public class Ubw32 extends Rs232 {
+public class Ubw32 extends Rs232{
 
 	/*
 	You end a command by sending a <CR> or <LF> or some combination of 
@@ -38,5 +38,10 @@ public class Ubw32 extends Rs232 {
 	or "b" for port names.
 	*/
 
+	//TODO
+	private String[] connectedPorts = {"COM4"};
 	
+	public Ubw32(){
+		super.setSerialPorts(connectedPorts);
+	}
 }

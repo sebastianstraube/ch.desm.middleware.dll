@@ -1,8 +1,9 @@
 package ch.desm.middleware.modules.communication.controller;
 
+import ch.desm.middleware.modules.communication.AbstractCommunication;
 import jssc.*;
 
-public class Rs232 {
+public class Rs232 extends AbstractCommunication{
 
 	private SerialPort[] serialPorts;
 	
