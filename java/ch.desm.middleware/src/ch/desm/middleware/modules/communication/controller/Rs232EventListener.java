@@ -5,26 +5,26 @@ import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 
-public class EventListenerRS232 implements SerialPortEventListener {
+public class Rs232EventListener implements SerialPortEventListener {
 	 
 	private SerialPort serialPort;
 	
-	public EventListenerRS232(SerialPort serialPort){
+	public Rs232EventListener(SerialPort serialPort){
 		this.serialPort = serialPort;
 	}
 	
     public void serialEvent(SerialPortEvent event) {
         //Object type SerialPortEvent carries information about which event occurred and a value.
         //For example, if the data came a method event.getEventValue() returns us the number of bytes in the input buffer.
-        
-    	System.out.println("Serial event listener receive data on port "+ serialPort.getPortName());
     	
     	if(event.isRXCHAR()){
-            if(event.getEventValue() == 10){
+    		
+    		System.out.println("Serial event listener receive data on port "+ serialPort.getPortName());
+    		
+            if(event.getEventValue() > 1){
                 try {
-                    byte buffer[] = serialPort.readBytes(10);
-                    //TODO
-                    System.out.println(buffer);
+                	byte buffer[]  = serialPort.readBytes();
+    				System.out.println(buffer.toString());
                 }
                 catch (SerialPortException ex) {
                     System.out.println(ex);

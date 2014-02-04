@@ -1,12 +1,12 @@
 package ch.desm.middleware.modules.components.impl;
 
+import ch.desm.middleware.modules.communication.AbstractCommunication;
 import ch.desm.middleware.modules.communication.controller.Rs232;
-import ch.desm.middleware.modules.components.InterfaceComponents;
 
-public class Re420 implements InterfaceComponents{
+public class Re420 extends AbstractCommunication{
 
 	private Rs232 serialPort;
-	private String[] connectedPorts = {"COM6", "COM8"};
+	private String[] connectedPorts = {"COM4"};
 	
 	public Re420(){
 		serialPort = new Rs232();

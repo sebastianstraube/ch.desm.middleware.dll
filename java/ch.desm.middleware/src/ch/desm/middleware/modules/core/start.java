@@ -9,7 +9,17 @@ public class start {
 
 	Re420 lok1 = new Re420();
 	lok1.testConnection();
-	lok1.disconnect();
+	
+	while(true){
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+//	lok1.disconnect();
 	}
 
 }

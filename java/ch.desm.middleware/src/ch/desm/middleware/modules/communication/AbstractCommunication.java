@@ -1,5 +1,5 @@
 package ch.desm.middleware.modules.communication;
 
-public abstract class AbstractBase {
+public abstract class AbstractCommunication {
 
 }

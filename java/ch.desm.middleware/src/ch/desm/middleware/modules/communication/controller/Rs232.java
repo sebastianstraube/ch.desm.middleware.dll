@@ -32,7 +32,7 @@ public class Rs232 {
 	        	System.out.print(serialPorts[i].getPortName() + " ");
 	        	
 	        	serialPorts[i].openPort();
-	        	serialPorts[i].setParams(9600, 8, 1, 0);
+	        	serialPorts[i].setParams(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 	            //Preparing a mask. In a mask, we need to specify the types of events that we want to track.
 	            //Well, for example, we need to know what came some data, thus in the mask must have the
 	            //following value: MASK_RXCHAR. If we, for example, still need to know about changes in states 
@@ -41,7 +41,7 @@ public class Rs232 {
 	            //Set the prepared mask
 	            serialPorts[i].setEventsMask(SerialPort.MASK_RXCHAR);
 	            //Add an interface through which we will receive information about events
-	            serialPorts[i].addEventListener(new EventListenerRS232(serialPorts[i]));
+	            serialPorts[i].addEventListener(new Rs232EventListener(serialPorts[i]));
 	        }
 	        catch (SerialPortException e) {
 	            System.err.println(e);
@@ -62,8 +62,8 @@ public class Rs232 {
 			try {
 				if(serialPorts[i].isOpened()){
 					System.out.println(serialPorts[i].getPortName()+ " ");
-					serialPorts[i].purgePort(1);
-					serialPorts[i].purgePort(2);
+					serialPorts[i].purgePort(SerialPort.PURGE_RXABORT);
+					serialPorts[i].purgePort(SerialPort.PURGE_TXABORT);
 					serialPorts[i].closePort();
 				}
 			} catch (SerialPortException e) {
@@ -76,7 +76,7 @@ public class Rs232 {
 	public void testSeriaPorts(){
 		for(int i=0; i<serialPorts.length; i++){
 			try {
-				serialPorts[i].writeString("Write Test to Serialport ..."+serialPorts[i].getPortName());
+				serialPorts[i].writeString("Write Test to Serialport ..."+serialPorts[i].getPortName() + "\r\n");				
 			} catch (SerialPortException e) {
 				// TODO Auto-generated catch block
 				 System.err.println(e);
