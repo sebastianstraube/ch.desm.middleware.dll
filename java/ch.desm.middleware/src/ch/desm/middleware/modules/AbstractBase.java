@@ -1,5 +1,5 @@
 package ch.desm.middleware.modules;
 
-public class Base {
+public abstract class AbstractBase {
 
 }

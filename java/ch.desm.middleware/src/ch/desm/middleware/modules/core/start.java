@@ -8,7 +8,8 @@ public class start {
 	public static void main(String[] args) {
 
 	Re420 lok1 = new Re420();
-
+	lok1.testConnection();
+	lok1.disconnect();
 	}
 
 }
