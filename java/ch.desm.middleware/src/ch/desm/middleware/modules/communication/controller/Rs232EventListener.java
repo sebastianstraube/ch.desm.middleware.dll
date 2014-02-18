@@ -5,7 +5,7 @@ import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 
-public class Rs232EventListener implements SerialPortEventListener {
+class Rs232EventListener implements SerialPortEventListener {
 	 
 	private SerialPort serialPort;
 	

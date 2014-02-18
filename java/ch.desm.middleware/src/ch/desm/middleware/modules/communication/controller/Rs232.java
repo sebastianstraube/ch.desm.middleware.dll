@@ -22,13 +22,13 @@ public class Rs232 extends AbstractCommunication{
     	}
 	}
 	
-	public void setSerialPorts(String[] serialportNames){
-		System.out.print("intialize ports...");
+	public void setSerialPorts(ENUM_SERIAL_PORTS[] serialportNames){
+		System.out.print("intialize port(s)...");
 		
 		serialPorts = new SerialPort[serialportNames.length];
 		
 		for(int i=0; i< serialportNames.length; i++){
-			serialPorts[i] = new SerialPort(serialportNames[i]); 
+			serialPorts[i] = new SerialPort(serialportNames[i].name()); 
 	        try {
 	        	System.out.print(serialPorts[i].getPortName() + " ");
 	        	
@@ -56,7 +56,7 @@ public class Rs232 extends AbstractCommunication{
 		return serialPorts;
 	}
 	
-	public void disconnect(){
+	public void disconnectAllPorts(){
 		System.out.print("disconnecting all open ports...");
 		
 		for(int i=0; i<serialPorts.length; i++){
@@ -83,5 +83,30 @@ public class Rs232 extends AbstractCommunication{
 				 System.err.println(e);
 			}
 		}
+	}
+	
+	protected boolean send(ENUM_SERIAL_PORTS port, String value){
+		boolean isPortFound = false;
+		
+		try {
+			for(int i=0; i < serialPorts.length; i++){
+				if(serialPorts[i].getPortName().equals(port.name())){	
+						serialPorts[i].writeString(value);
+						isPortFound = true;
+				}
+			}
+			
+			if(!isPortFound){
+				throw new Exception("The serial port "+port.name()+" is not connected.");
+			}
+		
+		} catch (SerialPortException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		
+		return isPortFound;
 	}
 }
