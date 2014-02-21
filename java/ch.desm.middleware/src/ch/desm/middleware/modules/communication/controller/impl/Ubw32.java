@@ -1,7 +1,7 @@
 package ch.desm.middleware.modules.communication.controller.impl;
 
-import ch.desm.middleware.modules.communication.InterfaceCommunication;
 import ch.desm.middleware.modules.communication.controller.Rs232;
+import ch.desm.middleware.modules.communication.controller.impl.Ubw32Interface.EnumCommand;
 
 public class Ubw32 extends Rs232 {
 
@@ -35,18 +35,48 @@ public class Ubw32 extends Rs232 {
 	 * All port names ("A", "B", "C") are case insensitive. You can use "B" or
 	 * "b" for port names.
 	 */
-
-	private ENUM_SERIAL_PORTS[] connectedPorts = {ENUM_SERIAL_PORTS.COM5};
-
-	public Ubw32() {
-		super.setSerialPorts(connectedPorts);
+	
+	protected EnumSerialPorts connectedPort;
+	
+	public Ubw32(EnumSerialPorts enumSerialPort) {
+		connectedPort = enumSerialPort;
+	}
+	
+	@Override
+	public void initialize(){
+		super.addSerialPort(connectedPort);
+		super.initialize();
 	}
 
-	//TODO implement InterfaceCommunication
 	public void sendCommand(Ubw32Command command){
+		if(super.send(connectedPort, command.getCommand())){
+			System.out.println("command successfull sended " + command.getCommand());
+		}
+	}
+	
+	public void testCommunication(){
+		super.testSeriaPorts();
+		Ubw32Command command = new Ubw32Command(EnumCommand.CONFIGURE);
+		command.setCommand(0, 0, 0, 0, 0, 0, 0);	
+		sendCommand(command);
+		
+		int i=65536;
+		
+		while(true){
+			try {
+				Thread.sleep(70);
+				command = new Ubw32Command(EnumCommand.OUTPUT_STATE);
+				command.setCommand(0,0,0,0,i-1,0,0);
+				sendCommand(command);
 				
-		if(super.send(ENUM_SERIAL_PORTS.COM5, command.getConfigure())){
-			InterfaceCommunication.commands.add(command);
-		};
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			i/=2;
+//			if(i<=1) i++;
+			if(i < 1) i=65536;
+		}
 	}
 }

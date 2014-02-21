@@ -1,23 +1,12 @@
 package ch.desm.middleware.modules.components.impl;
 
-import ch.desm.middleware.modules.components.AbstractComponents;
+import ch.desm.middleware.modules.components.ComponentsAbstract;
 
 
-public class Locsim extends AbstractComponents{
+public class Locsim extends ComponentsAbstract{
 	
 	public Locsim(){
 		
 	}
 
-	@Override
-	public void initialize() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void disconnect() {
-		// TODO Auto-generated method stub
-		
-	}
 }

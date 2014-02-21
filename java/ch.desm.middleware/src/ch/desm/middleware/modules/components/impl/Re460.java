@@ -1,5 +1,7 @@
 package ch.desm.middleware.modules.components.impl;
 
-public class Re460 {
+import ch.desm.middleware.modules.components.ComponentsAbstract;
+
+public class Re460 extends ComponentsAbstract{
 
 }

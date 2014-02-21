@@ -1,5 +1,10 @@
 package ch.desm.middleware.modules.components.impl;
 
-public class Zusi {
+import ch.desm.middleware.modules.components.ComponentsAbstract;
 
+public class Zusi extends ComponentsAbstract{
+
+	public Zusi(){
+		
+	}
 }

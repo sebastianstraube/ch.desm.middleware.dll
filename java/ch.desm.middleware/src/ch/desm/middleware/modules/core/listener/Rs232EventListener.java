@@ -1,19 +1,19 @@
-package ch.desm.middleware.modules.communication.controller;
+package ch.desm.middleware.modules.core.listener;
 
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 
-class Rs232EventListener implements SerialPortEventListener {
-	 
+public class Rs232EventListener extends EventListener implements SerialPortEventListener {
+
 	private SerialPort serialPort;
 	
 	public Rs232EventListener(SerialPort serialPort){
 		this.serialPort = serialPort;
 	}
 	
-    public void serialEvent(SerialPortEvent event) {
+	public void serialEvent(SerialPortEvent event) {
         //Object type SerialPortEvent carries information about which event occurred and a value.
         //For example, if the data came a method event.getEventValue() returns us the number of bytes in the input buffer.
     	
@@ -58,4 +58,6 @@ class Rs232EventListener implements SerialPortEventListener {
                 }
             }
         }
+
+
 }
