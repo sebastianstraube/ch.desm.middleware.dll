@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.communication.controller;
+package ch.desm.middleware.modules.communication.serial;
 
 import java.util.ArrayList;
 

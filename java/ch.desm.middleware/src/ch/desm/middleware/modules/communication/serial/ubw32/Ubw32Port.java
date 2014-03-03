@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.communication.controller.impl;
+package ch.desm.middleware.modules.communication.serial.ubw32;
 
 class Ubw32Port {
 

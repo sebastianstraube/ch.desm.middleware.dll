@@ -1,5 +1,6 @@
-package ch.desm.middleware.modules.core.listener;
+package ch.desm.middleware.modules.communication.serial;
 
+import ch.desm.middleware.modules.core.listener.EventListener;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -7,10 +8,19 @@ import jssc.SerialPortException;
 
 public class Rs232EventListener extends EventListener implements SerialPortEventListener {
 
-	private SerialPort serialPort;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8130768355819547759L;
 	
-	public Rs232EventListener(SerialPort serialPort){
+	
+	private SerialPort serialPort;
+//	private ComponentAbstract components;
+	
+	public Rs232EventListener(Object source, SerialPort serialPort){
+		super(source, null);
 		this.serialPort = serialPort;
+//		this.components = components;
 	}
 	
 	public void serialEvent(SerialPortEvent event) {
@@ -19,21 +29,23 @@ public class Rs232EventListener extends EventListener implements SerialPortEvent
     	
     	if(event.isRXCHAR()){
     		
-    		System.out.println("Serial event listener receive data on port "+ serialPort.getPortName());
+    		System.out.println("Serial event listener receive data on port "+ serialPort.getPortName()+ ": ");
     		
             if(event.getEventValue() > 1){
                 try {
                 	byte buffer[]  = serialPort.readBytes();
-                	String returnString = "";
+                	String receivedCommand = "";
                 	
                 	for(int i=0; i<buffer.length; i++){
                 		if( ((char)buffer[i]) != '\n' &&
                 			((char)buffer[i]) != '\r'){
-                			returnString += (char)buffer[i];
+                			receivedCommand += (char)buffer[i];
                 		}
                 	}
-                	
-                	System.out.println(returnString);
+
+                	//TODO
+                	setMessage(receivedCommand);
+                	System.out.println(receivedCommand + "\n");
                 }
                 catch (SerialPortException ex) {
                     System.out.println(ex);
@@ -58,6 +70,4 @@ public class Rs232EventListener extends EventListener implements SerialPortEvent
                 }
             }
         }
-
-
 }

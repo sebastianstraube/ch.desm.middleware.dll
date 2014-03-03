@@ -1,7 +1,7 @@
-package ch.desm.middleware.modules.communication.controller.impl;
+package ch.desm.middleware.modules.communication.serial.ubw32;
 
 
-interface Ubw32Interface {
+interface Ubw32Bridge {
 
 	/**
 	 * The "C" command stands for 'Configure' and allows you to set the state of

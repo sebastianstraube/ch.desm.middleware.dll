@@ -1,7 +1,7 @@
-package ch.desm.middleware.modules.communication.controller.impl;
+package ch.desm.middleware.modules.communication.serial.ubw32;
 
 
-class Ubw32Command implements Ubw32Interface{
+class Ubw32Command implements Ubw32Bridge{
 
 	public static final String COMMAND_SEPERATOR = ",";
 	public static final String COMMAND_TERMINATOR = "\r";

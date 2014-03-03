@@ -1,7 +1,7 @@
-package ch.desm.middleware.modules.communication.controller.impl;
+package ch.desm.middleware.modules.communication.serial.ubw32;
 
-import ch.desm.middleware.modules.communication.controller.Rs232;
-import ch.desm.middleware.modules.communication.controller.impl.Ubw32Interface.EnumCommand;
+import ch.desm.middleware.modules.communication.serial.Rs232;
+import ch.desm.middleware.modules.communication.serial.ubw32.Ubw32Bridge.EnumCommand;
 
 public class Ubw32 extends Rs232 {
 
@@ -64,7 +64,7 @@ public class Ubw32 extends Rs232 {
 		
 		while(true){
 			try {
-				Thread.sleep(70);
+				Thread.sleep(100);
 				command = new Ubw32Command(EnumCommand.OUTPUT_STATE);
 				command.setCommand(0,0,0,0,i-1,0,0);
 				sendCommand(command);

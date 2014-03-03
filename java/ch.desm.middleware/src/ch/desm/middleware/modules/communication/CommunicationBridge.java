@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.core.bridge;
+package ch.desm.middleware.modules.communication;
 
 import java.util.ArrayList;
 
