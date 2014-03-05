@@ -1,12 +1,12 @@
-package ch.desm.middleware.modules.components.impl;
+package ch.desm.middleware.modules.component.zusi;
 
 import java.util.List;
 
-import ch.desm.middleware.modules.components.ComponentAbstract;
+import ch.desm.middleware.modules.component.ComponentAbstract;
 
-public class Re460 extends ComponentAbstract{
+public class Zusi extends ComponentAbstract{
 
-	public Re460(){
+	public Zusi(){
 		
 	}
 	

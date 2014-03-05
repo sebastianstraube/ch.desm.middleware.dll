@@ -1,12 +1,12 @@
 package ch.desm.middleware.modules.communication.serial;
 
-import ch.desm.middleware.modules.core.listener.EventListener;
+import ch.desm.middleware.modules.core.event.Event;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 
-public class Rs232EventListener extends EventListener implements SerialPortEventListener {
+public class Rs232EventListener extends Event implements SerialPortEventListener {
 
 	/**
 	 * 

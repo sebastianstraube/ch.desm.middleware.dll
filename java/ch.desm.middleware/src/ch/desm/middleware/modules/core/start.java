@@ -2,7 +2,7 @@ package ch.desm.middleware.modules.core;
 
 import ch.desm.middleware.modules.communication.serial.Rs232.EnumSerialPorts;
 import ch.desm.middleware.modules.communication.serial.ubw32.Ubw32;
-import ch.desm.middleware.modules.components.impl.Locsim;
+import ch.desm.middleware.modules.component.locsim.Locsim;
 
 
 public class start {

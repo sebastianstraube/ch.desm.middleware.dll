@@ -1,15 +1,16 @@
-package ch.desm.middleware.modules.components.impl;
+package ch.desm.middleware.modules.component.locsim;
 
 import java.util.List;
 
-import ch.desm.middleware.modules.components.ComponentAbstract;
+import ch.desm.middleware.modules.component.ComponentAbstract;
 
-public class Re420 extends ComponentAbstract{
+
+public class Locsim extends ComponentAbstract{
 	
-	public Re420(){
+	public Locsim(){
 		
 	}
-	
+
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub

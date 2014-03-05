@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.components;
+package ch.desm.middleware.modules.component;
 
 import ch.desm.middleware.modules.CommonAbstract;
 

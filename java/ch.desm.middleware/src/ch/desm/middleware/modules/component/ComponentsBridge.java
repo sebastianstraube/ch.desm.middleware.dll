@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.components;
+package ch.desm.middleware.modules.component;
 
 import java.util.List;
 
