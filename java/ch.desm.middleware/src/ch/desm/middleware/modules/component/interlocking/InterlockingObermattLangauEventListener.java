@@ -1,12 +1,12 @@
-package ch.desm.middleware.modules.component.locsim;
+package ch.desm.middleware.modules.component.interlocking;
 
 import java.util.EventObject;
 
 import ch.desm.middleware.modules.component.ComponentEventListener;
 
-public class LocsimEventListener extends ComponentEventListener{
+public class InterlockingObermattLangauEventListener extends ComponentEventListener{
 
-	public LocsimEventListener(){
+	public InterlockingObermattLangauEventListener(){
 		
 	}
 

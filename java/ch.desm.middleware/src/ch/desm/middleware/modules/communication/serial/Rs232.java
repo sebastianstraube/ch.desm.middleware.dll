@@ -97,27 +97,28 @@ public class Rs232 extends CommunicationControllerAbstract{
 		}
 	}
 	
-	protected boolean send(EnumSerialPorts enumPort, String commandString){
+	protected void send(EnumSerialPorts enumPort, String commandString){
 		boolean isPortFound = false;
-		
+		boolean isSendOk = false;
 		try {
 			for(SerialPort port : serialPorts){
 				if(port.getPortName().equals(enumPort.name())){	
-						port.writeString(commandString);
+						isSendOk = port.writeString(commandString);
 						isPortFound = true;
 				}
 			}
 			
 			if(!isPortFound){
-				throw new Exception("The serial port "+enumPort.name()+" is not connected.");
+				throw new Exception("The serial port is not connected. The Port Name is " + enumPort.name());
 			}
-		
+			if(isSendOk){
+				System.out.println("command successfull sended " + commandString);
+			}
+			
 		} catch (SerialPortException e) {
 			System.err.println(e);
 		} catch (Exception e){
 			System.err.println(e);
 		}
-		
-		return isPortFound;
 	}
 }

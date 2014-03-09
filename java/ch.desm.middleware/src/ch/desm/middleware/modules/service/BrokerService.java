@@ -11,7 +11,7 @@ public class BrokerService {
 	}
 	
 	public Broker getBroker(){
-		return broker;
+		return (broker == null? BrokerService.broker = new Broker() : BrokerService.broker);
 	}
 
 }

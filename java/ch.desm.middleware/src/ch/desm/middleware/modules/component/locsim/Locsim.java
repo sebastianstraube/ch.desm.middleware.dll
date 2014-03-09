@@ -1,5 +1,6 @@
 package ch.desm.middleware.modules.component.locsim;
 
+import java.util.Arrays;
 import java.util.List;
 
 import ch.desm.middleware.modules.component.ComponentAbstract;
@@ -13,14 +14,12 @@ public class Locsim extends ComponentAbstract{
 
 	@Override
 	public String getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return enumComponentType.SIMULATION.name();
 	}
 
 	@Override
 	public List<String> getRequiredTypes() {
-		// TODO Auto-generated method stub
-		return null;
+		return Arrays.asList(enumComponentType.INTERLOCKING.name());
 	}
 
 }
