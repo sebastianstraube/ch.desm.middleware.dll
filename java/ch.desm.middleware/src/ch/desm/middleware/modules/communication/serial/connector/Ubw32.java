@@ -1,7 +1,7 @@
-package ch.desm.middleware.modules.communication.serial.ubw32;
+package ch.desm.middleware.modules.communication.serial.connector;
 
 import ch.desm.middleware.modules.communication.serial.Rs232;
-import ch.desm.middleware.modules.communication.serial.ubw32.Ubw32Bridge.EnumCommand;
+import ch.desm.middleware.modules.communication.serial.connector.Ubw32Bridge.EnumCommand;
 
 public class Ubw32 extends Rs232 {
 

@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.communication.serial.ubw32;
+package ch.desm.middleware.modules.communication.serial.connector;
 
 
 interface Ubw32Bridge {

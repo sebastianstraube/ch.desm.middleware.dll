@@ -1,12 +1,19 @@
 package ch.desm.middleware.modules.communication.broker;
 
+import ch.desm.middleware.modules.communication.broker.message.BrokerMessageBridge;
+
 public abstract class BrokerClient {
 
     protected BrokerHandler broker;
 
     public BrokerClient(BrokerHandler broker) {
         this.broker = broker;
-        this.broker.connect(this);
+        
+        initialize();
+    }
+    
+    private void initialize(){
+    	this.broker.connect(this);
     }
 
     /**

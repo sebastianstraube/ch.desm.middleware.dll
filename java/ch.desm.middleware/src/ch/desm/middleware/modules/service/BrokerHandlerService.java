@@ -9,7 +9,7 @@ import ch.desm.middleware.modules.communication.broker.BrokerHandler;
  */
 public class BrokerHandlerService {
 	
-	private static BrokerHandler broker;
+	private BrokerHandler broker;
 	
 	public BrokerHandlerService(){
 		broker = new BrokerHandler();

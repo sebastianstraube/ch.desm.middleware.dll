@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.communication.serial.ubw32;
+package ch.desm.middleware.modules.communication.serial.connector;
 
 class Ubw32Port {
 
@@ -24,13 +24,7 @@ class Ubw32Port {
 	 */
 	private int pinBitMask;
 	private String name;
-	
-	private boolean isPinMaskOk(int mask){
-		if(mask < 0 || mask > 65535) return false;
 		
-		return true;
-	}
-	
 	public void setAllPinsAsOutput(){
 		pinBitMask = ALL_PINS_OUTPUT;
 	}
@@ -61,6 +55,12 @@ class Ubw32Port {
 	
 	public String getName(){
 		return name;
+	}
+	
+	private boolean isPinMaskOk(int mask){
+		if(mask < 0 || mask > 65535) return false;
+		
+		return true;
 	}
 
 }

@@ -1,6 +1,5 @@
-package ch.desm.middleware.modules.communication.broker.messages;
+package ch.desm.middleware.modules.communication.broker.message;
 
-import ch.desm.middleware.modules.communication.broker.BrokerMessageBridge;
 
 public class BrokerMessageZugPositionUpdate implements BrokerMessageBridge {
     private Double x;

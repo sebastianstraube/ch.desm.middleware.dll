@@ -4,7 +4,7 @@ import java.util.List;
 
 import ch.desm.middleware.modules.communication.broker.BrokerHandler;
 import ch.desm.middleware.modules.communication.broker.BrokerClient;
-import ch.desm.middleware.modules.communication.broker.BrokerMessageBridge;
+import ch.desm.middleware.modules.communication.broker.message.BrokerMessageBridge;
 
 public class Re460 extends BrokerClient{
 

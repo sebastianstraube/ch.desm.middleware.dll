@@ -19,10 +19,8 @@ public class Rs232 extends CommunicationControllerAbstract{
 		serialPorts = new ArrayList<SerialPort>();
 		this.showSerialPortNames();
 	}
-	
-	@Override
+
 	public void initialize(){
-		super.initialize();
 		this.initializeSerialPorts();
 	}
 	

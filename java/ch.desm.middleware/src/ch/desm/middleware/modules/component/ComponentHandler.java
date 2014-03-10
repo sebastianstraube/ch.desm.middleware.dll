@@ -69,7 +69,7 @@ public class ComponentHandler {
 			}
 		}
 		
-		return isRequiredTypeExisting;
+		return true;
 	}
 	
 	

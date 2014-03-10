@@ -3,6 +3,8 @@ package ch.desm.middleware.modules.communication.broker;
 import java.util.HashSet;
 import java.util.Set;
 
+import ch.desm.middleware.modules.communication.broker.message.BrokerMessageBridge;
+
 public class BrokerHandler {
 
     private Set<BrokerClient> clients;
