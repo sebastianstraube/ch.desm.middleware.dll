@@ -2,13 +2,13 @@ package ch.desm.middleware.modules.component.zusi;
 
 import java.util.List;
 
-import ch.desm.middleware.modules.communication.broker.Broker;
+import ch.desm.middleware.modules.communication.broker.BrokerHandler;
 import ch.desm.middleware.modules.communication.broker.BrokerClient;
 import ch.desm.middleware.modules.communication.broker.BrokerMessageBridge;
 
 public class Zusi extends BrokerClient{
 
-	public Zusi(Broker broker){
+	public Zusi(BrokerHandler broker){
 		super(broker);
 	}
 	

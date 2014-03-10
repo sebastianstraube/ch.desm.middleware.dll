@@ -2,9 +2,9 @@ package ch.desm.middleware.modules.communication.broker;
 
 public abstract class BrokerClient {
 
-    protected Broker broker;
+    protected BrokerHandler broker;
 
-    public BrokerClient(Broker broker) {
+    public BrokerClient(BrokerHandler broker) {
         this.broker = broker;
         this.broker.connect(this);
     }

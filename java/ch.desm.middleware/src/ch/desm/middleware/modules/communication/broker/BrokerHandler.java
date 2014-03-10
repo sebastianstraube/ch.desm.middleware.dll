@@ -3,11 +3,11 @@ package ch.desm.middleware.modules.communication.broker;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Broker {
+public class BrokerHandler {
 
     private Set<BrokerClient> clients;
 
-    public Broker() {
+    public BrokerHandler() {
         this.clients = new HashSet<BrokerClient>();
     }
 

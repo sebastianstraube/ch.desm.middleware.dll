@@ -3,7 +3,7 @@ package ch.desm.middleware.modules.component.locsim;
 import java.util.Arrays;
 import java.util.List;
 
-import ch.desm.middleware.modules.communication.broker.Broker;
+import ch.desm.middleware.modules.communication.broker.BrokerHandler;
 import ch.desm.middleware.modules.communication.broker.BrokerClient;
 import ch.desm.middleware.modules.communication.broker.BrokerMessageBridge;
 import ch.desm.middleware.modules.component.ComponentAbstract.enumComponentType;
@@ -11,7 +11,7 @@ import ch.desm.middleware.modules.component.ComponentAbstract.enumComponentType;
 
 public class Locsim extends BrokerClient{
 	
-	public Locsim(Broker broker){
+	public Locsim(BrokerHandler broker){
 		super(broker);
 	}
 

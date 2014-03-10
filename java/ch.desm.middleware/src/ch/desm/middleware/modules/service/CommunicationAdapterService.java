@@ -5,15 +5,19 @@ import java.util.List;
 import ch.desm.middleware.modules.communication.broker.BrokerClient;
 import ch.desm.middleware.modules.component.ComponentAbstract;
 
-
+/**
+ * 
+ * @author Sebastian
+ *
+ */
 public class CommunicationAdapterService {
 
-	private BrokerService brokerService;
+	private BrokerHandlerService brokerService;
 //	private EventHandlerService eventHandlerService;
 	private ComponentHandlerService componentHandlerService;
 	
 	public CommunicationAdapterService(ComponentHandlerService componentHandlerService){
-		brokerService = new BrokerService();
+		brokerService = new BrokerHandlerService();
 //		eventHandlerService = new EventHandlerService();
 		this.componentHandlerService = componentHandlerService;
 				

@@ -5,6 +5,11 @@ import java.util.List;
 import ch.desm.middleware.modules.component.ComponentAbstract;
 import ch.desm.middleware.modules.component.ComponentHandler;
 
+/**
+ * 
+ * @author Sebastian
+ *
+ */
 public class ComponentHandlerService {
 
 	ComponentHandler componentHandler;

@@ -2,13 +2,13 @@ package ch.desm.middleware.modules.component.re460;
 
 import java.util.List;
 
-import ch.desm.middleware.modules.communication.broker.Broker;
+import ch.desm.middleware.modules.communication.broker.BrokerHandler;
 import ch.desm.middleware.modules.communication.broker.BrokerClient;
 import ch.desm.middleware.modules.communication.broker.BrokerMessageBridge;
 
 public class Re460 extends BrokerClient{
 
-	public Re460(Broker broker){
+	public Re460(BrokerHandler broker){
 		super(broker);
 	}
 	

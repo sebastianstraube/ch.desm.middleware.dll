@@ -3,14 +3,14 @@ package ch.desm.middleware.modules.component.interlocking;
 import java.util.Arrays;
 import java.util.List;
 
-import ch.desm.middleware.modules.communication.broker.Broker;
+import ch.desm.middleware.modules.communication.broker.BrokerHandler;
 import ch.desm.middleware.modules.communication.broker.BrokerMessageBridge;
 import ch.desm.middleware.modules.component.ComponentAbstract;
 
 
 public class InterlockingObermattLangau extends ComponentAbstract{
 	
-	public InterlockingObermattLangau(Broker broker){
+	public InterlockingObermattLangau(BrokerHandler broker){
 		super(broker);
 	}
 
