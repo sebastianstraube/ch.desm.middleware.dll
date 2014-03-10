@@ -1,6 +1,6 @@
 package ch.desm.middleware.modules;
 
-public class CommonAbstract {
+public class ModulesCommonAbstract {
 
 	public void initialize(){};
 	public void disconnect(){};

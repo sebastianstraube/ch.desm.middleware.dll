@@ -49,9 +49,7 @@ public class Ubw32 extends Rs232 {
 	}
 
 	public void sendCommand(Ubw32Command command){
-		if(super.send(connectedPort, command.getCommand())){
-			System.out.println("command successfull sended " + command.getCommand());
-		}
+		super.send(connectedPort, command.getCommand());
 	}
 	
 	public void testCommunication(){

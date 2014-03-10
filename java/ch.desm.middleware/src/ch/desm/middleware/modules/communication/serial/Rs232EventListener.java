@@ -1,10 +1,10 @@
 package ch.desm.middleware.modules.communication.serial;
 
-import ch.desm.middleware.modules.core.event.Event;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
+import ch.desm.middleware.modules.core.event.Event;
 
 public class Rs232EventListener extends Event implements SerialPortEventListener {
 
@@ -18,7 +18,7 @@ public class Rs232EventListener extends Event implements SerialPortEventListener
 //	private ComponentAbstract components;
 	
 	public Rs232EventListener(Object source, SerialPort serialPort){
-		super(source, null);
+		super(source);
 		this.serialPort = serialPort;
 //		this.components = components;
 	}
@@ -44,7 +44,6 @@ public class Rs232EventListener extends Event implements SerialPortEventListener
                 	}
 
                 	//TODO
-                	setMessage(receivedCommand);
                 	System.out.println(receivedCommand + "\n");
                 }
                 catch (SerialPortException ex) {
