@@ -1,9 +1,9 @@
-package ch.desm.middleware.modules.component;
+package ch.desm.middleware.modules.communication.broker;
 
 import java.util.List;
 
 
-public interface ComponentsBridge {
+public interface BrokerClientInterface {
 	
 	public String getType();
     public List<String> getRequiredTypes();

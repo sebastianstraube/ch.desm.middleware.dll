@@ -1,30 +1,30 @@
 package ch.desm.middleware.modules.component.cabine;
 
+import java.util.Arrays;
 import java.util.List;
 
 import ch.desm.middleware.modules.communication.broker.BrokerHandler;
 import ch.desm.middleware.modules.communication.broker.message.BrokerMessageInterface;
 import ch.desm.middleware.modules.component.ComponentAbstract;
 
-public class Re460 extends ComponentAbstract{
+public class ComponentCabineRe420 extends ComponentAbstract {
 
-	public Re460(BrokerHandler broker){
+	public ComponentCabineRe420(BrokerHandler broker) {
 		super(broker);
 	}
-	
+
 	public String getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return enumComponentType.CABINE.name();
 	}
 
 	public List<String> getRequiredTypes() {
-		// TODO Auto-generated method stub
-		return null;
+		return Arrays.asList(enumComponentType.INTERLOCKING.name(),
+				enumComponentType.SIMULATION.name());
 	}
 
 	@Override
 	protected void onBrokerMessage(BrokerMessageInterface message) {
-		// TODO Auto-generated method stub
-		
+		System.out.println("received a broker message:" + message + " in class" + this.getClass());
 	}
+
 }

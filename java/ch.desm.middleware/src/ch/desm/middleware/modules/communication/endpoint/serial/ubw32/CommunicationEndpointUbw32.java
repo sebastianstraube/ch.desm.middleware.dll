@@ -1,9 +1,9 @@
-package ch.desm.middleware.modules.communication.endpoint.serial.connector;
+package ch.desm.middleware.modules.communication.endpoint.serial.ubw32;
 
-import ch.desm.middleware.modules.communication.endpoint.serial.Rs232;
-import ch.desm.middleware.modules.communication.endpoint.serial.connector.Ubw32Bridge.EnumCommand;
+import ch.desm.middleware.modules.communication.endpoint.serial.CommunicationEndpointRs232;
+import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.CommunicationEndpointUbw32Command.EnumCommand;
 
-public class Ubw32 extends Rs232 {
+public class CommunicationEndpointUbw32 extends CommunicationEndpointRs232 {
 
 	/*
 	 * You end a command by sending a <CR> or <LF> or some combination of the
@@ -38,8 +38,9 @@ public class Ubw32 extends Rs232 {
 	
 	protected EnumSerialPorts connectedPort;
 	
-	public Ubw32(EnumSerialPorts enumSerialPort) {
-		connectedPort = enumSerialPort;
+	public CommunicationEndpointUbw32(CommunicationEndpointListenerUbw32 listener, EnumSerialPorts enumSerialPort) {
+		super(listener);
+		this.connectedPort = enumSerialPort;
 	}
 	
 	@Override
@@ -48,13 +49,13 @@ public class Ubw32 extends Rs232 {
 		super.initialize();
 	}
 
-	public void sendCommand(Ubw32Command command){
+	public void sendCommand(CommunicationEndpointUbw32Command command){
 		super.send(connectedPort, command.getCommand());
 	}
 	
 	public void testCommunication(){
 		super.testSeriaPorts();
-		Ubw32Command command = new Ubw32Command(EnumCommand.CONFIGURE);
+		CommunicationEndpointUbw32Command command = new CommunicationEndpointUbw32Command(EnumCommand.CONFIGURE);
 		command.setCommand(0, 0, 0, 0, 0, 0, 0);	
 		sendCommand(command);
 		
@@ -63,7 +64,7 @@ public class Ubw32 extends Rs232 {
 		while(true){
 			try {
 				Thread.sleep(100);
-				command = new Ubw32Command(EnumCommand.OUTPUT_STATE);
+				command = new CommunicationEndpointUbw32Command(EnumCommand.OUTPUT_STATE);
 				command.setCommand(0,0,0,0,i-1,0,0);
 				sendCommand(command);
 				

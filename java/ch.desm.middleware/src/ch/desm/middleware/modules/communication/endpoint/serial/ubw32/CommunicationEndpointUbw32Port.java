@@ -1,16 +1,16 @@
-package ch.desm.middleware.modules.communication.endpoint.serial.connector;
+package ch.desm.middleware.modules.communication.endpoint.serial.ubw32;
 
-class Ubw32Port {
+class CommunicationEndpointUbw32Port {
 
 	private static final int ALL_PINS_INPUT = 65535;
 	private static final int ALL_PINS_OUTPUT = 0;
 	
-	public Ubw32Port(String name){
+	public CommunicationEndpointUbw32Port(String name){
 		pinBitMask = ALL_PINS_INPUT;
 		this.name = name;
 	}
 	
-	public Ubw32Port(String name, int pinMask){
+	public CommunicationEndpointUbw32Port(String name, int pinMask){
 		pinBitMask = pinMask;
 		this.name = name;
 	}

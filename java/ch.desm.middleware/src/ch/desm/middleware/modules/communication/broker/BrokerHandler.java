@@ -7,10 +7,10 @@ import ch.desm.middleware.modules.communication.broker.message.BrokerMessageInte
 
 public class BrokerHandler {
 
-    private Set<BrokerClient> clients;
+    private static Set<BrokerClient> clients;
 
     public BrokerHandler() {
-        this.clients = new HashSet<BrokerClient>();
+        clients = new HashSet<BrokerClient>();
     }
 
     /**
@@ -21,7 +21,7 @@ public class BrokerHandler {
     }
 
     protected void publish(BrokerClient sendingClient, BrokerMessageInterface message) {
-        for(BrokerClient client : this.clients) {
+        for(BrokerClient client : clients) {
             if(client != sendingClient) {
                 client.receive(message);
             }

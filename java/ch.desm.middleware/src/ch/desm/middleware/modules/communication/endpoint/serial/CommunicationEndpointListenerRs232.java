@@ -4,21 +4,21 @@ import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
-import ch.desm.middleware.modules.core.event.Event;
+import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointListenerAbstract;
+import ch.desm.middleware.modules.component.ComponentAbstract;
 
-public class Rs232EventListener extends Event implements SerialPortEventListener {
+public class CommunicationEndpointListenerRs232 extends CommunicationEndpointListenerAbstract implements SerialPortEventListener {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8130768355819547759L;
-	
+	private static final long serialVersionUID = 334575399765812292L;
 	
 	private SerialPort serialPort;
 //	private ComponentAbstract components;
 	
-	public Rs232EventListener(Object source, SerialPort serialPort){
-		super(source);
+	public CommunicationEndpointListenerRs232(ComponentAbstract eventSource, SerialPort serialPort){
+		super(eventSource);
 		this.serialPort = serialPort;
 //		this.components = components;
 	}

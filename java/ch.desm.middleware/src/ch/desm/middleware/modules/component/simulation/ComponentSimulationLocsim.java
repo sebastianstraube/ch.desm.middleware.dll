@@ -1,25 +1,25 @@
-package ch.desm.middleware.modules.component.cabine;
+package ch.desm.middleware.modules.component.simulation;
 
+import java.util.Arrays;
 import java.util.List;
 
 import ch.desm.middleware.modules.communication.broker.BrokerHandler;
 import ch.desm.middleware.modules.communication.broker.message.BrokerMessageInterface;
 import ch.desm.middleware.modules.component.ComponentAbstract;
 
-public class Re420 extends ComponentAbstract{
+
+public class ComponentSimulationLocsim extends ComponentAbstract{
 	
-	public Re420(BrokerHandler broker){
+	public ComponentSimulationLocsim(BrokerHandler broker){
 		super(broker);
 	}
-	
+
 	public String getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return enumComponentType.SIMULATION.name();
 	}
 
 	public List<String> getRequiredTypes() {
-		// TODO Auto-generated method stub
-		return null;
+		return Arrays.asList(enumComponentType.INTERLOCKING.name());
 	}
 
 	@Override

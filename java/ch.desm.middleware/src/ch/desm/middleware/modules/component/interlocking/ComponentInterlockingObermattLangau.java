@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.component.simulation;
+package ch.desm.middleware.modules.component.interlocking;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,18 +8,20 @@ import ch.desm.middleware.modules.communication.broker.message.BrokerMessageInte
 import ch.desm.middleware.modules.component.ComponentAbstract;
 
 
-public class Locsim extends ComponentAbstract{
+public class ComponentInterlockingObermattLangau extends ComponentAbstract{
 	
-	public Locsim(BrokerHandler broker){
+	public ComponentInterlockingObermattLangau(BrokerHandler broker){
 		super(broker);
 	}
 
+	@Override
 	public String getType() {
-		return enumComponentType.SIMULATION.name();
+		return enumComponentType.INTERLOCKING.name();
 	}
 
+	@Override
 	public List<String> getRequiredTypes() {
-		return Arrays.asList(enumComponentType.INTERLOCKING.name());
+		return Arrays.asList(enumComponentType.SIMULATION.name(), enumComponentType.CABINE.name());
 	}
 
 	@Override

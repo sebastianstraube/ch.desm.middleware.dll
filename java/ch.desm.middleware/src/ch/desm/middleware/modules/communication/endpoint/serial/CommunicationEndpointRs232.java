@@ -1,30 +1,33 @@
 package ch.desm.middleware.modules.communication.endpoint.serial;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
-import ch.desm.middleware.modules.communication.CommunicationAbstract;
+import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointAbstract;
 
-public class Rs232 extends CommunicationAbstract{
+public class CommunicationEndpointRs232 extends CommunicationEndpointAbstract{
 	
-	protected ArrayList<SerialPort> serialPorts;
+	protected List<SerialPort> serialPorts;
+	private CommunicationEndpointListenerRs232 listener;
 	
 	public static enum EnumSerialPorts {
 		COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9, COM10;
 	}
 	
-	public Rs232(){
+	public CommunicationEndpointRs232(CommunicationEndpointListenerRs232 listener){
 		serialPorts = new ArrayList<SerialPort>();
-		this.showSerialPortNames();
+		this.listener = listener;
 	}
 
 	public void initialize(){
 		this.initializeSerialPorts();
+		this.showSerialPortNames();
 	}
 	
-	public ArrayList<SerialPort> getSerialPorts(){
+	public List<SerialPort> getSerialPorts(){
 		return serialPorts;
 	}
 	
@@ -59,6 +62,7 @@ public class Rs232 extends CommunicationAbstract{
 	            
 	            //Set the prepared mask
 	            port.setEventsMask(SerialPort.MASK_RXCHAR);
+	            port.addEventListener(listener);
 	        }
 			
 	        catch (SerialPortException e) {

@@ -1,17 +1,20 @@
 package ch.desm.middleware.modules.component;
 
-import ch.desm.middleware.modules.communication.broker.BrokerHandler;
 import ch.desm.middleware.modules.communication.broker.BrokerClient;
-
+import ch.desm.middleware.modules.communication.broker.BrokerHandler;
 	
-
-public abstract class ComponentAbstract extends BrokerClient implements ComponentsBridge {
-
-	public ComponentAbstract(BrokerHandler broker) {
-		super(broker);
-	}
+/**
+ * 
+ * @author Sebastian
+ *
+ */
+public abstract class ComponentAbstract extends BrokerClient {
 
 	public static enum enumComponentType{
 		SIMULATION, INTERLOCKING, CABINE
+	}
+	
+	public ComponentAbstract(BrokerHandler broker) {
+		super(broker);
 	}
 }

@@ -40,7 +40,7 @@ public class ComponentHandler {
 		return componentList;
 	}
 	
-	//TODO - fix component check
+	//TODO - fix component type check
 	private boolean isComponentListCompatible(List<ComponentAbstract> componentList){
 		
 		boolean isRequiredTypeExisting = false;

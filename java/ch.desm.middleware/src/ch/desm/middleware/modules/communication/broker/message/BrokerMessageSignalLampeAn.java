@@ -1,19 +1,9 @@
 package ch.desm.middleware.modules.communication.broker.message;
 
 
-public class BrokerMessageSignalLampeAn implements BrokerMessageInterface {
-
-    private int signalId;
+public class BrokerMessageSignalLampeAn extends BrokerMessage {
 
     public BrokerMessageSignalLampeAn(int signalId) {
-        this.signalId = signalId;
-    }
-
-    public int getSignalId() {
-        return signalId;
-    }
-
-    public void setSignalId(int signalId) {
-        this.signalId = signalId;
+        super(signalId);
     }
 }

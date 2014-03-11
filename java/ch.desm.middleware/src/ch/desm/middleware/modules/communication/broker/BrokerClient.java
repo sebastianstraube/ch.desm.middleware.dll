@@ -2,18 +2,18 @@ package ch.desm.middleware.modules.communication.broker;
 
 import ch.desm.middleware.modules.communication.broker.message.BrokerMessageInterface;
 
-public abstract class BrokerClient {
+public abstract class BrokerClient implements BrokerClientInterface {
 
-    protected BrokerHandler broker;
+    protected static BrokerHandler broker;
 
     public BrokerClient(BrokerHandler broker) {
-        this.broker = broker;
+        BrokerClient.broker = broker;
         
         initialize();
     }
     
     private void initialize(){
-    	this.broker.connect(this);
+    	broker.connect(this);
     }
 
     /**
@@ -21,7 +21,7 @@ public abstract class BrokerClient {
      * @param message
      */
     protected void publish(BrokerMessageInterface message) {
-        this.broker.publish(this, message);
+        broker.publish(this, message);
     }
 
     /**
