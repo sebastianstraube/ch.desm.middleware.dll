@@ -1,10 +1,7 @@
-package ch.desm.middleware.modules.communication.dll;
+package ch.desm.middleware.modules.communication.broker.endpoint;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import ch.desm.middleware.modules.communication.broker.endpoint.BrokerEndpointBridge;
-import ch.desm.middleware.modules.communication.broker.endpoint.BrokerEndpointListenerBridge;
 
 public class BrokerEndpointDesmDll implements BrokerEndpointBridge {
 
