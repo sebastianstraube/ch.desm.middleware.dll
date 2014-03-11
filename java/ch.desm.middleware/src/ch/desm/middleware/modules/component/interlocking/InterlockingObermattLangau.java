@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.desm.middleware.modules.communication.broker.BrokerHandler;
-import ch.desm.middleware.modules.communication.broker.message.BrokerMessageBridge;
+import ch.desm.middleware.modules.communication.broker.message.BrokerMessageInterface;
 import ch.desm.middleware.modules.component.ComponentAbstract;
 
 
@@ -25,7 +25,7 @@ public class InterlockingObermattLangau extends ComponentAbstract{
 	}
 
 	@Override
-	protected void onBrokerMessage(BrokerMessageBridge message) {
+	protected void onBrokerMessage(BrokerMessageInterface message) {
 		// TODO Auto-generated method stub
 		
 	}

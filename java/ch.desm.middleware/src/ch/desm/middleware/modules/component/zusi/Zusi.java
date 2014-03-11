@@ -4,7 +4,7 @@ import java.util.List;
 
 import ch.desm.middleware.modules.communication.broker.BrokerHandler;
 import ch.desm.middleware.modules.communication.broker.BrokerClient;
-import ch.desm.middleware.modules.communication.broker.message.BrokerMessageBridge;
+import ch.desm.middleware.modules.communication.broker.message.BrokerMessageInterface;
 
 public class Zusi extends BrokerClient{
 
@@ -23,7 +23,7 @@ public class Zusi extends BrokerClient{
 	}
 
 	@Override
-	protected void onBrokerMessage(BrokerMessageBridge message) {
+	protected void onBrokerMessage(BrokerMessageInterface message) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -1,7 +1,7 @@
 package ch.desm.middleware.modules.communication.broker.message;
 
 
-public class BrokerMessageWeichenSchalterAn implements BrokerMessageBridge {
+public class BrokerMessageWeichenSchalterAn implements BrokerMessageInterface {
 
     private int weicheId;
 

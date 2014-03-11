@@ -1,7 +1,7 @@
 package ch.desm.middleware.modules.communication.broker.message;
 
 
-public class BrokerMessageSignalLampeAn implements BrokerMessageBridge {
+public class BrokerMessageSignalLampeAn implements BrokerMessageInterface {
 
     private int signalId;
 

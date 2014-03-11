@@ -1,7 +1,7 @@
 package ch.desm.middleware.modules.communication.broker.message;
 
 
-public class BrokerMessageZugPositionUpdate implements BrokerMessageBridge {
+public class BrokerMessageZugPositionUpdate implements BrokerMessageInterface {
     private Double x;
     private Double y;
     private Double z;

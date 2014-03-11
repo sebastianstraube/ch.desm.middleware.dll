@@ -5,7 +5,7 @@ import java.util.List;
 
 import ch.desm.middleware.modules.communication.broker.BrokerHandler;
 import ch.desm.middleware.modules.communication.broker.BrokerClient;
-import ch.desm.middleware.modules.communication.broker.message.BrokerMessageBridge;
+import ch.desm.middleware.modules.communication.broker.message.BrokerMessageInterface;
 import ch.desm.middleware.modules.component.ComponentAbstract.enumComponentType;
 
 
@@ -24,7 +24,7 @@ public class Locsim extends BrokerClient{
 	}
 
 	@Override
-	protected void onBrokerMessage(BrokerMessageBridge message) {
+	protected void onBrokerMessage(BrokerMessageInterface message) {
 		// TODO Auto-generated method stub
 		
 	}
