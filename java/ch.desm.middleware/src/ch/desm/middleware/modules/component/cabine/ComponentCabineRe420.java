@@ -3,13 +3,13 @@ package ch.desm.middleware.modules.component.cabine;
 import java.util.Arrays;
 import java.util.List;
 
-import ch.desm.middleware.modules.communication.broker.BrokerHandler;
-import ch.desm.middleware.modules.communication.broker.message.BrokerMessageInterface;
+import ch.desm.middleware.modules.communication.broker.CommunicationBrokerHandler;
+import ch.desm.middleware.modules.communication.broker.message.CommunicationBrokerMessageInterface;
 import ch.desm.middleware.modules.component.ComponentAbstract;
 
 public class ComponentCabineRe420 extends ComponentAbstract {
 
-	public ComponentCabineRe420(BrokerHandler broker) {
+	public ComponentCabineRe420(CommunicationBrokerHandler broker) {
 		super(broker);
 	}
 
@@ -23,7 +23,7 @@ public class ComponentCabineRe420 extends ComponentAbstract {
 	}
 
 	@Override
-	protected void onBrokerMessage(BrokerMessageInterface message) {
+	protected void onBrokerMessage(CommunicationBrokerMessageInterface message) {
 		System.out.println("received a broker message:" + message + " in class" + this.getClass());
 	}
 

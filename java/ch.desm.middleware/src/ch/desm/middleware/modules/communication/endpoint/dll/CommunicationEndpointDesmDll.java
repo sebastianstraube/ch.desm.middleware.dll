@@ -10,9 +10,9 @@ public class CommunicationEndpointDesmDll extends CommunicationEndpointAbstract 
 		// adding these explicit calls for test purpose only:
 		for (CommunicationEndpointListenerInterface listener : super.listeners) {
 
-			if (listener instanceof CommunicationEndpointListenerInterfaceDesmDll) {
-				CommunicationEndpointListenerInterfaceDesmDll dllListener = 
-						(CommunicationEndpointListenerInterfaceDesmDll) listener;
+			if (listener instanceof CommunicationEndpointDesmDllListenerInterface) {
+				CommunicationEndpointDesmDllListenerInterface dllListener = 
+						(CommunicationEndpointDesmDllListenerInterface) listener;
 
 				if (on) {
 					dllListener.onSignalAn(6);

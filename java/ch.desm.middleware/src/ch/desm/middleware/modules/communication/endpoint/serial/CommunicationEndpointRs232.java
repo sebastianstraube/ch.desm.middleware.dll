@@ -11,13 +11,13 @@ import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointAb
 public class CommunicationEndpointRs232 extends CommunicationEndpointAbstract{
 	
 	protected List<SerialPort> serialPorts;
-	private CommunicationEndpointListenerRs232 listener;
+	private CommunicationEndpointRs232Listener listener;
 	
 	public static enum EnumSerialPorts {
 		COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9, COM10;
 	}
 	
-	public CommunicationEndpointRs232(CommunicationEndpointListenerRs232 listener){
+	public CommunicationEndpointRs232(CommunicationEndpointRs232Listener listener){
 		serialPorts = new ArrayList<SerialPort>();
 		this.listener = listener;
 	}

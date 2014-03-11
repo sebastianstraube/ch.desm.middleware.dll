@@ -7,7 +7,7 @@ import jssc.SerialPortException;
 import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointListenerAbstract;
 import ch.desm.middleware.modules.component.ComponentAbstract;
 
-public class CommunicationEndpointListenerRs232 extends CommunicationEndpointListenerAbstract implements SerialPortEventListener {
+public class CommunicationEndpointRs232Listener extends CommunicationEndpointListenerAbstract implements SerialPortEventListener {
 
 	/**
 	 * 
@@ -17,7 +17,7 @@ public class CommunicationEndpointListenerRs232 extends CommunicationEndpointLis
 	private SerialPort serialPort;
 //	private ComponentAbstract components;
 	
-	public CommunicationEndpointListenerRs232(ComponentAbstract eventSource, SerialPort serialPort){
+	public CommunicationEndpointRs232Listener(ComponentAbstract eventSource, SerialPort serialPort){
 		super(eventSource);
 		this.serialPort = serialPort;
 //		this.components = components;

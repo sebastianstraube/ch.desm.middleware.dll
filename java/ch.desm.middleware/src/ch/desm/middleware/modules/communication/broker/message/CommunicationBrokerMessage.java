@@ -1,6 +1,6 @@
 package ch.desm.middleware.modules.communication.broker.message;
 
-public class BrokerMessage implements BrokerMessageInterface{
+public class CommunicationBrokerMessage implements CommunicationBrokerMessageInterface{
 
     private int id;
 
@@ -8,7 +8,7 @@ public class BrokerMessage implements BrokerMessageInterface{
      * 
      * @param id depends on message context, e.g. signal id
      */
-    public BrokerMessage(int id) {
+    public CommunicationBrokerMessage(int id) {
         this.id = id;
     }
 

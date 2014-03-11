@@ -1,11 +1,11 @@
 package ch.desm.middleware.modules.communication.broker.message;
 
-public class BrokerMessageZugPositionUpdate extends BrokerMessage {
+public class CommunicationBrokerMessageZugPositionUpdate extends CommunicationBrokerMessage {
 	private Double x;
 	private Double y;
 	private Double z;
 
-	public BrokerMessageZugPositionUpdate(int zugId, Double x, Double y, Double z) {
+	public CommunicationBrokerMessageZugPositionUpdate(int zugId, Double x, Double y, Double z) {
 		super(zugId);
 		this.x = x;
 		this.y = y;

@@ -3,14 +3,14 @@ package ch.desm.middleware.modules.component.simulation;
 import java.util.Arrays;
 import java.util.List;
 
-import ch.desm.middleware.modules.communication.broker.BrokerHandler;
-import ch.desm.middleware.modules.communication.broker.message.BrokerMessageInterface;
+import ch.desm.middleware.modules.communication.broker.CommunicationBrokerHandler;
+import ch.desm.middleware.modules.communication.broker.message.CommunicationBrokerMessageInterface;
 import ch.desm.middleware.modules.component.ComponentAbstract;
 
 
 public class ComponentSimulationLocsim extends ComponentAbstract{
 	
-	public ComponentSimulationLocsim(BrokerHandler broker){
+	public ComponentSimulationLocsim(CommunicationBrokerHandler broker){
 		super(broker);
 	}
 
@@ -23,7 +23,7 @@ public class ComponentSimulationLocsim extends ComponentAbstract{
 	}
 
 	@Override
-	protected void onBrokerMessage(BrokerMessageInterface message) {
+	protected void onBrokerMessage(CommunicationBrokerMessageInterface message) {
 		// TODO Auto-generated method stub
 		
 	}

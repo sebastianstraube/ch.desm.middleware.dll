@@ -2,7 +2,7 @@ package ch.desm.middleware.modules.service;
 
 import java.util.List;
 
-import ch.desm.middleware.modules.communication.broker.BrokerClient;
+import ch.desm.middleware.modules.communication.broker.CommunicationBrokerClient;
 import ch.desm.middleware.modules.component.ComponentAbstract;
 
 /**
@@ -27,7 +27,7 @@ public class CommunicationHandlerService {
 	}
 		
 	private void connectComponents(List<ComponentAbstract> componentList){
-		for(BrokerClient component : componentList){
+		for(CommunicationBrokerClient component : componentList){
 			brokerHandlerService.getBroker().connect(component);
 		}	
 	}	

@@ -1,6 +1,6 @@
 package ch.desm.middleware.modules.service;
 
-import ch.desm.middleware.modules.communication.broker.BrokerHandler;
+import ch.desm.middleware.modules.communication.broker.CommunicationBrokerHandler;
 
 /**
  * 
@@ -9,13 +9,13 @@ import ch.desm.middleware.modules.communication.broker.BrokerHandler;
  */
 public class BrokerHandlerService {
 	
-	private BrokerHandler broker;
+	private CommunicationBrokerHandler broker;
 	
 	public BrokerHandlerService(){
-		broker = new BrokerHandler();
+		broker = new CommunicationBrokerHandler();
 	}
 	
-	public BrokerHandler getBroker(){
+	public CommunicationBrokerHandler getBroker(){
 		return broker;
 	}
 

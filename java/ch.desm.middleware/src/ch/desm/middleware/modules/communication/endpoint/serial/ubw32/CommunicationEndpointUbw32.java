@@ -38,7 +38,7 @@ public class CommunicationEndpointUbw32 extends CommunicationEndpointRs232 {
 	
 	protected EnumSerialPorts connectedPort;
 	
-	public CommunicationEndpointUbw32(CommunicationEndpointListenerUbw32 listener, EnumSerialPorts enumSerialPort) {
+	public CommunicationEndpointUbw32(CommunicationEndpointUbw32Listener listener, EnumSerialPorts enumSerialPort) {
 		super(listener);
 		this.connectedPort = enumSerialPort;
 	}
