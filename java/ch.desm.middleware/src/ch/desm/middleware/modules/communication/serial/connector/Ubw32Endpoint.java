@@ -6,20 +6,20 @@ import java.util.Set;
 import ch.desm.middleware.modules.communication.broker.endpoint.BrokerEndpointBridge;
 import ch.desm.middleware.modules.communication.broker.endpoint.BrokerEndpointListenerBridge;
 
-public class BrokerEndpointUbw32 implements BrokerEndpointBridge {
+public class Ubw32Endpoint implements BrokerEndpointBridge {
 
-    private Set<BrokerEndpointListenerBridgeUbw32> listeners;
+    private Set<Ubw32EndpointListenerBridge> listeners;
 
-    public BrokerEndpointUbw32() {
-        this.listeners = new HashSet<BrokerEndpointListenerBridgeUbw32>();
+    public Ubw32Endpoint() {
+        this.listeners = new HashSet<Ubw32EndpointListenerBridge>();
     }
 
     @Override
     public void addEndpointListener(BrokerEndpointListenerBridge listener) throws Exception {
-        if(!(listener instanceof BrokerEndpointListenerBridgeUbw32)) {
+        if(!(listener instanceof Ubw32EndpointListenerBridge)) {
             throw new Exception("only serial endpoints supported");
         }
-        this.listeners.add((BrokerEndpointListenerBridgeUbw32)listener);
+        this.listeners.add((Ubw32EndpointListenerBridge)listener);
     }
 
     public void sendSerialMessage(String message) {
@@ -27,7 +27,7 @@ public class BrokerEndpointUbw32 implements BrokerEndpointBridge {
     }
 
     private void onIncomingSerialMessage(String message) {
-        for(BrokerEndpointListenerBridgeUbw32 listener : this.listeners) {
+        for(Ubw32EndpointListenerBridge listener : this.listeners) {
             listener.onSerialMessage(message);
         }
     }
