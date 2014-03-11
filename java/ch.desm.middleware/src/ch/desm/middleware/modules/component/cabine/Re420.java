@@ -1,12 +1,12 @@
-package ch.desm.middleware.modules.component.re420;
+package ch.desm.middleware.modules.component.cabine;
 
 import java.util.List;
 
 import ch.desm.middleware.modules.communication.broker.BrokerHandler;
-import ch.desm.middleware.modules.communication.broker.BrokerClient;
 import ch.desm.middleware.modules.communication.broker.message.BrokerMessageInterface;
+import ch.desm.middleware.modules.component.ComponentAbstract;
 
-public class Re420 extends BrokerClient{
+public class Re420 extends ComponentAbstract{
 	
 	public Re420(BrokerHandler broker){
 		super(broker);

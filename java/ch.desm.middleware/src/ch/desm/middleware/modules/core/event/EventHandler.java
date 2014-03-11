@@ -5,22 +5,22 @@ import java.util.List;
 
 public class EventHandler {
 	
-	List<EventListenerBridge> eventListenerList;
+	List<EventListenerInterface> eventListenerList;
 	
 	public EventHandler(){
-		eventListenerList = new ArrayList<EventListenerBridge>();
+		eventListenerList = new ArrayList<EventListenerInterface>();
 	}
 	
-	public synchronized void addEventListener(EventListenerBridge eventListener){
+	public synchronized void addEventListener(EventListenerInterface eventListener){
 		eventListenerList.add(eventListener);
 	}
 	
-	public synchronized void removeEventListener(EventListenerBridge eventListener){
+	public synchronized void removeEventListener(EventListenerInterface eventListener){
 		eventListenerList.remove(eventListener);
 	}
 
 	public synchronized void fireEvent(){
-		for(EventListenerBridge eventObject : eventListenerList){
+		for(EventListenerInterface eventObject : eventListenerList){
 			eventObject.handleEvent(new Event(this));
 		}
 	}

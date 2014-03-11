@@ -1,25 +1,25 @@
-package ch.desm.middleware.modules.component.zusi;
+package ch.desm.middleware.modules.component.simulation;
 
+import java.util.Arrays;
 import java.util.List;
 
 import ch.desm.middleware.modules.communication.broker.BrokerHandler;
-import ch.desm.middleware.modules.communication.broker.BrokerClient;
 import ch.desm.middleware.modules.communication.broker.message.BrokerMessageInterface;
+import ch.desm.middleware.modules.component.ComponentAbstract;
 
-public class Zusi extends BrokerClient{
 
-	public Zusi(BrokerHandler broker){
+public class Locsim extends ComponentAbstract{
+	
+	public Locsim(BrokerHandler broker){
 		super(broker);
 	}
-	
+
 	public String getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return enumComponentType.SIMULATION.name();
 	}
-	
+
 	public List<String> getRequiredTypes() {
-		// TODO Auto-generated method stub
-		return null;
+		return Arrays.asList(enumComponentType.INTERLOCKING.name());
 	}
 
 	@Override
@@ -27,4 +27,5 @@ public class Zusi extends BrokerClient{
 		// TODO Auto-generated method stub
 		
 	}
+
 }

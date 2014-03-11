@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
-import ch.desm.middleware.modules.communication.CommunicationControllerAbstract;
+import ch.desm.middleware.modules.communication.CommunicationAbstract;
 
-public class Rs232 extends CommunicationControllerAbstract{
+public class Rs232 extends CommunicationAbstract{
 	
 	protected ArrayList<SerialPort> serialPorts;
 	

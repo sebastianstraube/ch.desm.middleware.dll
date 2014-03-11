@@ -5,18 +5,18 @@ import java.util.Set;
 
 public class BrokerEndpointUbw32 implements BrokerEndpointInterface {
 
-    private Set<BrokerEndpointListenerBridgeUbw32> listeners;
+    private Set<BrokerEndpointListenerInterfaceUbw32> listeners;
 
     public BrokerEndpointUbw32() {
-        this.listeners = new HashSet<BrokerEndpointListenerBridgeUbw32>();
+        this.listeners = new HashSet<BrokerEndpointListenerInterfaceUbw32>();
     }
 
     @Override
-    public void addEndpointListener(BrokerEndpointListenerBridge listener) throws Exception {
-        if(!(listener instanceof BrokerEndpointListenerBridgeUbw32)) {
+    public void addEndpointListener(BrokerEndpointListenerInterface listener) throws Exception {
+        if(!(listener instanceof BrokerEndpointListenerInterfaceUbw32)) {
             throw new Exception("only serial endpoints supported");
         }
-        this.listeners.add((BrokerEndpointListenerBridgeUbw32)listener);
+        this.listeners.add((BrokerEndpointListenerInterfaceUbw32)listener);
     }
 
     public void sendSerialMessage(String message) {
@@ -24,7 +24,7 @@ public class BrokerEndpointUbw32 implements BrokerEndpointInterface {
     }
 
     private void onIncomingSerialMessage(String message) {
-        for(BrokerEndpointListenerBridgeUbw32 listener : this.listeners) {
+        for(BrokerEndpointListenerInterfaceUbw32 listener : this.listeners) {
             listener.onSerialMessage(message);
         }
     }
