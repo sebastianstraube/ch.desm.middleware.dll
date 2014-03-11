@@ -1,9 +1,9 @@
-package ch.desm.middleware.modules.communication.broker.endpoint;
+package ch.desm.middleware.modules.communication.endpoint;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class BrokerEndpointUbw32 implements BrokerEndpointBridge {
+public class BrokerEndpointUbw32 implements BrokerEndpointInterface {
 
     private Set<BrokerEndpointListenerBridgeUbw32> listeners;
 

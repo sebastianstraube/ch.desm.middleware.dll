@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.communication.broker.endpoint;
+package ch.desm.middleware.modules.communication.endpoint;
 
 
 public interface BrokerEndpointListenerBridgeUbw32 extends BrokerEndpointListenerBridge {

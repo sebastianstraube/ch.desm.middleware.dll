@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.communication.serial.connector;
+package ch.desm.middleware.modules.communication.endpoint.serial.connector;
 
 
 class Ubw32Command implements Ubw32Bridge{

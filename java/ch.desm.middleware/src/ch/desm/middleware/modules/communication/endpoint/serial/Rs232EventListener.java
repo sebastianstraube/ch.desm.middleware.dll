@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.communication.serial;
+package ch.desm.middleware.modules.communication.endpoint.serial;
 
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
