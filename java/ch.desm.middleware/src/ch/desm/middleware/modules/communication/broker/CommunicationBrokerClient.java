@@ -1,6 +1,6 @@
 package ch.desm.middleware.modules.communication.broker;
 
-import ch.desm.middleware.modules.communication.broker.message.CommunicationBrokerMessageInterface;
+import ch.desm.middleware.modules.communication.broker.message.CommunicationBrokerMessage;
 
 public abstract class CommunicationBrokerClient implements CommunicationBrokerClientInterface {
 
@@ -20,7 +20,7 @@ public abstract class CommunicationBrokerClient implements CommunicationBrokerCl
      * util to forward message to broker
      * @param message
      */
-    protected void publish(CommunicationBrokerMessageInterface message) {
+    protected void publish(CommunicationBrokerMessage message) {
         broker.publish(this, message);
     }
 
@@ -28,7 +28,7 @@ public abstract class CommunicationBrokerClient implements CommunicationBrokerCl
      * called by Broker with incoming message
      * @param message
      */
-    protected void receive(CommunicationBrokerMessageInterface message) {
+    protected void receive(CommunicationBrokerMessage message) {
         this.onBrokerMessage(message);
     }
 
@@ -36,6 +36,6 @@ public abstract class CommunicationBrokerClient implements CommunicationBrokerCl
      * must be implemented with message handling functionality
      * @param message
      */
-    protected abstract void onBrokerMessage(CommunicationBrokerMessageInterface message);
+    protected abstract void onBrokerMessage(CommunicationBrokerMessage message);
 
 }

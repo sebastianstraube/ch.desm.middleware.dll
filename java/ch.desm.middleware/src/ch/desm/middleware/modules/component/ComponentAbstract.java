@@ -9,7 +9,7 @@ import ch.desm.middleware.modules.communication.broker.CommunicationBrokerHandle
  *
  */
 public abstract class ComponentAbstract extends CommunicationBrokerClient {
-
+	
 	public static enum enumComponentType{
 		SIMULATION, INTERLOCKING, CABINE
 	}

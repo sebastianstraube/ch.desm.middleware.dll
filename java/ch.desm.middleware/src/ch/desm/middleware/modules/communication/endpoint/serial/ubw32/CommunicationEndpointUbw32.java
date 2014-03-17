@@ -36,25 +36,16 @@ public class CommunicationEndpointUbw32 extends CommunicationEndpointRs232 {
 	 * "b" for port names.
 	 */
 	
-	protected EnumSerialPorts connectedPort;
-	
-	public CommunicationEndpointUbw32(CommunicationEndpointUbw32Listener listener, EnumSerialPorts enumSerialPort) {
-		super(listener);
-		this.connectedPort = enumSerialPort;
+	public CommunicationEndpointUbw32(EnumSerialPorts enumSerialPort) {
+		super(enumSerialPort);
 	}
 	
-	@Override
-	public void initialize(){
-		super.addSerialPort(connectedPort);
-		super.initialize();
-	}
-
 	public void sendCommand(CommunicationEndpointUbw32Command command){
-		super.send(connectedPort, command.getCommand());
+		super.send(command.getCommand());
 	}
 	
 	public void testCommunication(){
-		super.testSeriaPorts();
+		super.testSeriaPort();
 		CommunicationEndpointUbw32Command command = new CommunicationEndpointUbw32Command(EnumCommand.CONFIGURE);
 		command.setCommand(0, 0, 0, 0, 0, 0, 0);	
 		sendCommand(command);
