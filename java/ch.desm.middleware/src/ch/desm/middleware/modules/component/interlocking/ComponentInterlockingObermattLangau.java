@@ -3,14 +3,15 @@ package ch.desm.middleware.modules.component.interlocking;
 import java.util.Arrays;
 import java.util.List;
 
-import ch.desm.middleware.modules.communication.broker.CommunicationBrokerHandler;
+import ch.desm.middleware.modules.communication.broker.CommunicationBroker;
 import ch.desm.middleware.modules.communication.broker.message.CommunicationBrokerMessage;
+import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.CommunicationEndpointUbw32ListenerInterface;
 import ch.desm.middleware.modules.component.ComponentAbstract;
 
 
-public class ComponentInterlockingObermattLangau extends ComponentAbstract{
+public class ComponentInterlockingObermattLangau extends ComponentAbstract implements CommunicationEndpointUbw32ListenerInterface{
 	
-	public ComponentInterlockingObermattLangau(CommunicationBrokerHandler broker){
+	public ComponentInterlockingObermattLangau(CommunicationBroker broker){
 		super(broker);
 	}
 
@@ -27,6 +28,11 @@ public class ComponentInterlockingObermattLangau extends ComponentAbstract{
 	@Override
 	protected void onBrokerMessage(CommunicationBrokerMessage message) {
 		System.out.println("received a broker message:" + message + " in class" + this.getClass());
+	}
+
+	@Override
+	public void onEndpointMessage(String message) {
+		System.out.println("received a message from Endpoint:" + message + " in class" + this.getClass());
 	}
 
 }

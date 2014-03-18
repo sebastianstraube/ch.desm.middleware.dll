@@ -4,9 +4,9 @@ import ch.desm.middleware.modules.communication.broker.message.CommunicationBrok
 
 public abstract class CommunicationBrokerClient implements CommunicationBrokerClientInterface {
 
-    protected static CommunicationBrokerHandler broker;
+    protected static CommunicationBroker broker;
 
-    public CommunicationBrokerClient(CommunicationBrokerHandler broker) {
+    public CommunicationBrokerClient(CommunicationBroker broker) {
         CommunicationBrokerClient.broker = broker;
         
         initialize();

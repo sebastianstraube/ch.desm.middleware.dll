@@ -1,19 +1,42 @@
 package ch.desm.middleware.modules.communication.broker;
 
-public class CommunicationBroker {
+import java.util.HashSet;
+import java.util.Set;
 
+import ch.desm.middleware.modules.communication.broker.message.CommunicationBrokerMessage;
+
+public class CommunicationBroker {
 	
 	/**
-	 * TODO 
-	 * CommunicationBroker runs in his own thread and
-	 * push the incoming events from Asynchronous queue
-	 * of events to the registered clients
 	 * 
-	 * message channel is the tube where the message going thru
-	 * message channel knows source and destination
-	 * 
-	 * a message has an id
-	 * a message is from special type of class
-	 *   
 	 */
+    private static Set<CommunicationBrokerClient> clients;
+
+    /**
+     * 
+     */
+    public CommunicationBroker() {
+    	CommunicationBroker.clients = new HashSet<CommunicationBrokerClient>();
+    }
+
+    /**
+     * @param client
+     */
+    public void connect(CommunicationBrokerClient client) {
+    	CommunicationBroker.clients.add(client);
+    }
+
+    /**
+     * 
+     * @param sendingClient
+     * @param message
+     */
+    protected void publish(CommunicationBrokerClient sendingClient, CommunicationBrokerMessage message) {
+        for(CommunicationBrokerClient client : CommunicationBroker.clients) {
+            if(client != sendingClient) {
+                client.receive(message);
+            }
+        }
+    }
+
 }

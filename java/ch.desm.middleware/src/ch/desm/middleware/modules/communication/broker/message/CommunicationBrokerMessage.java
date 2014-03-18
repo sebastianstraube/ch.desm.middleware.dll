@@ -1,5 +1,6 @@
 package ch.desm.middleware.modules.communication.broker.message;
 
+
 public class CommunicationBrokerMessage{
 	
     private int id;
@@ -17,6 +18,19 @@ public class CommunicationBrokerMessage{
         this.destinationComponent = destinationComponent;
     }
 
+    @Override
+    public String toString(){
+    	String s = "";
+    	s+= "id: "+id;
+    	s+= "\n";
+    	s+= "sourceComponent: "+sourceComponent;
+    	s+= "\n";
+    	s+= "destinationComponent: "+destinationComponent;
+    	s+= "\n";
+    	
+    	return s;
+    }
+    
     public int getId() {
         return id;
     }
@@ -32,4 +46,5 @@ public class CommunicationBrokerMessage{
     public String getMessage(){
     	return this.message;
     }
+    
 }
