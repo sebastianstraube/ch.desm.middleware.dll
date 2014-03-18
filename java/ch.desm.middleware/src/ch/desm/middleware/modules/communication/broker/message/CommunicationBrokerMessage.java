@@ -42,6 +42,8 @@ public class CommunicationBrokerMessage{
     	String s = "";
     	s+= "id: "+id;
     	s+= ", ";
+    	s+= "message: \""+message+"\"";
+    	s+= ", ";
     	s+= "sourceComponent: "+sourceComponent;
     	s+= ", ";
     	s+= "destinationComponent: "+destinationComponent;
