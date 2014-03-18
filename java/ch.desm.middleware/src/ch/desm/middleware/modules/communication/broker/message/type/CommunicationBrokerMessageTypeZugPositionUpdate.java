@@ -7,8 +7,8 @@ public class CommunicationBrokerMessageTypeZugPositionUpdate extends Communicati
 	private Double y;
 	private Double z;
 
-	public CommunicationBrokerMessageTypeZugPositionUpdate(int id, int sourceComponent, int destinationComponent, Double x, Double y, Double z) {
-		super(id, sourceComponent, destinationComponent);
+	public CommunicationBrokerMessageTypeZugPositionUpdate(int id, Double x, Double y, Double z) {
+		super(id);
 		this.x = x;
 		this.y = y;
 		this.z = z;

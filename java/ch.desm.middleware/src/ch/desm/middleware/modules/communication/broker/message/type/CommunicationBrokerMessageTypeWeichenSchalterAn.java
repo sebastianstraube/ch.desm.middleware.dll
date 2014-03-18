@@ -4,7 +4,7 @@ import ch.desm.middleware.modules.communication.broker.message.CommunicationBrok
 
 public class CommunicationBrokerMessageTypeWeichenSchalterAn extends CommunicationBrokerMessage{
 
-    public CommunicationBrokerMessageTypeWeichenSchalterAn(int id, int sourceComponent, int destinationComponent) {
-        super(id, sourceComponent, destinationComponent);
+    public CommunicationBrokerMessageTypeWeichenSchalterAn(int id) {
+        super(id);
     }
 }

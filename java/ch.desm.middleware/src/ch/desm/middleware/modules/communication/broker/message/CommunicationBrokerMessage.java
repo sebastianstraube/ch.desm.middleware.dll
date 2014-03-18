@@ -8,11 +8,30 @@ public class CommunicationBrokerMessage{
     private int destinationComponent;
     private String message;
 	
+    
+    /**
+     * 
+     * @param id
+     */
+    public CommunicationBrokerMessage(int id) {
+        this.id = id;
+    }
+    
+    /**
+     * 
+     * @param id
+     * @param message
+     */
+    public CommunicationBrokerMessage(int id, String message) {
+        this.id = id;
+        this.message = message;
+    }
+    
     /**
      * 
      * @param id depends on message context, e.g. signal id
      */
-    public CommunicationBrokerMessage(int id, int sourceComponent, int destinationComponent) {
+    public CommunicationBrokerMessage(int id, String message, int sourceComponent, int destinationComponent) {
         this.id = id;
         this.sourceComponent = sourceComponent;
         this.destinationComponent = destinationComponent;
@@ -22,11 +41,10 @@ public class CommunicationBrokerMessage{
     public String toString(){
     	String s = "";
     	s+= "id: "+id;
-    	s+= "\n";
+    	s+= ", ";
     	s+= "sourceComponent: "+sourceComponent;
-    	s+= "\n";
+    	s+= ", ";
     	s+= "destinationComponent: "+destinationComponent;
-    	s+= "\n";
     	
     	return s;
     }

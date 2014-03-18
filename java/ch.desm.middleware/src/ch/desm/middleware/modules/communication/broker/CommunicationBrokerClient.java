@@ -29,13 +29,13 @@ public abstract class CommunicationBrokerClient implements CommunicationBrokerCl
      * @param message
      */
     protected void receive(CommunicationBrokerMessage message) {
-        this.onBrokerMessage(message);
+        this.onIncomingBrokerMessage(message);
     }
 
     /**
      * must be implemented with message handling functionality
      * @param message
      */
-    protected abstract void onBrokerMessage(CommunicationBrokerMessage message);
+    protected abstract void onIncomingBrokerMessage(CommunicationBrokerMessage message);
 
 }

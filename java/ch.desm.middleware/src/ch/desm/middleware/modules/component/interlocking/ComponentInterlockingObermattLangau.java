@@ -33,11 +33,35 @@ public class ComponentInterlockingObermattLangau extends ComponentBase
 	}
 	
 	@Override
-	protected void onBrokerMessage(CommunicationBrokerMessage message) {
-		System.out.println("received a broker message:" + message + " in class"
-				+ this.getClass());
+	protected void onIncomingBrokerMessage(CommunicationBrokerMessage message) {
+		System.out.println("received a broker message:" + message
+				+ " from component " + this.getClass());
 	}
 
+	@Override
+	public void onIncomingEndpointMessage(String message) {
+		System.out.println("received an endpoint message :\"" + message
+				+ " from endpoint " + this.getClass());
+	}
+	
+	@Override
+	/**
+	 * test endpoint message handling
+	 * @param message
+	 */
+	public void emulateEndpointMessage(String message) {
+		onIncomingEndpointMessage(message);
+	}
+
+	@Override
+	/**
+	 * test endpoint message handling
+	 * @param message
+	 */
+	public void emulateBrokerMessage(CommunicationBrokerMessage message) {
+		onIncomingBrokerMessage(message);
+	}
+	
 	@Override
 	public String getType() {
 		return enumComponentType.INTERLOCKING.name();
@@ -47,19 +71,5 @@ public class ComponentInterlockingObermattLangau extends ComponentBase
 	public List<String> getRequiredTypes() {
 		return Arrays.asList(enumComponentType.SIMULATION.name(),
 				enumComponentType.CABINE.name());
-	}
-	
-	@Override
-	public void onIncomingEndpointMessage(String message) {
-		System.out.println("received a message:\"" + message
-				+ "\" from endpoint " + this.getClass());
-	}
-	
-	/**
-	 * test endpoint message handling
-	 * @param message
-	 */
-	public void emulateEndpointMessage(String message) {
-		onIncomingEndpointMessage(message);
 	}
 }

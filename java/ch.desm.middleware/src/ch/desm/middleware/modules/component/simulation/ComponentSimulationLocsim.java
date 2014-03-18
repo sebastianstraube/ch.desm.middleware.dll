@@ -34,17 +34,33 @@ public class ComponentSimulationLocsim extends ComponentBase implements
 	}
 	
 	@Override
-	protected void onBrokerMessage(CommunicationBrokerMessage message) {
-		System.out.println("received a broker message:" + message + " in class"
-				+ this.getClass());
+	protected void onIncomingBrokerMessage(CommunicationBrokerMessage message) {
+		System.out.println("received a broker message:" + message
+				+ " from component " + this.getClass());
+	}
 
-		communicationEndpointRs232.sendMessage(message.toString());
+	@Override
+	public void onIncomingEndpointMessage(String message) {
+		System.out.println("received an endpoint message :\"" + message
+				+ " from endpoint " + this.getClass());
 	}
 	
 	@Override
-	public void onIncomingEndpointMessage(String message) {
-		System.out.println("received a message:\"" + message
-				+ "\" from endpoint " + this.getClass());
+	/**
+	 * test endpoint message handling
+	 * @param message
+	 */
+	public void emulateEndpointMessage(String message) {
+		onIncomingEndpointMessage(message);
+	}
+
+	@Override
+	/**
+	 * test endpoint message handling
+	 * @param message
+	 */
+	public void emulateBrokerMessage(CommunicationBrokerMessage message) {
+		onIncomingBrokerMessage(message);
 	}
 	
 	public String getType() {
@@ -53,13 +69,5 @@ public class ComponentSimulationLocsim extends ComponentBase implements
 
 	public List<String> getRequiredTypes() {
 		return Arrays.asList(enumComponentType.INTERLOCKING.name());
-	}
-
-	/**
-	 * test endpoint message handling
-	 * @param message
-	 */
-	public void emulateEndpointMessage(String message) {
-		onIncomingEndpointMessage(message);
 	}
 }

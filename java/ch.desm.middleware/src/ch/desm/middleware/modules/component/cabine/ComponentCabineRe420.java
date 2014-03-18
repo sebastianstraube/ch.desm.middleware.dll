@@ -32,6 +32,36 @@ public class ComponentCabineRe420 extends ComponentBase implements
 		}
 	}
 	
+	@Override
+	protected void onIncomingBrokerMessage(CommunicationBrokerMessage message) {
+		System.out.println("received a broker message:" + message
+				+ " from component " + this.getClass());
+	}
+
+	@Override
+	public void onIncomingEndpointMessage(String message) {
+		System.out.println("received an endpoint message :\"" + message
+				+ " from endpoint " + this.getClass());
+	}
+	
+	@Override
+	/**
+	 * test endpoint message handling
+	 * @param message
+	 */
+	public void emulateEndpointMessage(String message) {
+		onIncomingEndpointMessage(message);
+	}
+
+	@Override
+	/**
+	 * test endpoint message handling
+	 * @param message
+	 */
+	public void emulateBrokerMessage(CommunicationBrokerMessage message) {
+		onIncomingBrokerMessage(message);
+	}
+	
 	public String getType() {
 		return enumComponentType.CABINE.name();
 	}
@@ -39,17 +69,5 @@ public class ComponentCabineRe420 extends ComponentBase implements
 	public List<String> getRequiredTypes() {
 		return Arrays.asList(enumComponentType.INTERLOCKING.name(),
 				enumComponentType.SIMULATION.name());
-	}
-
-	@Override
-	protected void onBrokerMessage(CommunicationBrokerMessage message) {
-		System.out.println("received a message from Broker:" + message
-				+ " in class" + this.getClass());
-	}
-
-	@Override
-	public void onIncomingEndpointMessage(String message) {
-		System.out.println("received a message:\"" + message
-				+ "\" from endpoint " + this.getClass());
 	}
 }

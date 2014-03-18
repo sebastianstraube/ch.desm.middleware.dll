@@ -1,6 +1,7 @@
 package ch.desm.middleware.modules.core;
 
 import ch.desm.middleware.modules.communication.broker.CommunicationBroker;
+import ch.desm.middleware.modules.communication.broker.message.CommunicationBrokerMessage;
 import ch.desm.middleware.modules.communication.endpoint.virtual.CommunicationEndpointMessageVirtual;
 import ch.desm.middleware.modules.component.interlocking.ComponentInterlockingObermattLangau;
 import ch.desm.middleware.modules.component.simulation.ComponentSimulationLocsim;
@@ -21,6 +22,13 @@ public class Main {
 
 		communicationEndpointVirtualLocsim.emulateIncomingEndpointMessage("test message from virtual locsim endpoint");
 		communicationEndpointVirtualCabine.emulateIncomingEndpointMessage("test message from virtual cabine endpoint");
+		
+
+		CommunicationBrokerMessage messageFromLocsim = new CommunicationBrokerMessage(0, "test message from component simulation locsim");
+		CommunicationBrokerMessage messageFromInterlocking = new CommunicationBrokerMessage(1, "test message from component interlocking OL");
+		
+		componentSimulationLocsim.emulateBrokerMessage(messageFromLocsim);
+		componentInterlockingObermattLangnau.emulateBrokerMessage(messageFromInterlocking);
 		
 		
 	}

@@ -5,7 +5,7 @@ import ch.desm.middleware.modules.communication.broker.message.CommunicationBrok
 
 public class CommunicationBrokerMessageTypeSignalLampeAus extends CommunicationBrokerMessage{
 
-    public CommunicationBrokerMessageTypeSignalLampeAus(int id, int sourceComponent, int destinationComponent) {
-        super(id, sourceComponent, destinationComponent);
+    public CommunicationBrokerMessageTypeSignalLampeAus(int id) {
+        super(id);
     }
 }
