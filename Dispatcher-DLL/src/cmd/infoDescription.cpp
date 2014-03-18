@@ -1,11 +1,15 @@
 #include <stdafx.h>
 
 #include "Desm.h"
+#include "Middleware.h"
+#include "util/String.h"
 
 extern "C" {
-	__declspec(dllexport) const char* stw_infoDescription(int* descriptionLen)
+	__declspec(dllexport) int stw_infoDescription(char* descBuf, int descBufLen, int* descStrLen)
 	{
-		*descriptionLen = strlen(desm::info::desc);
-		return desm::info::desc;
+		std::string desc = desm::info::desc;
+		*descStrLen = desm::util::strlcpy(descBuf, desc.c_str(), descBufLen);
+
+		return desm::ERROR_OK;
 	}
 };

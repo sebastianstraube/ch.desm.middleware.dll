@@ -1,11 +1,15 @@
 #include <stdafx.h>
 
 #include "Desm.h"
+#include "Middleware.h"
+#include "util/String.h"
 
 extern "C" {
-	__declspec(dllexport) const char* stw_infoConnectionStatus(int* infoConnectionStatusLen)
+	__declspec(dllexport) int stw_infoConnectionStatus(char* statusBuf, int statusBufLen, int* statusStrLen)
 	{
-		*infoConnectionStatusLen = strlen(desm::info::connectionStatus);
-		return desm::info::connectionStatus;
+		std::string status = "-NOT IMPLEMENTED-";
+		*statusStrLen = desm::util::strlcpy(statusBuf, status.c_str(), statusBufLen);
+
+		return desm::ERROR_OK;
 	}
 };

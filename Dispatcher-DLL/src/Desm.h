@@ -17,8 +17,8 @@
 namespace desm {
 
 	namespace info {
-		static const char* name = "DLL DESMMiddleware";
-		static const char* version = "0.15";
+		static const char* name = "DLL DESM-Middleware";
+		static const char* version = "0.17";
 		static const char* desc = "This DLL provides a server to client communication via tcp/ip protocol.";
 	};
 	
@@ -28,8 +28,8 @@ namespace desm {
 	static const unsigned short MAX_PORT = 49151;
 
 	enum eMode {
-		MODE_SERVER,
-		MODE_CLIENT,
+		MODE_SERVER = 1,
+		MODE_CLIENT = 2,
 	};
 
 	enum eErrorCode {
@@ -48,9 +48,9 @@ namespace desm {
 		ENUM_CMD_SIGNAL = 6,
 		ENUM_CMD_LOOP = 7,
 		ENUM_CMD_WEICHE = 8,
-		ENUM_CMD_TRAINPOSITION,
-		ENUM_CMD_STARTSIMULATION,
-		ENUM_CMD_STOPSIMULATION,
-		ENUM_CMD_LOADSTRECKE
+		ENUM_CMD_TRAINPOSITION = 9,
+		ENUM_CMD_STARTSIMULATION = 10,
+		ENUM_CMD_STOPSIMULATION = 11,
+		ENUM_CMD_LOADSTRECKE = 12
 	};                     
 };
