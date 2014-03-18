@@ -5,7 +5,7 @@ import java.util.List;
 
 import ch.desm.middleware.modules.communication.broker.CommunicationBroker;
 import ch.desm.middleware.modules.communication.broker.message.CommunicationBrokerMessage;
-import ch.desm.middleware.modules.communication.broker.message.type.CommunicationBrokerMessageTypeStufenschalter;
+import ch.desm.middleware.modules.communication.broker.message.type.component.cabine.CommunicationBrokerMessageTypeComponentCabineStufenschalter;
 import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.CommunicationEndpointUbw32ListenerInterface;
 import ch.desm.middleware.modules.communication.endpoint.virtual.CommunicationEndpointMessageVirtual;
@@ -43,7 +43,7 @@ public class ComponentVirtualCabine extends ComponentBase implements
 		System.out.println("received a broker message:" + message
 				+ " from component " + this.getClass());
 		
-		if(message instanceof CommunicationBrokerMessageTypeStufenschalter){
+		if(message instanceof CommunicationBrokerMessageTypeComponentCabineStufenschalter){
 			communicationEndpointUbw32.sendMessage(message.toString());
 		}else{
 			try {
