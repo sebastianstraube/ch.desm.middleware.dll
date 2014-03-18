@@ -12,10 +12,11 @@ namespace desm {
 		TestFunctionsMiddleware(MwDll& _dll);
 
 	public:
-		std::string testInfoVersion();
-		std::string testInfoName();
-		std::string testInfoDescription();
-		
+		bool testInfoVersion();
+		bool testInfoName();
+		bool testInfoDescription();
+		bool testInfoConnectionStatus();
+
 		void testOnStartProgramm();
 		void testOnStopProgramm();
 

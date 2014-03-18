@@ -10,16 +10,15 @@ static const int DEFAULT_BUF_LEN = 4096;
 
 struct MwDll::Impl {
 
-	// types
-
+	//Types
 	typedef int (*t_stw_onStartProgramm)(char* configPath);
 	typedef int (*t_stw_onStopProgramm)(void);
 	typedef int (*t_stw_onLoadStrecke)(void);
 	
-	typedef const char* (*t_stw_infoVersion)(int* versionLen);
-	typedef const char* (*t_stw_infoConnectionStatus)(int* infoConnectionStatusLen);
-	typedef const char* (*t_stw_infoName)(int* infoNameLen);
-	typedef const char* (*t_stw_infoDescription)(int* descriptionLen);
+	typedef int (*t_stw_infoVersion)(char* versionBuf, int versionBufLen, int* versionStrLen);
+	typedef int (*t_stw_infoName)(char* nameBuf, int nameBufLen, int* nameStrLen);
+	typedef int (*t_stw_infoDescription)(char* descBuf, int descBufLen, int* descStrLen);
+	typedef int (*t_stw_infoConnectionStatus)(char* statusBuf, int statusBufLen, int* statusStrLen);
 	
 	typedef int (*t_stw_onStartSimulation)(void);
 	typedef int (*t_stw_onStopSimulation)(void);
@@ -31,13 +30,13 @@ struct MwDll::Impl {
 	typedef int (*t_stw_getTrackConnection)(int trackConnectionId, int* gleisId, int* gleis1, int* gleis2, double* von, double* bis, char* nameBuf, int nameBufLen, int* nameStrLen, int* weiche1Id, int* weiche2Id);
 	
 	typedef int (*t_stw_setSignal)(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int nameLen, int stellung);
-	typedef int (*t_stw_getSignal)(int signalId, int* gleisId, double* position, int* typ, double* hoehe, double* distanz, char* nameBuf, int nameBufLen, int* nameStrLen, int* stellung);
-	
-	typedef int (*t_stw_setBalise)(int baliseId, int gleisId, double position, int stellung, char* protokoll, int protokollLen);
-	typedef int (*t_stw_getBalise)(int baliseId, int* gleisId, double* position, int* stellung, char* protokollBuf, int protokollBufLen, int* protokollStrLen);
+	typedef int (*t_stw_getSignal)(int signalId, int* stellung);
 
-	typedef int (*t_stw_setLoop)(int baliseId, int gleisId, double positionVon, double positionBis);
-	typedef int (*t_stw_getLoop)(int baliseId, int* gleisId, double* positionVon, double* positionBis);
+	typedef int (*t_stw_setBalise)(int baliseId, int gleisId, double position, int stellung, int beeinflussendeSignalId1, int beeinflussendeSignalId2);
+	typedef int (*t_stw_getBalise)(int baliseId, int* gleisId, double* position, int* stellung, int* beeinflussendeSignalId1, int* beeinflussendeSignalId2);
+
+	typedef int (*t_stw_setLoop)(int baliseId, int gleisId, double von, double bis, int stellung, int beeinflussendeSignalId1, int beeinflussendeSignalId2);
+	typedef int (*t_stw_getLoop)(int baliseId, int* gleisId, double* von, double* bis, int* stellung, int* beeinflussendeSignalId1, int* beeinflussendeSignalId2);
 
 	typedef int (*t_stw_setIsolierstoss)(int isolierstossId, int gleisId, double position);
 	typedef int (*t_stw_getIsolierstoss)(int isolierstossId, int* gleisId, double* position);
@@ -64,6 +63,7 @@ struct MwDll::Impl {
 	t_stw_infoVersion m_stw_infoVersion;
 	t_stw_infoName m_stw_infoName;
 	t_stw_infoDescription m_stw_infoDescription;
+	t_stw_infoConnectionStatus m_stw_infoConnectionStatus;
 	t_stw_onStartSimulation m_stw_onStartSimulation;
 	t_stw_onStopSimulation m_stw_onStopSimulation;
 	t_stw_setTrack m_stw_setTrack;
@@ -111,6 +111,7 @@ struct MwDll::Impl {
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_infoVersion);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_infoName);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_infoDescription);
+		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_infoConnectionStatus);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_onStartSimulation);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_onStopSimulation);
 		IMPORT_DLL_FUNCTION(m_hInstLibrary, stw_setTrack);
@@ -182,23 +183,60 @@ void MwDll::onLoadStrecke() {
 	checkErrorCode(m_pImpl->m_stw_onLoadStrecke());
 }
 
-std::string MwDll::infoVersion() {
-	int versionLen;
-	return std::string(m_pImpl->m_stw_infoVersion(&versionLen));
+std::string MwDll::infoVersion(std::string& version) {
+	char _version[DEFAULT_BUF_LEN];
+	int versionStrLen;
+
+	bool success = checkErrorCode(m_pImpl->m_stw_infoVersion(_version, DEFAULT_BUF_LEN, &versionStrLen));
+
+	if(success) {
+		version = std::string(_version);
+		assert(version.size() == versionStrLen);
+	}
+
+	return version;
 }
 
-std::string MwDll::infoConnectionStatus() {
-	return "";
+std::string MwDll::infoConnectionStatus(std::string& status) {
+	char _status[DEFAULT_BUF_LEN];
+	int statusStrLen;
+
+	bool success = checkErrorCode(m_pImpl->m_stw_infoConnectionStatus(_status, DEFAULT_BUF_LEN, &statusStrLen));
+
+	if(success) {
+		status = std::string(_status);
+		assert(status.size() == statusStrLen);
+	}
+
+	return status;
 }
 
-std::string MwDll::infoName() {
-	int infoNameLen;
-	return std::string(m_pImpl->m_stw_infoName(&infoNameLen));
+std::string MwDll::infoName(std::string& name) {
+	char _name[DEFAULT_BUF_LEN];
+	int nameStrLen;
+
+	bool success = checkErrorCode(m_pImpl->m_stw_infoName(_name, DEFAULT_BUF_LEN, &nameStrLen));
+
+	if(success) {
+		name = std::string(_name);
+		assert(name.size() == nameStrLen);
+	}
+
+	return name;
 }
 
-std::string MwDll::infoDescription() {
-	int infoDescriptionLen;
-	return std::string(m_pImpl->m_stw_infoDescription(&infoDescriptionLen));
+std::string MwDll::infoDescription(std::string& desc) {
+	char _desc[DEFAULT_BUF_LEN];
+	int descStrLen;
+
+	bool success = checkErrorCode(m_pImpl->m_stw_infoDescription(_desc, DEFAULT_BUF_LEN, &descStrLen));
+
+	if(success) {
+		desc = std::string(_desc);
+		assert(desc.size() == descStrLen);
+	}
+
+	return desc;
 }
 
 bool MwDll::setTrack(int gleisId, double von, double bis, double abstand, const std::string& name) {
@@ -250,46 +288,39 @@ bool MwDll::setSignal(int signalId, int gleisId, double position, int typ, doubl
 	return success;
 }
 
-bool MwDll::getSignal(int signalId, int& gleisId, double& position, int& typ, double& hoehe, double& distanz, std::string& name, int& stellung) {
-	char _name[DEFAULT_BUF_LEN];
-	int nameStrLen;
-	bool success = checkErrorCode(m_pImpl->m_stw_getSignal(signalId, &gleisId, &position, &typ, &hoehe, &distanz, _name, DEFAULT_BUF_LEN, &nameStrLen, &stellung));
+bool MwDll::getSignal(int signalId, int& stellung) {
+
+	bool success = checkErrorCode(m_pImpl->m_stw_getSignal(signalId, &stellung));
 	
-	if(success) {
-		name = std::string(_name);
-		assert(name.size() == nameStrLen);
-	}
-
 	return success;
-
 }
 
-bool MwDll::setBalise(int baliseId, int gleisId, double position, int stellung, std::string& protokoll) {
-	char* _protokoll = _strdup(protokoll.c_str());
-	bool success = checkErrorCode(m_pImpl->m_stw_setBalise(baliseId, gleisId, position, stellung, _protokoll, protokoll.size()));
-	free(_protokoll);
+bool MwDll::setBalise(int baliseId, int gleisId, double position, int stellung, int beeinflussendeSignalId1, int beeinflussendeSignalId2) {
+
+	bool success = checkErrorCode(m_pImpl->m_stw_setBalise(baliseId, gleisId, position, stellung, beeinflussendeSignalId1, beeinflussendeSignalId2));
 
 	return success;
 }
 
-bool MwDll::getBalise(int baliseId, int& gleisId, double& position, int& stellung, std::string& protokoll) {
-	char _protokoll[DEFAULT_BUF_LEN];
-	int strLen;
-	bool success = checkErrorCode(m_pImpl->m_stw_getBalise(baliseId, &gleisId, &position, &stellung, _protokoll, DEFAULT_BUF_LEN, &strLen));
-	if(success) {
-		protokoll = std::string(_protokoll);
-		assert(protokoll.size() == strLen);
-	}
+bool MwDll::getBalise(int baliseId, int& gleisId, double& position, int& stellung, int& beeinflussendeSignalId1, int& beeinflussendeSignalId2) {
+
+	bool success = checkErrorCode(m_pImpl->m_stw_getBalise(baliseId, &gleisId, &position, &stellung, &beeinflussendeSignalId1, &beeinflussendeSignalId2));
 
 	return success;
 }
 
-bool MwDll::setLoop(int baliseId, int gleisId, double positionVon, double positionBis) {
-	return checkErrorCode(m_pImpl->m_stw_setLoop(baliseId, gleisId, positionVon, positionBis));
+bool MwDll::setLoop(int baliseId, int gleisId,
+		double von, double bis, int stellung, int beeinflussendeSignalId1, int beeinflussendeSignalId2) {
+
+	return checkErrorCode(m_pImpl->m_stw_setLoop(baliseId, gleisId,
+		von, bis, stellung, beeinflussendeSignalId1, beeinflussendeSignalId2));
 }
 
-bool MwDll::getLoop(int baliseId, int& gleisId, double& positionVon, double& positionBis) {
-	bool success = checkErrorCode(m_pImpl->m_stw_getLoop(baliseId, &gleisId, &positionVon, &positionBis));
+bool MwDll::getLoop(int baliseId, int& gleisId,
+		double& von, double& bis, int& stellung, int& beeinflussendeSignalId1, int& beeinflussendeSignalId2) {
+
+	bool success = checkErrorCode(m_pImpl->m_stw_getLoop(baliseId, &gleisId,
+		&von, &bis, &stellung, &beeinflussendeSignalId1, &beeinflussendeSignalId2));
 
 	return success;
 }

@@ -64,9 +64,11 @@ int main(int argc, char** argv) {
 
 	} catch(std::exception& e) {
 		std::cerr << "EXCEPTION: " << e.what() << std::endl;
+		system("pause");
 		return 1;
 	} catch(...) {
 		std::cerr << "UNKNOWN EXCEPTION!" << std::endl;
+		system("pause");
 		return 1;
 	}
 

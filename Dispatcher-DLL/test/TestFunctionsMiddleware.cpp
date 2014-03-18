@@ -13,6 +13,54 @@ TestFunctionsMiddleware::TestFunctionsMiddleware(MwDll& _dll)
 {
 }
 
+bool TestFunctionsMiddleware::testInfoVersion(){
+	std::string version = "...";
+
+	std::cout << "==================   START   ==================" << std::endl;
+	std::cout << "testInfoVersion" << std::endl;
+	version = dll.infoVersion(version);
+	std::cout << "version: " << version << std::endl; 
+	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
+	
+	return true;
+};
+
+bool TestFunctionsMiddleware::testInfoName(){
+	std::string name = "...";
+
+	std::cout << "==================   START   ==================" << std::endl;
+	std::cout << "testInfoName" << std::endl;
+	name = dll.infoName(name);
+	std::cout << "name: " << name << std::endl; 
+	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
+	
+	return true;
+};
+
+bool TestFunctionsMiddleware::testInfoDescription(){
+	std::string description = "...";
+
+	std::cout << "==================   START   ==================" << std::endl;
+	std::cout << "testInfoDescription" << std::endl;
+	description = dll.infoDescription(description);
+	std::cout << "description: " << description << std::endl; 
+	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
+	
+	return true;
+};
+
+bool TestFunctionsMiddleware::testInfoConnectionStatus(){
+	std::string status = "...";
+
+	std::cout << "==================   START   ==================" << std::endl;
+	std::cout << "testInfoConnectionStatus" << std::endl;
+	status = dll.infoConnectionStatus(status);
+	std::cout << "status: " << status << std::endl; 
+	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
+	
+	return true;
+};
+
 bool TestFunctionsMiddleware::testSetKilometerDirection(){
 	int richtung = 1;
 
@@ -42,16 +90,18 @@ bool TestFunctionsMiddleware::testSetBalise(){
 	int gleisId = 2467;
 	double position = 124.12;
 	int stellung = 1;
-	std::string protokoll = "protokoll1";
+	int beeinflussendeSignalId1 = 4;
+	int beeinflussendeSignalId2 = 35;
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testSetBalise" << std::endl;
-	dll.setBalise(baliseId, gleisId, position, stellung, protokoll);
+	dll.setBalise(baliseId, gleisId, position, stellung, beeinflussendeSignalId1, beeinflussendeSignalId2);
 	std::cout << "baliseId: " << baliseId << std::endl;
 	std::cout << "gleisId: " << gleisId << std::endl;
 	std::cout << "position: " << position << std::endl;
 	std::cout << "stellung: " << stellung << std::endl;
-	std::cout << "protokoll: " << protokoll << std::endl;
+	std::cout << "beeinflussendeSignalId1: " << beeinflussendeSignalId1 << std::endl;
+	std::cout << "beeinflussendeSignalId2: " << beeinflussendeSignalId2 << std::endl;
 	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
 
 	return true;
@@ -62,16 +112,18 @@ bool TestFunctionsMiddleware::testGetBalise(){
 	int gleisId = -1;
 	double position = -1;
 	int stellung = -1;
-	std::string protokoll = "-1";
+	int beeinflussendeSignalId1 = -1;
+	int beeinflussendeSignalId2 = -1;
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testGetBalise" << std::endl;
-	bool isSuccess = dll.getBalise(baliseId, gleisId, position, stellung, protokoll);
+	bool isSuccess = dll.getBalise(baliseId, gleisId, position, stellung, beeinflussendeSignalId1, beeinflussendeSignalId2);
 	std::cout << "baliseId: " << baliseId << std::endl;
 	std::cout << "gleisId: " << gleisId << std::endl;
 	std::cout << "position: " << position << std::endl;
 	std::cout << "stellung: " << stellung << std::endl;
-	std::cout << "protokoll: " << protokoll << std::endl;
+	std::cout << "beeinflussendeSignalId1: " << beeinflussendeSignalId1 << std::endl;
+	std::cout << "beeinflussendeSignalId2: " << beeinflussendeSignalId2 << std::endl;
 	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
 
 	return isSuccess;
@@ -112,16 +164,22 @@ bool TestFunctionsMiddleware::testGetIsolierstoss(){
 bool TestFunctionsMiddleware::testSetLoop(){
 	int baliseId = 27321;
 	int gleisId = 2382;
-	double positionVon = 89234.234;
-	double positionBis = 23923.73;
+	double von = 89234.234;
+	double bis = 23923.73;
+	int stellung = 2;
+	int beeinflussendeSignalId1 = 12;
+	int beeinflussendeSignalId2 = 53;
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testSetLoop" << std::endl;
-	dll.setLoop(baliseId, gleisId, positionVon, positionBis);
+	dll.setLoop(baliseId, gleisId, von, bis, stellung, beeinflussendeSignalId1, beeinflussendeSignalId2);
 	std::cout << "baliseId: " << baliseId << std::endl;
 	std::cout << "gleisId: " << gleisId << std::endl;
-	std::cout << "positionVon: " << positionVon << std::endl;
-	std::cout << "positionBis: " << positionBis << std::endl;
+	std::cout << "von: " << von << std::endl;
+	std::cout << "bis: " << bis << std::endl;
+	std::cout << "stellung: " << stellung << std::endl;
+	std::cout << "beeinflussendeSignalId1: " << beeinflussendeSignalId1 << std::endl;
+	std::cout << "beeinflussendeSignalId2: " << beeinflussendeSignalId2 << std::endl;
 	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
 
 	return true;
@@ -130,16 +188,22 @@ bool TestFunctionsMiddleware::testSetLoop(){
 bool TestFunctionsMiddleware::testGetLoop(){
 	int baliseId = 27321;
 	int gleisId = -1;
-	double positionVon = -1;
-	double positionBis = -1;
+	double von = -1;
+	double bis = -1;
+	int stellung = -1;
+	int beeinflussendeSignalId1 = -1;
+	int beeinflussendeSignalId2 = -1;
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testGetLoop" << std::endl;
-	bool isSuccess = dll.getLoop(baliseId, gleisId, positionVon, positionBis);
+	bool isSuccess = dll.getLoop(baliseId, gleisId, von, bis, stellung, beeinflussendeSignalId1, beeinflussendeSignalId2);
 	std::cout << "baliseId: " << baliseId << std::endl;
 	std::cout << "gleisId: " << gleisId << std::endl;
-	std::cout << "positionVon: " << positionVon << std::endl;
-	std::cout << "positionBis: " << positionBis << std::endl;
+	std::cout << "von: " << von << std::endl;
+	std::cout << "bis: " << bis << std::endl;
+	std::cout << "stellung: " << stellung << std::endl;
+	std::cout << "beeinflussendeSignalId1: " << beeinflussendeSignalId1 << std::endl;
+	std::cout << "beeinflussendeSignalId2: " << beeinflussendeSignalId2 << std::endl;
 	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
 
 	return isSuccess;
@@ -173,24 +237,12 @@ bool TestFunctionsMiddleware::testSetSignal(){
 
 bool TestFunctionsMiddleware::testGetSignal(){
 	int signalId = 324;
-	int gleisId = -1;
-	double position = -1.;
-	int typ = -1;
-	double hoehe = -1;
-	double distanz = -1;
-	std::string name = "-1";
 	int stellung = -1;
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testGetSignal" << std::endl;
-	bool isSuccess = dll.getSignal(signalId, gleisId, position, typ, hoehe, distanz, name, stellung);
+	bool isSuccess = dll.getSignal(signalId, stellung);
 	std::cout << "signalId: " << signalId << std::endl;
-	std::cout << "gleisId: " << gleisId << std::endl;
-	std::cout << "position: " << position << std::endl;
-	std::cout << "typ: " << typ << std::endl;
-	std::cout << "hoehe: " << hoehe << std::endl;
-	std::cout << "distanz: " << distanz << std::endl;
-	std::cout << "name: " << name << std::endl;
 	std::cout << "stellung: " << stellung << std::endl;
 	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
 

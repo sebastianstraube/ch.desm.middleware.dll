@@ -19,15 +19,32 @@ int main(int argc, char** argv) {
 		std::cout << "starting tests ..." << std::endl;
 
 		//start tests
+		locsim.testInfoVersion();
+		Sleep(500);
+		locsim.testInfoName();
+		Sleep(500);
+		locsim.testInfoDescription();
+		Sleep(500);
+		locsim.testInfoConnectionStatus();
+		Sleep(500);
 		locsim.testSetKilometerDirection();
+		Sleep(500);
 		locsim.testSetBalise();
+		Sleep(500);
 		locsim.testSetIsolierstoss();
+		Sleep(500);
 		locsim.testSetLoop();
+		Sleep(500);
 		locsim.testSetSignal();
+		Sleep(500);
 		locsim.testSetTrainPosition();
+		Sleep(500);
 		locsim.testSetWeiche();
+		Sleep(500);
 		locsim.testSetTrackConnection();
+		Sleep(500);
 		locsim.testSetTrack();
+		Sleep(500);
 		//end tests
 
 		dll.onStopProgramm();

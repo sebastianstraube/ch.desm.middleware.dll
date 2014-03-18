@@ -109,6 +109,9 @@
     <ClCompile Include="src\cmd\getIsolierstoss.cpp">
       <Filter>src\cmd</Filter>
     </ClCompile>
+    <ClCompile Include="src\cmd\infoConnectionStatus.cpp">
+      <Filter>src\cmd</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Middleware.h">

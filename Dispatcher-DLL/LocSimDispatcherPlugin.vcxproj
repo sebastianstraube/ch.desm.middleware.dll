@@ -99,6 +99,7 @@
     <ClCompile Include="src\cmd\getTrackConnection.cpp" />
     <ClCompile Include="src\cmd\getTrainPosition.cpp" />
     <ClCompile Include="src\cmd\getWeiche.cpp" />
+    <ClCompile Include="src\cmd\infoConnectionStatus.cpp" />
     <ClCompile Include="src\cmd\infoDescription.cpp" />
     <ClCompile Include="src\cmd\infoName.cpp" />
     <ClCompile Include="src\cmd\infoVersion.cpp" />
