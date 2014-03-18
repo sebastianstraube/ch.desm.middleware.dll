@@ -7,9 +7,9 @@
 
 extern "C" {
 	__declspec(dllexport) int stw_getBalise(int baliseId, int* gleisId, double* position,
-		int* stellung, char* protokollBuf, int protokollBufLen, int* protokollStrLen)
+		int* stellung, int* beeinflussendeSignalId1, int* beeinflussendeSignalId2)
 	{
-		if(!gleisId || !position || !stellung || !protokollBuf || !protokollStrLen) {
+		if(!gleisId || !position || !stellung || !beeinflussendeSignalId1 || !beeinflussendeSignalId2) {
 			return desm::ERROR_API_MISUSE;
 		}
 		
@@ -21,8 +21,8 @@ extern "C" {
 		*gleisId = desm::util::jsonGet<int>(v, "gleisId");
 		*position = desm::util::jsonGet<double>(v, "position");
 		*stellung = desm::util::jsonGet<int>(v, "stellung");
-		std::string protokoll = desm::util::jsonGet<std::string>(v, "protokoll");
-		*protokollStrLen = desm::util::strlcpy(protokollBuf, protokoll.c_str(), protokollBufLen);
+		*beeinflussendeSignalId1 = desm::util::jsonGet<int>(v, "beeinflussendeSignalId1");
+		*beeinflussendeSignalId2 = desm::util::jsonGet<int>(v, "beeinflussendeSignalId2");
 
 		return desm::ERROR_OK;
 	}
