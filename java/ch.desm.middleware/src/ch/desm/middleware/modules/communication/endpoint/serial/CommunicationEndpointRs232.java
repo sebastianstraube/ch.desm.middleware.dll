@@ -10,18 +10,45 @@ public class CommunicationEndpointRs232 extends
 		CommunicationEndpointMessageBase implements SerialPortEventListener {
 
 	protected SerialPort serialPort;
-
+	
 	public static enum EnumSerialPorts {
 		COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9, COM10;
 	}
 
 	public CommunicationEndpointRs232(EnumSerialPorts enumSerialPort) {
 		serialPort = new SerialPort(enumSerialPort.name());
+		
+		this.initialize();
 	}
 
-	public void initialize() {
+	private void initialize() {
 		this.initializeSerialPorts();
 		this.showSerialPortName();
+	}
+	
+	/**
+	 * 
+	 */
+	private void initializeSerialPorts() {
+		System.out.print("intialize serial port:" + serialPort.getPortName());
+
+		try {
+			serialPort.openPort();
+			serialPort.setParams(SerialPort.BAUDRATE_9600,
+					SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+					SerialPort.PARITY_NONE);
+			
+			// Set the prepared mask
+			serialPort.setEventsMask(SerialPort.MASK_RXCHAR);
+			
+			//add event listener
+			serialPort.addEventListener(this);
+			
+			System.out.println("... ready.");
+		}
+		catch (SerialPortException e) {
+			System.err.println(e);
+		}
 	}
 
 	public SerialPort getSerialPorts() {
@@ -34,33 +61,6 @@ public class CommunicationEndpointRs232 extends
 	 */
 	public void showSerialPortName() {
 		serialPort.getPortName();
-	}
-
-	/**
-	 * Preparing a mask. In a mask, we need to specify the types of events that
-	 * we want to track. Well, for example, we need to know what came some data,
-	 * thus in the mask must have the following value: MASK_RXCHAR. If we, for
-	 * example, still need to know about changes in states of lines CTS and DSR,
-	 * the mask has to look like this: SerialPort.MASK_RXCHAR +
-	 * SerialPort.MASK_CTS + SerialPort.MASK_DSR
-	 */
-	private void initializeSerialPorts() {
-		System.out.println("intialize port(s)...");
-
-		try {
-			serialPort.openPort();
-			serialPort.setParams(SerialPort.BAUDRATE_9600,
-					SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
-					SerialPort.PARITY_NONE);
-
-			// Set the prepared mask
-			serialPort.setEventsMask(SerialPort.MASK_RXCHAR);
-			serialPort.addEventListener(this);
-		}
-
-		catch (SerialPortException e) {
-			System.err.println(e);
-		}
 	}
 
 	public void disconnectSerialPorts() {
@@ -87,14 +87,36 @@ public class CommunicationEndpointRs232 extends
 		}
 	}
 
-	protected void send(String commandString) {
+	/**
+	 *  sending common message to rs232
+	 * 	@param message 
+	 * 
+	 */
+	public void sendMessage(String message){
+		System.out.println("sending message:\"" + message+"\" from " + this.getClass().getCanonicalName());
+		this.sendCommand(message);
+	}
+	
+	/**
+	 * sending a message to serial port
+	 * 
+	 * TODO refactoring
+	 * the messages will be concatenated with the terminator CR
+	 * 
+	 * @param commandString
+	 */
+	protected void sendCommand(String commandString) {
 		boolean isSendOk = false;
+		
+		//TODO refactoring
+		String terminator = "\n";
+		commandString+=terminator;
+		
 		try {
 			isSendOk = serialPort.writeString(commandString);
 
 			if (isSendOk) {
-				System.out.println("command successfull sended "
-						+ commandString);
+				System.out.println("...command successfull sended.");
 			}
 
 		} catch (SerialPortException e) {
@@ -103,32 +125,48 @@ public class CommunicationEndpointRs232 extends
 			System.err.println(e);
 		}
 	}
-
+	
 	@Override
+	/**
+	 * this listener receives a command from UBW32
+	 * 
+	 * TODO refactoring:
+	 * the command will be sended when there is
+	 * no "!" and no "OK" character sequence
+	 * 
+	 * @param SerialPortEvent event
+	 */
 	public void serialEvent(SerialPortEvent event) {
 		if (event.isRXCHAR()) {
-
-			System.out.println("Serial event listener receive data on port "
-					+ serialPort.getPortName() + ": ");
-
+			
 			if (event.getEventValue() > 1) {
 				try {
 					byte buffer[] = serialPort.readBytes();
-					String receivedCommand = "";
+					String message = "";
 
 					for (int i = 0; i < buffer.length; i++) {
 						if (((char) buffer[i]) != '\n'
 								&& ((char) buffer[i]) != '\r') {
-							receivedCommand += (char) buffer[i];
+							message += (char) buffer[i];
 						}
 					}
 
-					super.onIncomingEndpointMessage(receivedCommand);
+					//TODO refactoring
+					if(!message.contains("!") &&
+						!message.endsWith("OK") ){
+						
+						System.out.println("serial event listener receive data on port:"
+								+ serialPort.getPortName() + " with message:" + message);
+						
+						super.onIncomingEndpointMessage(message);
+					}
+					
 				} catch (SerialPortException ex) {
 					System.out.println(ex);
 				}
 			}
 		}
+		
 		// If the CTS line status has changed, then the method
 		// event.getEventValue() returns 1 if the line is ON and 0 if it is OFF.
 		else if (event.isCTS()) {

@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.component.interlocking;
+package ch.desm.middleware.modules.component.virtual;
 
 import java.util.Arrays;
 import java.util.List;
@@ -7,26 +7,27 @@ import ch.desm.middleware.modules.communication.broker.CommunicationBroker;
 import ch.desm.middleware.modules.communication.broker.message.CommunicationBrokerMessage;
 import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointMessageBase;
-import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.CommunicationEndpointUbw32ListenerInterface;
+import ch.desm.middleware.modules.communication.endpoint.serial.CommunicationEndpointRs232ListenerInterface;
 import ch.desm.middleware.modules.component.ComponentBase;
 
-public class ComponentInterlockingObermattLangau extends ComponentBase
-		implements CommunicationEndpointUbw32ListenerInterface {
+public class ComponentVirtualSimulationLocsim extends ComponentBase implements
+		CommunicationEndpointRs232ListenerInterface {
 
-	CommunicationEndpointMessageBase communicationEndpointUbw32;
-	
-	public ComponentInterlockingObermattLangau(CommunicationBroker broker, CommunicationEndpointMessageBase communicationEndpointUbw32) {
+	CommunicationEndpointMessageBase communicationEndpointRs232;
+
+	public ComponentVirtualSimulationLocsim(CommunicationBroker broker,
+			CommunicationEndpointMessageBase communicationEndpointRs232) {
 		super(broker);
-		this.communicationEndpointUbw32 = communicationEndpointUbw32;
+		this.communicationEndpointRs232 = communicationEndpointRs232;
 		
-		this.registerEndpointListener((CommunicationEndpointBase)communicationEndpointUbw32);
+		this.registerEndpointListener((CommunicationEndpointBase)communicationEndpointRs232);
 	}
-	
+
 	@Override
 	protected void registerEndpointListener(
 			CommunicationEndpointBase listener) {
 		try {
-			communicationEndpointUbw32.addEndpointListener(this);
+			communicationEndpointRs232.addEndpointListener(this);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
@@ -44,8 +45,6 @@ public class ComponentInterlockingObermattLangau extends ComponentBase
 	public void onIncomingEndpointMessage(String message) {
 		System.out.println("received an endpoint message :\"" + message
 				+ " from endpoint " + this.getClass());
-		
-		communicationEndpointUbw32.sendMessage(message);
 	}
 	
 	@Override
@@ -66,14 +65,11 @@ public class ComponentInterlockingObermattLangau extends ComponentBase
 		onIncomingBrokerMessage(message);
 	}
 	
-	@Override
 	public String getType() {
-		return enumComponentType.INTERLOCKING.name();
+		return enumComponentType.SIMULATION.name();
 	}
 
-	@Override
 	public List<String> getRequiredTypes() {
-		return Arrays.asList(enumComponentType.SIMULATION.name(),
-				enumComponentType.CABINE.name());
+		return Arrays.asList(enumComponentType.INTERLOCKING.name());
 	}
 }

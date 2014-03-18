@@ -3,10 +3,12 @@ package ch.desm.middleware.modules.communication.endpoint;
 public abstract class CommunicationEndpointMessageBase extends
 		CommunicationEndpointBase {
 
-	public void sendMessage(String message) {
-		System.out.println(this.getClass().getCanonicalName()
-				+ "sending message: " + message);
-	}
+	/**
+	 * send a message thru an endpoint
+	 * 
+	 * @param message
+	 */
+	abstract public void sendMessage(String message);
 
 	protected void onIncomingEndpointMessage(String message) {
 		for (CommunicationEndpointBaseListenerInterface listener : this.listeners) {

@@ -9,5 +9,11 @@ public class CommunicationEndpointMessageVirtual extends
 
 	}
 
+	@Override
+	public void sendMessage(String message) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

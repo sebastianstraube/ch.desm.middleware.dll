@@ -49,12 +49,21 @@ public class CommunicationEndpointUbw32 extends CommunicationEndpointRs232 {
 		super(enumSerialPort);
 	}
 
-	// public void sendCommand(CommunicationEndpointUbw32Command command){
-	// super.send(command.getCommand());
-	// }
+	/**
+	 * This function maps the common String message
+	 * to UBW32 command and forwards the message to
+	 * the controller.
+	 * 
+	 * @param message 
+	 * TODO: Mapping from common message to UBW command
+	 */
+	public void sendMessage(String message){
+		System.out.println("sending message:\"" + message+"\" from " + this.getClass().getCanonicalName());
+		this.sendCommand(message);
+	}
 
 	/**
-	 * 
+	 * test commands
 	 */
 	public void testCommunication() {
 		super.testSeriaPort();

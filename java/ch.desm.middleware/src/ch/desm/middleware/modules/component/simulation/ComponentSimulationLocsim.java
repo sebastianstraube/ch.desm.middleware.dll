@@ -6,17 +6,17 @@ import java.util.List;
 import ch.desm.middleware.modules.communication.broker.CommunicationBroker;
 import ch.desm.middleware.modules.communication.broker.message.CommunicationBrokerMessage;
 import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointBase;
+import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointMessageBase;
 import ch.desm.middleware.modules.communication.endpoint.serial.CommunicationEndpointRs232ListenerInterface;
-import ch.desm.middleware.modules.communication.endpoint.virtual.CommunicationEndpointMessageVirtual;
 import ch.desm.middleware.modules.component.ComponentBase;
 
 public class ComponentSimulationLocsim extends ComponentBase implements
 		CommunicationEndpointRs232ListenerInterface {
 
-	CommunicationEndpointMessageVirtual communicationEndpointRs232;
+	CommunicationEndpointMessageBase communicationEndpointRs232;
 
 	public ComponentSimulationLocsim(CommunicationBroker broker,
-			CommunicationEndpointMessageVirtual communicationEndpointRs232) {
+			CommunicationEndpointMessageBase communicationEndpointRs232) {
 		super(broker);
 		this.communicationEndpointRs232 = communicationEndpointRs232;
 		
