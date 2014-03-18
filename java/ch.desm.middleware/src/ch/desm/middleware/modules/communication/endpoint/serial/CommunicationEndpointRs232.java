@@ -123,7 +123,7 @@ public class CommunicationEndpointRs232 extends
 						}
 					}
 
-					super.onIncomingMessage(receivedCommand);
+					super.onIncomingEndpointMessage(receivedCommand);
 				} catch (SerialPortException ex) {
 					System.out.println(ex);
 				}

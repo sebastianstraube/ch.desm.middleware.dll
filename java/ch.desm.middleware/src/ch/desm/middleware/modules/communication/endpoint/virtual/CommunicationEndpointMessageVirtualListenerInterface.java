@@ -5,6 +5,5 @@ import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointMe
 
 
 public interface CommunicationEndpointMessageVirtualListenerInterface extends CommunicationEndpointMessageBaseListenerInterface {
-
-
+	
 }

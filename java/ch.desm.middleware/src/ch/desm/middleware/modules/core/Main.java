@@ -5,22 +5,24 @@ import ch.desm.middleware.modules.communication.endpoint.virtual.CommunicationEn
 import ch.desm.middleware.modules.component.interlocking.ComponentInterlockingObermattLangau;
 import ch.desm.middleware.modules.component.simulation.ComponentSimulationLocsim;
 
-
-
 public class Main {
 
 	public static void main(String[] args) {
-	
-		CommunicationBroker broker = new CommunicationBroker();	
-		
+
+		CommunicationBroker broker = new CommunicationBroker();
+
 		CommunicationEndpointMessageVirtual communicationEndpointVirtualLocsim = new CommunicationEndpointMessageVirtual();
-		ComponentSimulationLocsim componentSimulationLocsim = new ComponentSimulationLocsim(broker, communicationEndpointVirtualLocsim);
-		
 		CommunicationEndpointMessageVirtual communicationEndpointVirtualCabine = new CommunicationEndpointMessageVirtual();
-		ComponentInterlockingObermattLangau componentInterlockingObermattLangnau = new ComponentInterlockingObermattLangau(broker, communicationEndpointVirtualCabine);
+
+		ComponentSimulationLocsim componentSimulationLocsim = new ComponentSimulationLocsim(
+				broker, communicationEndpointVirtualLocsim);
+		ComponentInterlockingObermattLangau componentInterlockingObermattLangnau = new ComponentInterlockingObermattLangau(
+				broker, communicationEndpointVirtualCabine);
+
+		communicationEndpointVirtualLocsim.emulateIncomingEndpointMessage("test message from virtual locsim endpoint");
+		communicationEndpointVirtualCabine.emulateIncomingEndpointMessage("test message from virtual cabine endpoint");
 		
 		
-		communicationEndpointVirtualCabine.emulateIncomingMessage("test");
 	}
 
 }

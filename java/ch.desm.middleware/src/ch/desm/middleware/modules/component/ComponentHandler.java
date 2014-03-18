@@ -5,13 +5,13 @@ import java.util.List;
 
 public class ComponentHandler {
 
-	List<ComponentAbstract> componentList;
+	List<ComponentBase> componentList;
 	
 	public ComponentHandler(){
-		this.componentList = new ArrayList<ComponentAbstract>();
+		this.componentList = new ArrayList<ComponentBase>();
 	}
 	
-	public void addComponent(ComponentAbstract component){		
+	public void addComponent(ComponentBase component){		
 		if(isComponentListCompatible(componentList)){
 			this.componentList.add(component);
 		}else{
@@ -24,7 +24,7 @@ public class ComponentHandler {
 		}
 	}
 	
-	public void setComponentList(ArrayList<ComponentAbstract> componentList){
+	public void setComponentList(ArrayList<ComponentBase> componentList){
 		if(isComponentListCompatible(componentList)){
 			this.componentList = componentList;
 		}else{
@@ -36,17 +36,17 @@ public class ComponentHandler {
 		}
 	}
 	
-	public List<ComponentAbstract> getComponentList(){
+	public List<ComponentBase> getComponentList(){
 		return componentList;
 	}
 	
 	//TODO - fix component type check
-	private boolean isComponentListCompatible(List<ComponentAbstract> componentList){
+	private boolean isComponentListCompatible(List<ComponentBase> componentList){
 		
 		boolean isRequiredTypeExisting = false;
 		String missingComponentType = "";
 		
-		for(ComponentAbstract component : componentList){
+		for(ComponentBase component : componentList){
 			for(String requiredComponentType : component.getRequiredTypes()){
 				if(component.getType().equals(requiredComponentType)){
 					isRequiredTypeExisting = true;
