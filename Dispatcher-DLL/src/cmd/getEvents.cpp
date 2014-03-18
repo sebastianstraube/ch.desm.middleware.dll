@@ -12,8 +12,8 @@ extern "C" {
 			return desm::ERROR_API_MISUSE;
 		}
 		
-		std::vector<int> types;		
-		std::vector<int> ids;		
+		std::vector<int> types;
+		std::vector<int> ids;
 		desm::Middleware::get().getEvents(types, ids);
 		
 		if(types.size() != ids.size()) {
