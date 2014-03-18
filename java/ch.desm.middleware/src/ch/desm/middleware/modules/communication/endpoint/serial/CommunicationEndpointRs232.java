@@ -6,7 +6,8 @@ import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointMessageBase;
 
-public class CommunicationEndpointRs232 extends CommunicationEndpointMessageBase implements SerialPortEventListener {
+public class CommunicationEndpointRs232 extends
+		CommunicationEndpointMessageBase implements SerialPortEventListener {
 
 	protected SerialPort serialPort;
 
@@ -35,6 +36,14 @@ public class CommunicationEndpointRs232 extends CommunicationEndpointMessageBase
 		serialPort.getPortName();
 	}
 
+	/**
+	 * Preparing a mask. In a mask, we need to specify the types of events that
+	 * we want to track. Well, for example, we need to know what came some data,
+	 * thus in the mask must have the following value: MASK_RXCHAR. If we, for
+	 * example, still need to know about changes in states of lines CTS and DSR,
+	 * the mask has to look like this: SerialPort.MASK_RXCHAR +
+	 * SerialPort.MASK_CTS + SerialPort.MASK_DSR
+	 */
 	private void initializeSerialPorts() {
 		System.out.println("intialize port(s)...");
 
@@ -43,15 +52,6 @@ public class CommunicationEndpointRs232 extends CommunicationEndpointMessageBase
 			serialPort.setParams(SerialPort.BAUDRATE_9600,
 					SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
 					SerialPort.PARITY_NONE);
-			// Preparing a mask. In a mask, we need to specify the types of
-			// events that we want to track.
-			// Well, for example, we need to know what came some data, thus in
-			// the mask must have the
-			// following value: MASK_RXCHAR. If we, for example, still need to
-			// know about changes in states
-			// of lines CTS and DSR, the mask has to look like this:
-			// SerialPort.MASK_RXCHAR + SerialPort.MASK_CTS +
-			// SerialPort.MASK_DSR
 
 			// Set the prepared mask
 			serialPort.setEventsMask(SerialPort.MASK_RXCHAR);
@@ -106,46 +106,44 @@ public class CommunicationEndpointRs232 extends CommunicationEndpointMessageBase
 
 	@Override
 	public void serialEvent(SerialPortEvent event) {
-		if(event.isRXCHAR()){
-    		
-    		System.out.println("Serial event listener receive data on port "+ serialPort.getPortName()+ ": ");
-    		
-            if(event.getEventValue() > 1){
-                try {
-                	byte buffer[]  = serialPort.readBytes();
-                	String receivedCommand = "";
-                	
-                	for(int i=0; i<buffer.length; i++){
-                		if( ((char)buffer[i]) != '\n' &&
-                			((char)buffer[i]) != '\r'){
-                			receivedCommand += (char)buffer[i];
-                		}
-                	}
+		if (event.isRXCHAR()) {
 
-                	super.onIncomingMessage(receivedCommand);
-                }
-                catch (SerialPortException ex) {
-                    System.out.println(ex);
-                }
-            }
-        }
-        //If the CTS line status has changed, then the method event.getEventValue() returns 1 if the line is ON and 0 if it is OFF.
-        else if(event.isCTS()){
-            if(event.getEventValue() == 1){
-                System.out.println("CTS - ON");
-            }
-            else {
-                System.out.println("CTS - OFF");
-            }
-        }
-        else if(event.isDSR()){
-            if(event.getEventValue() == 1){
-                System.out.println("DSR - ON");
-            }
-            else {
-                System.out.println("DSR - OFF");
-                }
-            }
-		
+			System.out.println("Serial event listener receive data on port "
+					+ serialPort.getPortName() + ": ");
+
+			if (event.getEventValue() > 1) {
+				try {
+					byte buffer[] = serialPort.readBytes();
+					String receivedCommand = "";
+
+					for (int i = 0; i < buffer.length; i++) {
+						if (((char) buffer[i]) != '\n'
+								&& ((char) buffer[i]) != '\r') {
+							receivedCommand += (char) buffer[i];
+						}
+					}
+
+					super.onIncomingMessage(receivedCommand);
+				} catch (SerialPortException ex) {
+					System.out.println(ex);
+				}
+			}
+		}
+		// If the CTS line status has changed, then the method
+		// event.getEventValue() returns 1 if the line is ON and 0 if it is OFF.
+		else if (event.isCTS()) {
+			if (event.getEventValue() == 1) {
+				System.out.println("CTS - ON");
+			} else {
+				System.out.println("CTS - OFF");
+			}
+		} else if (event.isDSR()) {
+			if (event.getEventValue() == 1) {
+				System.out.println("DSR - ON");
+			} else {
+				System.out.println("DSR - OFF");
+			}
+		}
+
 	}
 }
