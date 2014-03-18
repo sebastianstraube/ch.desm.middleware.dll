@@ -5,17 +5,17 @@ import java.util.List;
 
 import ch.desm.middleware.modules.communication.broker.CommunicationBroker;
 import ch.desm.middleware.modules.communication.broker.message.CommunicationBrokerMessage;
-import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.CommunicationEndpointUbw32;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.CommunicationEndpointUbw32ListenerInterface;
+import ch.desm.middleware.modules.communication.endpoint.virtual.CommunicationEndpointMessageVirtual;
 import ch.desm.middleware.modules.component.ComponentAbstract;
 
 public class ComponentCabineRe420 extends ComponentAbstract implements
 		CommunicationEndpointUbw32ListenerInterface {
 
-	CommunicationEndpointUbw32 communicationEndpointUbw32;
+	CommunicationEndpointMessageVirtual communicationEndpointUbw32;
 
 	public ComponentCabineRe420(CommunicationBroker broker,
-			CommunicationEndpointUbw32 communicationEndpointUbw32) {
+			CommunicationEndpointMessageVirtual communicationEndpointUbw32) {
 		super(broker);
 		this.communicationEndpointUbw32 = communicationEndpointUbw32;
 	}
