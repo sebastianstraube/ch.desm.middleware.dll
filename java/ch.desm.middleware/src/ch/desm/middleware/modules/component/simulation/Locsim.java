@@ -8,8 +8,8 @@ import ch.desm.middleware.modules.communication.broker.message.BrokerMessageComm
 import ch.desm.middleware.modules.communication.broker.message.type.component.interlocking.BrokerMessageSignalLampeAn;
 import ch.desm.middleware.modules.communication.broker.message.type.component.interlocking.BrokerMessageSignalLampeAus;
 import ch.desm.middleware.modules.communication.broker.message.type.component.interlocking.BrokerMessageWeichenSchalterAn;
-import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointBase;
-import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointCommon;
+import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
+import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 import ch.desm.middleware.modules.communication.endpoint.dll.EndpointDesmDll;
 import ch.desm.middleware.modules.communication.endpoint.dll.EndpointDesmDllListenerInterface;
 import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232ListenerInterface;
@@ -18,20 +18,20 @@ import ch.desm.middleware.modules.component.ComponentBase;
 public class Locsim extends ComponentBase implements
 		EndpointDesmDllListenerInterface, EndpointRs232ListenerInterface{
 
-	CommunicationEndpointCommon communicationEndpoint;
+	EndpointCommon communicationEndpoint;
 
 	public Locsim(Broker broker,
-			CommunicationEndpointCommon communicationEndpointDll) {
+			EndpointCommon communicationEndpointDll) {
 		
 		super(broker);
 		this.communicationEndpoint = communicationEndpointDll;
 		
-		this.registerEndpointListener((CommunicationEndpointBase)communicationEndpointDll);
+		this.registerEndpointListener((EndpointBase)communicationEndpointDll);
 	}
 
 	@Override
 	protected void registerEndpointListener(
-			CommunicationEndpointBase listener) {
+			EndpointBase listener) {
 		try {
 			communicationEndpoint.addEndpointListener(this);
 		} catch (Exception e) {

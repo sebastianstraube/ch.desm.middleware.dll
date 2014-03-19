@@ -1,9 +1,9 @@
 package ch.desm.middleware.modules.communication.endpoint.dll;
 
-import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointBaseListenerInterface;
+import ch.desm.middleware.modules.communication.endpoint.EndpointBaseListenerInterface;
 
 public interface EndpointDesmDllListenerInterface extends
-		CommunicationEndpointBaseListenerInterface {
+		EndpointBaseListenerInterface {
 
 	public void onSignalAn(int signalId);
 	public void onSignalAus(int signalId);

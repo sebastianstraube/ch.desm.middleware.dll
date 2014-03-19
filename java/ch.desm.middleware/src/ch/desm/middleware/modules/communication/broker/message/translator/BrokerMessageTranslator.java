@@ -1,7 +1,7 @@
 package ch.desm.middleware.modules.communication.broker.message.translator;
 
 import ch.desm.middleware.modules.communication.broker.message.BrokerMessageCommon;
-import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointBase;
+import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.component.ComponentBase;
 import ch.desm.middleware.modules.component.ComponentBase.EnumComponentType;
 
@@ -56,7 +56,7 @@ public class BrokerMessageTranslator {
 	 * @param component
 	 * @return
 	 */
-	private String translateToEndpointMessage(CommunicationEndpointBase component){
+	private String translateToEndpointMessage(EndpointBase component){
 		
 		
 		return null;

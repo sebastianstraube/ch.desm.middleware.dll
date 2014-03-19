@@ -1,15 +1,15 @@
 package ch.desm.middleware.modules.communication.endpoint.dll;
 
-import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointBaseListenerInterface;
-import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointCommon;
+import ch.desm.middleware.modules.communication.endpoint.EndpointBaseListenerInterface;
+import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 
-public class EndpointDesmDll extends CommunicationEndpointCommon {
+public class EndpointDesmDll extends EndpointCommon {
 
 	
 	public void stw_setWeiche(int weicheId, boolean on) {
 		// call desm dll stuff here...
 		// adding these explicit calls for test purpose only:
-		for (CommunicationEndpointBaseListenerInterface listener : super.listeners) {
+		for (EndpointBaseListenerInterface listener : super.listeners) {
 
 			if (listener instanceof EndpointDesmDllListenerInterface) {
 				EndpointDesmDllListenerInterface dllListener = 
@@ -27,7 +27,7 @@ public class EndpointDesmDll extends CommunicationEndpointCommon {
 	}
 
 	@Override
-	public void addEndpointListener(CommunicationEndpointBaseListenerInterface listener) throws Exception {
+	public void addEndpointListener(EndpointBaseListenerInterface listener) throws Exception {
 		
 		if(listener instanceof EndpointDesmDllListenerInterface){
 			this.listeners.add(listener);

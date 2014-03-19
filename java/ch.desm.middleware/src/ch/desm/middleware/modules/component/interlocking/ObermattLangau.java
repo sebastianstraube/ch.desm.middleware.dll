@@ -5,26 +5,26 @@ import java.util.List;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.broker.message.BrokerMessageCommon;
-import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointBase;
-import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointCommon;
+import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
+import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32ListenerInterface;
 import ch.desm.middleware.modules.component.ComponentBase;
 
 public class ObermattLangau extends ComponentBase
 		implements EndpointUbw32ListenerInterface {
 
-	CommunicationEndpointCommon communicationEndpointUbw32;
+	EndpointCommon communicationEndpointUbw32;
 	
-	public ObermattLangau(Broker broker, CommunicationEndpointCommon communicationEndpointUbw32) {
+	public ObermattLangau(Broker broker, EndpointCommon communicationEndpointUbw32) {
 		super(broker);
 		this.communicationEndpointUbw32 = communicationEndpointUbw32;
 		
-		this.registerEndpointListener((CommunicationEndpointBase)communicationEndpointUbw32);
+		this.registerEndpointListener((EndpointBase)communicationEndpointUbw32);
 	}
 	
 	@Override
 	protected void registerEndpointListener(
-			CommunicationEndpointBase listener) {
+			EndpointBase listener) {
 		try {
 			communicationEndpointUbw32.addEndpointListener(this);
 		} catch (Exception e) {

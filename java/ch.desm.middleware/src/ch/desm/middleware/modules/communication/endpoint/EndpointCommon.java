@@ -1,12 +1,12 @@
 package ch.desm.middleware.modules.communication.endpoint;
 
-public abstract class CommunicationEndpointCommon extends
-		CommunicationEndpointBase {
+public abstract class EndpointCommon extends
+		EndpointBase {
 
 	protected void onIncomingEndpointMessage(String message) {
-		for (CommunicationEndpointBaseListenerInterface listener : this.listeners) {
+		for (EndpointBaseListenerInterface listener : this.listeners) {
 
-			((CommunicationEndpointCommonListenerInterface) listener)
+			((EndpointCommonListenerInterface) listener)
 					.onIncomingEndpointMessage(message);
 		}
 	}
@@ -21,10 +21,10 @@ public abstract class CommunicationEndpointCommon extends
 
 	@Override
 	public void addEndpointListener(
-			CommunicationEndpointBaseListenerInterface listener)
+			EndpointBaseListenerInterface listener)
 			throws Exception {
 
-		if (listener instanceof CommunicationEndpointCommonListenerInterface) {
+		if (listener instanceof EndpointCommonListenerInterface) {
 			this.listeners.add(listener);
 		} else {
 			throw new Exception(

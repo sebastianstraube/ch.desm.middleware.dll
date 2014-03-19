@@ -4,10 +4,10 @@ import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
-import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointCommon;
+import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 
 public class EndpointRs232 extends
-		CommunicationEndpointCommon implements SerialPortEventListener {
+		EndpointCommon implements SerialPortEventListener {
 
 	protected SerialPort serialPort;
 	protected boolean ignoreUbw32ControlMessages;

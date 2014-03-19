@@ -6,7 +6,7 @@ import java.util.List;
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.broker.message.BrokerMessageCommon;
 import ch.desm.middleware.modules.communication.broker.message.type.component.cabine.BrokerMessageStufenschalter;
-import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointBase;
+import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32ListenerInterface;
 import ch.desm.middleware.modules.component.ComponentBase;
@@ -21,12 +21,12 @@ public class Re420 extends ComponentBase implements
 		super(broker);
 		
 		this.communicationEndpointUbw32 = communicationEndpointUbw32;
-		this.registerEndpointListener((CommunicationEndpointBase)communicationEndpointUbw32);
+		this.registerEndpointListener((EndpointBase)communicationEndpointUbw32);
 	}
 	
 	@Override
 	protected void registerEndpointListener(
-			CommunicationEndpointBase listener) {
+			EndpointBase listener) {
 		try {
 			communicationEndpointUbw32.addEndpointListener(this);
 		} catch (Exception e) {
