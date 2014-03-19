@@ -36,9 +36,4 @@ public class EndpointDesmDll extends CommunicationEndpointCommon {
 		}
 		
 	}
-
-	@Override
-	public void sendMessage(String message) {
-		System.out.println("sending message:\"" + message+"\" from " + this.getClass().getCanonicalName());
-	}
 }

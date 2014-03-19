@@ -3,13 +3,6 @@ package ch.desm.middleware.modules.communication.endpoint;
 public abstract class CommunicationEndpointCommon extends
 		CommunicationEndpointBase {
 
-	/**
-	 * send a message thru an endpoint
-	 * 
-	 * @param message
-	 */
-	abstract public void sendMessage(String message);
-
 	protected void onIncomingEndpointMessage(String message) {
 		for (CommunicationEndpointBaseListenerInterface listener : this.listeners) {
 

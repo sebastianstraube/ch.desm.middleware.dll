@@ -84,17 +84,6 @@ public class EndpointRs232 extends
 			e.printStackTrace();
 		}
 	}
-
-	@Override
-	/**
-	 *  sending common message to rs232
-	 * 	@param message 
-	 * 
-	 */
-	public void sendMessage(String message){
-		System.out.println("sending message:\"" + message+"\" from " + this.getClass().getCanonicalName());
-		this.sendCommand(message);
-	}
 	
 	/**
 	 * sending a message to serial port

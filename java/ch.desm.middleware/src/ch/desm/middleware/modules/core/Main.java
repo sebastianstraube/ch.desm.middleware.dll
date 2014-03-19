@@ -41,8 +41,8 @@ public class Main {
 //		CommunicationBrokerMessageCommon messageFromCabine = new CommunicationBrokerMessageCommon(EnumComponentType.CABINE, 3, "CABINE");
 		
 		
-//		componentSimulationLocsimDll.emulateEndpointMessage("DLL");
-		componentSimulationLocsimUbw32.emulateEndpointMessage("DLL");
+		componentSimulationLocsimDll.emulateEndpointMessage("DLL");
+//		componentSimulationLocsimUbw32.emulateEndpointMessage("UBW32");
 		
 //		componentSimulationLocsimDll.emulateBrokerMessage(messageFromLocsim);
 //		componentInterlockingObermattLangnau.emulateBrokerMessage(messageFromInterlocking);

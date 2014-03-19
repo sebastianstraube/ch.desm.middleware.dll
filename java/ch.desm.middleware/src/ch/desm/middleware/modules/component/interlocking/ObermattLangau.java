@@ -45,7 +45,7 @@ public class ObermattLangau extends ComponentBase
 		System.out.println("received an endpoint message :\"" + message
 				+ " from endpoint " + this.getClass());
 		
-		communicationEndpointUbw32.sendMessage(message);
+		
 	}
 	
 	@Override
