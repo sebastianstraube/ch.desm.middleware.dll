@@ -6,10 +6,10 @@
 #include "util/String.h"
 
 extern "C" {
-	__declspec(dllexport) int stw_getTrackConnection(int trackConnectionId, int* gleisId, int* gleis1, int* gleis2,
+	__declspec(dllexport) int stw_getTrackConnection(int trackConnectionId, int* gleis1Id, int* gleis2Id,
 		double* von, double* bis, char* nameBuf, int nameBufLen, int* nameStrLen, int* weiche1Id, int* weiche2Id)
 	{
-		if(!trackConnectionId || !gleis1 || !gleis2 || !von || !bis || !nameBuf || !nameStrLen || !weiche1Id || !weiche2Id) {
+		if(!trackConnectionId || !gleis1Id || !gleis2Id || !von || !bis || !nameBuf || !nameStrLen || !weiche1Id || !weiche2Id) {
 			return desm::ERROR_API_MISUSE;
 		}
 		
@@ -18,9 +18,8 @@ extern "C" {
 			return desm::ERROR_API_MISUSE;
 		}
 
-		*gleisId = desm::util::jsonGet<int>(v, "gleisId");
-		*gleis1 = desm::util::jsonGet<int>(v, "gleis1");
-		*gleis2 = desm::util::jsonGet<int>(v, "gleis2");
+		*gleis1Id = desm::util::jsonGet<int>(v, "gleis1Id");
+		*gleis2Id = desm::util::jsonGet<int>(v, "gleis2Id");
 		*von = desm::util::jsonGet<double>(v, "von");
 		*bis = desm::util::jsonGet<double>(v, "bis");
 		*weiche1Id = desm::util::jsonGet<int>(v, "weiche1Id");

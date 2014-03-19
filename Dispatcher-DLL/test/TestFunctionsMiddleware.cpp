@@ -251,9 +251,8 @@ bool TestFunctionsMiddleware::testGetSignal(){
 
 bool TestFunctionsMiddleware::testSetTrackConnection(){
 	int trackConnectionId = 6345;
-	int gleisId = 42;
-	int gleis1 = 23423;
-	int gleis2 = 12422;
+	int gleis1Id = 23423;
+	int gleis2Id = 12422;
 	double von = 12.435;
 	double bis = 12423.23;
 	std::string name = "TestSetTrackConnection";
@@ -262,10 +261,9 @@ bool TestFunctionsMiddleware::testSetTrackConnection(){
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testSetTrackConnection" << std::endl;
-	dll.setTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id);
-	std::cout << "gleisId: " << gleisId << std::endl;
-	std::cout << "gleis1: " << gleis1 << std::endl;
-	std::cout << "gleis2: " << gleis2 << std::endl;
+	dll.setTrackConnection(trackConnectionId, gleis1Id, gleis2Id, von, bis, name, weiche1Id, weiche2Id);
+	std::cout << "gleis1: " << gleis1Id << std::endl;
+	std::cout << "gleis2: " << gleis2Id << std::endl;
 	std::cout << "von: " << von << std::endl;
 	std::cout << "bis: " << bis << std::endl;
 	std::cout << "name: " << name << std::endl;
@@ -278,9 +276,8 @@ bool TestFunctionsMiddleware::testSetTrackConnection(){
 
 bool TestFunctionsMiddleware::testGetTrackConnection(){
 	int trackConnectionId = 6345;
-	int gleisId = -1;
-	int gleis1 = -1;
-	int gleis2 = -1;
+	int gleis1Id = -1;
+	int gleis2Id = -1;
 	double von = -1.;
 	double bis = -1.;
 	std::string name = "-1";
@@ -289,10 +286,9 @@ bool TestFunctionsMiddleware::testGetTrackConnection(){
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testGetTrackConnection" << std::endl;
-	bool isSuccess = dll.getTrackConnection(trackConnectionId, gleisId, gleis1, gleis2, von, bis, name, weiche1Id, weiche2Id);
-	std::cout << "gleisId: " << gleisId << std::endl;
-	std::cout << "gleis1: " << gleis1 << std::endl;
-	std::cout << "gleis2: " << gleis2 << std::endl;
+	bool isSuccess = dll.getTrackConnection(trackConnectionId, gleis1Id, gleis2Id, von, bis, name, weiche1Id, weiche2Id);
+	std::cout << "gleis1Id: " << gleis1Id << std::endl;
+	std::cout << "gleis2Id: " << gleis2Id << std::endl;
 	std::cout << "von: " << von << std::endl;
 	std::cout << "bis: " << bis << std::endl;
 	std::cout << "name: " << name << std::endl;
