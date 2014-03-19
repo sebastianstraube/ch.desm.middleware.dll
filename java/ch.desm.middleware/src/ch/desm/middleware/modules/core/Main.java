@@ -4,8 +4,10 @@ import ch.desm.middleware.modules.communication.broker.CommunicationBroker;
 import ch.desm.middleware.modules.communication.broker.message.CommunicationBrokerMessage;
 import ch.desm.middleware.modules.communication.endpoint.serial.CommunicationEndpointRs232;
 import ch.desm.middleware.modules.communication.endpoint.serial.CommunicationEndpointRs232.EnumSerialPorts;
+import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.CommunicationEndpointUbw32;
 import ch.desm.middleware.modules.communication.endpoint.virtual.CommunicationEndpointMessageVirtual;
 import ch.desm.middleware.modules.component.interlocking.ComponentInterlockingObermattLangau;
+import ch.desm.middleware.modules.component.simulation.ComponentSimulationLocsim;
 import ch.desm.middleware.modules.component.virtual.ComponentVirtualSimulationLocsim;
 
 public class Main {
@@ -14,11 +16,11 @@ public class Main {
 
 		CommunicationBroker broker = new CommunicationBroker();
 
-		CommunicationEndpointMessageVirtual communicationEndpointVirtualLocsim = new CommunicationEndpointMessageVirtual();
-		CommunicationEndpointRs232 communicationEndpointInterlocking = new CommunicationEndpointRs232(EnumSerialPorts.COM5);
+		CommunicationEndpointRs232 communicationEndpointSimulation = new CommunicationEndpointRs232(EnumSerialPorts.COM5);
+		CommunicationEndpointMessageVirtual communicationEndpointInterlocking = new CommunicationEndpointMessageVirtual();
 
-		ComponentVirtualSimulationLocsim componentVirtualSimulationLocsim = new ComponentVirtualSimulationLocsim(
-				broker, communicationEndpointVirtualLocsim);
+		ComponentSimulationLocsim componentSimulationLocsim = new ComponentSimulationLocsim(
+				broker, communicationEndpointSimulation);
 		
 		ComponentInterlockingObermattLangau componentInterlockingObermattLangnau = new ComponentInterlockingObermattLangau(
 				broker, communicationEndpointInterlocking);
@@ -30,10 +32,10 @@ public class Main {
 		CommunicationBrokerMessage messageFromLocsim = new CommunicationBrokerMessage(0, "test message from component simulation locsim");
 		CommunicationBrokerMessage messageFromInterlocking = new CommunicationBrokerMessage(1, "test message from component interlocking OL");
 		
-//		componentVirtualSimulationLocsim.emulateEndpointMessage("TEST_COMMAND");
-//		componentVirtualSimulationLocsim.emulateBrokerMessage(messageFromLocsim);
+		componentSimulationLocsim.emulateEndpointMessage("test message from component simulation locsim");
+//		componentSimulationLocsim.emulateBrokerMessage(messageFromLocsim);
 //		componentInterlockingObermattLangnau.emulateBrokerMessage(messageFromInterlocking);
-		componentInterlockingObermattLangnau.emulateEndpointMessage("C,14784,199,65505,16383,64528,52939,64575");
+//		componentInterlockingObermattLangnau.emulateEndpointMessage("C,14784,199,65505,16383,64528,52939,64575");
 	}
 
 }

@@ -10,6 +10,7 @@ public class CommunicationEndpointRs232 extends
 		CommunicationEndpointMessageBase implements SerialPortEventListener {
 
 	protected SerialPort serialPort;
+	protected boolean ignoreUbw32ControlMessages;
 	
 	public static enum EnumSerialPorts {
 		COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9, COM10;
@@ -17,6 +18,7 @@ public class CommunicationEndpointRs232 extends
 
 	public CommunicationEndpointRs232(EnumSerialPorts enumSerialPort) {
 		serialPort = new SerialPort(enumSerialPort.name());
+		ignoreUbw32ControlMessages = false;
 		
 		this.initialize();
 	}
@@ -49,10 +51,6 @@ public class CommunicationEndpointRs232 extends
 		catch (SerialPortException e) {
 			System.err.println(e);
 		}
-	}
-
-	public SerialPort getSerialPorts() {
-		return serialPort;
 	}
 
 	/**
@@ -152,13 +150,16 @@ public class CommunicationEndpointRs232 extends
 					}
 
 					//TODO refactoring
-					if(!message.contains("!") &&
-						!message.endsWith("OK") ){
+					if(!ignoreUbw32ControlMessages || ( 
+						!message.contains("!") &&
+						!message.endsWith("OK"))){
 						
 						System.out.println("serial event listener receive data on port:"
 								+ serialPort.getPortName() + " with message:" + message);
 						
 						super.onIncomingEndpointMessage(message);
+					}else{
+						System.out.println("the message contains control character from UBW32 and will be ignored, message:\"" + message + "\"");
 					}
 					
 				} catch (SerialPortException ex) {

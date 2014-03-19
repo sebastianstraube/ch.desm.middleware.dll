@@ -43,6 +43,8 @@ public class ComponentSimulationLocsim extends ComponentBase implements
 	public void onIncomingEndpointMessage(String message) {
 		System.out.println("received an endpoint message :\"" + message
 				+ " from endpoint " + this.getClass());
+		
+		communicationEndpointRs232.sendMessage(message+"\n");
 	}
 	
 	@Override

@@ -47,6 +47,7 @@ public class CommunicationEndpointUbw32 extends CommunicationEndpointRs232 {
 	 */
 	public CommunicationEndpointUbw32(EnumSerialPorts enumSerialPort) {
 		super(enumSerialPort);
+		super.ignoreUbw32ControlMessages = true;
 	}
 
 	/**
