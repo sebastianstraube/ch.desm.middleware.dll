@@ -1,8 +1,8 @@
 package ch.desm.middleware.modules.component;
 
-import ch.desm.middleware.modules.communication.broker.CommunicationBroker;
-import ch.desm.middleware.modules.communication.broker.CommunicationBrokerClient;
-import ch.desm.middleware.modules.communication.broker.message.CommunicationBrokerMessage;
+import ch.desm.middleware.modules.communication.broker.Broker;
+import ch.desm.middleware.modules.communication.broker.BrokerClient;
+import ch.desm.middleware.modules.communication.broker.message.BrokerMessageCommon;
 import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointBaseListenerInterface;
 	
@@ -11,17 +11,24 @@ import ch.desm.middleware.modules.communication.endpoint.CommunicationEndpointBa
  * @author Sebastian
  *
  */
-public abstract class ComponentBase extends CommunicationBrokerClient implements CommunicationEndpointBaseListenerInterface{
+public abstract class ComponentBase extends BrokerClient implements CommunicationEndpointBaseListenerInterface{
 	
-	public static enum enumComponentType{
+	private static double id = 0;
+	
+	public static enum EnumComponentType{
 		SIMULATION, INTERLOCKING, CABINE
 	}
 	
-	public ComponentBase(CommunicationBroker broker) {
+	public ComponentBase(Broker broker) {
 		super(broker);
+		id++;
+	}
+	
+	public double getId(){
+		return id;
 	}
 	
 	abstract protected void registerEndpointListener(CommunicationEndpointBase listener);
 	abstract public void emulateEndpointMessage(String message);
-	abstract public void emulateBrokerMessage(CommunicationBrokerMessage message);
+	abstract public void emulateBrokerMessage(BrokerMessageCommon message);
 }

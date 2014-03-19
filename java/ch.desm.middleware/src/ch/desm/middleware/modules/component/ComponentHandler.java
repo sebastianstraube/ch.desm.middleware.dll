@@ -55,7 +55,7 @@ public class ComponentHandler {
 			}
 			
 			if(!isRequiredTypeExisting){
-				missingComponentType = component.getType();
+				missingComponentType = component.getType().name();
 				break;
 			}
 		}
