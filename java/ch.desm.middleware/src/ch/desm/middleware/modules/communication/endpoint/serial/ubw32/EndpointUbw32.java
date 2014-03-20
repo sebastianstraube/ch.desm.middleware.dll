@@ -51,19 +51,6 @@ public class EndpointUbw32 extends EndpointRs232 {
 	}
 
 	/**
-	 * This function maps the common String message
-	 * to UBW32 command and forwards the message to
-	 * the controller.
-	 * 
-	 * @param message 
-	 * TODO: Mapping from common message to UBW command
-	 */
-	public void sendMessage(String message){
-		System.out.println("sending message:\"" + message+"\" from " + this.getClass().getCanonicalName());
-		this.sendCommand(message);
-	}
-
-	/**
 	 * test commands
 	 */
 	public void testCommunication() {
@@ -81,10 +68,9 @@ public class EndpointUbw32 extends EndpointRs232 {
 				command = new EndpointUbw32Command(
 						EnumCommand.OUTPUT_STATE);
 				command.setCommand(0, 0, 0, 0, i - 1, 0, 0);
-				// sendCommand(command);
+//				sendCommand(command);
 
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 

@@ -61,6 +61,9 @@ public class EndpointRs232 extends
 		serialPort.getPortName();
 	}
 
+	/**
+	 * 
+	 */
 	public void disconnectSerialPorts() {
 		System.out.print("disconnecting all opened serial ports...");
 
@@ -76,6 +79,9 @@ public class EndpointRs232 extends
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public void testSeriaPort() {
 		try {
 			serialPort.writeString("Write Test to Serialport ..."

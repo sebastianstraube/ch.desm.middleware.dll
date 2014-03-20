@@ -1,42 +1,42 @@
 package ch.desm.middleware.modules.communication.broker.message;
 
-import ch.desm.middleware.modules.component.ComponentBase.EnumComponentType;
 
 
 
-public class BrokerMessageCommon{
+public class MessageCommon{
 	
 	
     private static double messageId = 0;
-	private EnumComponentType messageType;
+	private EnumMessageType messageType;
 	private int parameterTypeId;
-	private String message;
 	
+	public enum EnumMessageType{
+		SIMULATION, INTERLOCKING, CABINE, CORBA, DLL
+	}
     /**
      * 
      */
-    public BrokerMessageCommon() {
-    	BrokerMessageCommon.messageId++;
+    private MessageCommon() {
+    	MessageCommon.messageId++;
+
     }
         
     /**
      * 
      * @param parameterTypeId depends on message context, e.g. signal id
+     * @param messageType 
      * 
      */
-    public BrokerMessageCommon(EnumComponentType messageType, int parameterTypeId, String message) {
+    public MessageCommon(EnumMessageType messageType, int parameterTypeId) {
     	this();
     	this.messageType = messageType;
     	this.parameterTypeId = parameterTypeId;
-    	this.message = message;
     }
 
     @Override
     public String toString(){
     	String s = "";
     	s+= "id: "+messageId;
-    	s+= ", ";
-    	s+= "message: \""+message+"\"";
     	
     	return s;
     }
@@ -44,12 +44,8 @@ public class BrokerMessageCommon{
     public double getMessageId() {
         return messageId;
     }
-        
-    public String getMessage(){
-    	return this.message;
-    }
     
-    public EnumComponentType getMessageType(){
+    public EnumMessageType getMessageType(){
     	return this.messageType;
     }
     

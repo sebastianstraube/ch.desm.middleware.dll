@@ -3,6 +3,8 @@ package ch.desm.middleware.modules.communication.endpoint;
 import java.util.HashSet;
 import java.util.Set;
 
+import ch.desm.middleware.modules.communication.broker.message.translator.MessageTranslator;
+
 /**
  * 
  * @author Sebastian
@@ -11,12 +13,18 @@ import java.util.Set;
 public abstract class EndpointBase {
 
 	protected Set<EndpointBaseListenerInterface> listeners;
-
+	protected MessageTranslator messageTranslator;
+	
+	public enum EnumEndpointType{
+		SERIAL, UBW32, TCPIP, CORBA, VIRTUAL, DLL
+	}
+	
 	/**
 	 * 
 	 */
 	public EndpointBase() {
 		this.listeners = new HashSet<EndpointBaseListenerInterface>();
+		messageTranslator = new MessageTranslator();
 	}
 
 	/**

@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
-import ch.desm.middleware.modules.communication.broker.message.BrokerMessageCommon;
-import ch.desm.middleware.modules.communication.broker.message.type.component.interlocking.BrokerMessageSignalLampeAn;
-import ch.desm.middleware.modules.communication.broker.message.type.component.interlocking.BrokerMessageSignalLampeAus;
-import ch.desm.middleware.modules.communication.broker.message.type.component.interlocking.BrokerMessageWeichenSchalterAn;
+import ch.desm.middleware.modules.communication.broker.message.MessageCommon;
+import ch.desm.middleware.modules.communication.broker.message.MessageCommon.EnumMessageType;
+import ch.desm.middleware.modules.communication.broker.message.type.component.interlocking.MessageSignalLampeAn;
+import ch.desm.middleware.modules.communication.broker.message.type.component.interlocking.MessageWeichenSchalterAn;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 import ch.desm.middleware.modules.communication.endpoint.dll.EndpointDesmDll;
@@ -45,14 +45,14 @@ public class Locsim extends ComponentBase implements
 	 * 
 	 * @param message
 	 */
-	protected void onIncomingBrokerMessage(BrokerMessageCommon message) {
+	protected void onIncomingBrokerMessage(MessageCommon message) {
 		System.out.println("received a broker message:" + message
 				+ " from component " + this.getClass());
 		
 		if(this instanceof EndpointDesmDllListenerInterface){
 			
-			if(message instanceof BrokerMessageSignalLampeAn){
-				((EndpointDesmDll)communicationEndpoint).stw_setWeiche(((BrokerMessageWeichenSchalterAn) message).getParameterTypeId(), true);
+			if(message instanceof MessageSignalLampeAn){
+				((EndpointDesmDll)communicationEndpoint).stw_setWeiche(((MessageWeichenSchalterAn) message).getParameterTypeId(), true);
 				
 			
 			}			
@@ -66,9 +66,24 @@ public class Locsim extends ComponentBase implements
 	}
 
 	@Override
+	/**
+	 * TODO implementation
+	 * 
+	 */
 	public void onIncomingEndpointMessage(String message) {
 		System.out.println("received an endpoint message :\"" + message
 				+ " from endpoint " + this.getClass());
+		
+		if(this instanceof EndpointDesmDllListenerInterface){
+			
+			System.err.println("implementation of onIncomingEndpointMessage needed" + this.getClass().getCanonicalName());
+		}else if(this instanceof EndpointRs232ListenerInterface){
+			
+			System.err.println("implementation of onIncomingEndpointMessage needed" + this.getClass().getCanonicalName());
+		}else{
+			
+			//TODO Exception
+		}
 		
 		
 	}
@@ -87,7 +102,7 @@ public class Locsim extends ComponentBase implements
 	 * test endpoint message handling
 	 * @param message
 	 */
-	public void emulateBrokerMessage(BrokerMessageCommon message) {
+	public void emulateBrokerMessage(MessageCommon message) {
 		onIncomingBrokerMessage(message);
 	}
 	
@@ -101,13 +116,14 @@ public class Locsim extends ComponentBase implements
 
 	@Override
 	public void onSignalAn(int signalId) {
-		publish(new BrokerMessageSignalLampeAn(signalId));
-		
+
+		publish(new MessageSignalLampeAn(EnumMessageType.DLL, signalId));
 	}
 
 	@Override
 	public void onSignalAus(int signalId) {
-		publish(new BrokerMessageSignalLampeAus(signalId));
+		
+//		publish(new MessageSignalLampeAus(signalId));
 		
 	}
 

@@ -1,14 +1,14 @@
 package ch.desm.middleware.modules.communication.broker.message.type.component.simulation;
 
-import ch.desm.middleware.modules.communication.broker.message.BrokerMessageCommon;
+import ch.desm.middleware.modules.communication.broker.message.MessageCommon;
 
-public class BrokerMessageZugPositionUpdate extends BrokerMessageCommon {
+public class MessageZugPositionUpdate extends MessageCommon {
 	private Double x;
 	private Double y;
 	private Double z;
 
-	public BrokerMessageZugPositionUpdate(Double x, Double y, Double z) {
-		super();
+	public MessageZugPositionUpdate(EnumMessageType messageType, int parameterTypeId, Double x, Double y, Double z) {
+		super(messageType, parameterTypeId);
 		this.x = x;
 		this.y = y;
 		this.z = z;

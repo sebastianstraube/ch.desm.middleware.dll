@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
-import ch.desm.middleware.modules.communication.broker.message.BrokerMessageCommon;
+import ch.desm.middleware.modules.communication.broker.message.MessageCommon;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32ListenerInterface;
@@ -33,7 +33,7 @@ public class ObermattLangau extends ComponentBase
 	}
 	
 	@Override
-	protected void onIncomingBrokerMessage(BrokerMessageCommon message) {
+	protected void onIncomingBrokerMessage(MessageCommon message) {
 		System.out.println("received a broker message:" + message
 				+ " from component " + this.getClass());
 		
@@ -62,7 +62,7 @@ public class ObermattLangau extends ComponentBase
 	 * test endpoint message handling
 	 * @param message
 	 */
-	public void emulateBrokerMessage(BrokerMessageCommon message) {
+	public void emulateBrokerMessage(MessageCommon message) {
 		onIncomingBrokerMessage(message);
 	}
 	

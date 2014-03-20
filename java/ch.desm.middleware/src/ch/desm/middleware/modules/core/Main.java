@@ -1,7 +1,7 @@
 package ch.desm.middleware.modules.core;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
-import ch.desm.middleware.modules.communication.broker.message.BrokerMessageCommon;
+import ch.desm.middleware.modules.communication.broker.message.MessageCommon;
 import ch.desm.middleware.modules.communication.endpoint.dll.EndpointDesmDll;
 import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232.EnumSerialPorts;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32;

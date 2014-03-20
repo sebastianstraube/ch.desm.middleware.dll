@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
-import ch.desm.middleware.modules.communication.broker.message.BrokerMessageCommon;
-import ch.desm.middleware.modules.communication.broker.message.type.component.cabine.BrokerMessageStufenschalter;
+import ch.desm.middleware.modules.communication.broker.message.MessageCommon;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
+import ch.desm.middleware.modules.communication.endpoint.EndpointBase.EnumEndpointType;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32ListenerInterface;
 import ch.desm.middleware.modules.component.ComponentBase;
@@ -35,16 +35,11 @@ public class Re420 extends ComponentBase implements
 	}
 	
 	@Override
-	protected void onIncomingBrokerMessage(BrokerMessageCommon message) {
+	protected void onIncomingBrokerMessage(MessageCommon message) {
 		System.out.println("received a broker message:" + message
 				+ " from component " + this.getClass());
 		
-		if(message instanceof BrokerMessageStufenschalter) {
-			BrokerMessageStufenschalter stufenSchalter = (BrokerMessageStufenschalter)message;
-            System.out.println(this.getClass().getCanonicalName() + ": stufenschalter an " + stufenSchalter.getParameterTypeId());
-        } else {
-            System.err.println("unknown message: "+ message.toString());
-        }
+		messageTranslator.translate(communicationEndpointUbw32, message);
 	}
 
 	@Override
@@ -52,7 +47,8 @@ public class Re420 extends ComponentBase implements
 		System.out.println("received an endpoint message :\"" + message
 				+ " from endpoint " + this.getClass());
 		
-		
+		 MessageCommon messageCommon = messageTranslator.translate(EnumEndpointType.UBW32, message);
+		 publish(messageCommon);
 	}
 	
 	@Override
@@ -69,7 +65,7 @@ public class Re420 extends ComponentBase implements
 	 * test endpoint message handling
 	 * @param message
 	 */
-	public void emulateBrokerMessage(BrokerMessageCommon message) {
+	public void emulateBrokerMessage(MessageCommon message) {
 		onIncomingBrokerMessage(message);
 	}
 	
