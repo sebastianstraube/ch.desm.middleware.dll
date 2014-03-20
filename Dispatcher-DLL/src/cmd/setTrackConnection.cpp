@@ -5,7 +5,7 @@
 #include "util/Json.h"
 
 extern "C" {
-	__declspec(dllexport) int stw_setTrackConnection(int trackConnectionId, int gleis1Id, int gleis2Id,
+	__declspec(dllexport) int stw_setTrackConnection(int gleis1Id, int gleis2Id,
 		double von, double bis, char* name, int nameLen, int weiche1Id, int weiche2Id)
 	{
 		Json::Value v(Json::objectValue);
@@ -17,7 +17,11 @@ extern "C" {
 		v["weiche1Id"] = Json::Value(weiche1Id);
 		v["weiche2Id"] = Json::Value(weiche2Id);
 		
-		if(!desm::Middleware::get().sendCommand(desm::ENUM_CMD_TRACK_CONNECTION, trackConnectionId, v)) {
+		std::vector<int> params;
+		params.push_back(gleis1Id);
+		params.push_back(gleis2Id);
+
+		if(!desm::Middleware::get().sendCommand(desm::ENUM_CMD_TRACK_CONNECTION, params, v)) {
 			return desm::ERROR_FATAL;
 		}
 		

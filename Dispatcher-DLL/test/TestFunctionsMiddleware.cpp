@@ -250,7 +250,6 @@ bool TestFunctionsMiddleware::testGetSignal(){
 }
 
 bool TestFunctionsMiddleware::testSetTrackConnection(){
-	int trackConnectionId = 6345;
 	int gleis1Id = 23423;
 	int gleis2Id = 12422;
 	double von = 12.435;
@@ -261,7 +260,7 @@ bool TestFunctionsMiddleware::testSetTrackConnection(){
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testSetTrackConnection" << std::endl;
-	dll.setTrackConnection(trackConnectionId, gleis1Id, gleis2Id, von, bis, name, weiche1Id, weiche2Id);
+	dll.setTrackConnection(gleis1Id, gleis2Id, von, bis, name, weiche1Id, weiche2Id);
 	std::cout << "gleis1: " << gleis1Id << std::endl;
 	std::cout << "gleis2: " << gleis2Id << std::endl;
 	std::cout << "von: " << von << std::endl;
@@ -275,18 +274,17 @@ bool TestFunctionsMiddleware::testSetTrackConnection(){
 }
 
 bool TestFunctionsMiddleware::testGetTrackConnection(){
-	int trackConnectionId = 6345;
-	int gleis1Id = -1;
-	int gleis2Id = -1;
-	double von = -1.;
-	double bis = -1.;
+	int gleis1Id = 23423;
+	int gleis2Id = 12422;
+	double von = -1.0;
+	double bis = -1.0;
 	std::string name = "-1";
 	int weiche1Id = -1;
 	int weiche2Id = -1;
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testGetTrackConnection" << std::endl;
-	bool isSuccess = dll.getTrackConnection(trackConnectionId, gleis1Id, gleis2Id, von, bis, name, weiche1Id, weiche2Id);
+	bool isSuccess = dll.getTrackConnection(gleis1Id, gleis2Id, von, bis, name, weiche1Id, weiche2Id);
 	std::cout << "gleis1Id: " << gleis1Id << std::endl;
 	std::cout << "gleis2Id: " << gleis2Id << std::endl;
 	std::cout << "von: " << von << std::endl;

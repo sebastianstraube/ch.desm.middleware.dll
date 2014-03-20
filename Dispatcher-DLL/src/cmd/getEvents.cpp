@@ -6,17 +6,17 @@
 #include "util/String.h"
 
 extern "C" {
-	__declspec(dllexport) int stw_getEvents(int* anzahlEvents, int** typeList, int** idList)
+	__declspec(dllexport) int stw_getEvents(int* anzahlEvents, int** typeList, int*** paramList)
 	{
-		if(!anzahlEvents || !typeList || !idList) {
+		if(!anzahlEvents || !typeList || !paramList) {
 			return desm::ERROR_API_MISUSE;
 		}
 		
 		std::vector<int> types;
-		std::vector<int> ids;
-		desm::Middleware::get().getEvents(types, ids);
+		std::vector<std::vector<int>> params;
+		desm::Middleware::get().getEvents(types, params);
 		
-		if(types.size() != ids.size()) {
+		if(types.size() != params.size()) {
 			return desm::ERROR_FATAL;
 		}
 
@@ -27,14 +27,18 @@ extern "C" {
 
 		*anzahlEvents = types.size();
 		*typeList = (int*)::calloc(types.size(), sizeof(int));
-		*idList = (int*)::calloc(ids.size(), sizeof(int));
-		if(!*typeList || !*idList) {
+		*paramList = (int**)::calloc(params.size(), sizeof(int));
+		if(!*typeList || !*paramList) {
 			return desm::ERROR_API_MISUSE;
 		}
 
 		for(size_t i = 0; i < types.size(); ++i) {
 			(*typeList)[i] = types[i];
-			(*idList)[i] = ids[i];
+			std::vector<int> eventParams = params[i];
+			(*paramList)[i] = (int*)::calloc(eventParams.size(), sizeof(int));
+			for(size_t j = 0; j < eventParams.size(); ++j) {
+				(*paramList)[i][j] = eventParams[j];
+			}
 		}
 
 		return desm::ERROR_OK;

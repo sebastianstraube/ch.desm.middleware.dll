@@ -26,8 +26,8 @@ struct MwDll::Impl {
 	typedef int (*t_stw_setTrack)(int gleisId, double von, double bis, double abstand, char* name, int nameLen);
 	typedef int (*t_stw_getTrack)(int gleisId, double* von, double* bis, double* abstand, char* nameBuf, int nameBufLen, int* nameStrLen);
 
-	typedef int (*t_stw_setTrackConnection)(int trackConnectionId, int gleis1Id, int gleis2Id, double von, double bis, char* name, int nameLen, int weiche1Id, int weiche2Id);
-	typedef int (*t_stw_getTrackConnection)(int trackConnectionId, int* gleis1Id, int* gleis2Id, double* von, double* bis, char* nameBuf, int nameBufLen, int* nameStrLen, int* weiche1Id, int* weiche2Id);
+	typedef int (*t_stw_setTrackConnection)(int gleis1Id, int gleis2Id, double von, double bis, char* name, int nameLen, int weiche1Id, int weiche2Id);
+	typedef int (*t_stw_getTrackConnection)(int gleis1Id, int gleis2Id, double* von, double* bis, char* nameBuf, int nameBufLen, int* nameStrLen, int* weiche1Id, int* weiche2Id);
 	
 	typedef int (*t_stw_setSignal)(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int nameLen, int stellung);
 	typedef int (*t_stw_getSignal)(int signalId, int* stellung);
@@ -50,7 +50,7 @@ struct MwDll::Impl {
 	typedef int (*t_stw_setTrainPosition)(int trainTyp, int direction, double* positionList, int positionListLen, int* gleisList, int gleisListLen);
 	typedef int (*t_stw_getTrainPosition)(int trainTyp, int* direction, double** positionList, int* positionListLen, int** gleisList, int* gleisListLen);
 
-	typedef int (*t_stw_getEvents)(int* anzahlEvents, int** typeList, int** idList);
+	typedef int (*t_stw_getEvents)(int* anzahlEvents, int** typeList, int*** paramList);
 
 	typedef void (*t_stw_deallocate)(void** p);
 	
@@ -259,18 +259,18 @@ bool MwDll::getTrack(int gleisId, double& von, double& bis, double& abstand, std
 	return success;
 }
 
-bool MwDll::setTrackConnection(int trackConnectionId, int gleis1Id, int gleis2Id, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
+bool MwDll::setTrackConnection(int gleis1Id, int gleis2Id, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id) {
 	char* _name = _strdup(name.c_str());
-	bool success = checkErrorCode(m_pImpl->m_stw_setTrackConnection(trackConnectionId, gleis1Id, gleis2Id, von, bis, _name, name.size(), weiche1Id, weiche2Id));
+	bool success = checkErrorCode(m_pImpl->m_stw_setTrackConnection(gleis1Id, gleis2Id, von, bis, _name, name.size(), weiche1Id, weiche2Id));
 	free(_name);
 
 	return success;
 }
 
-bool MwDll::getTrackConnection(int trackConnectionId, int& gleis1Id, int& gleis2Id, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
+bool MwDll::getTrackConnection(int gleis1Id, int gleis2Id, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id) {
 	char _name[DEFAULT_BUF_LEN];
 	int nameStrLen;
-	bool success = checkErrorCode(m_pImpl->m_stw_getTrackConnection(trackConnectionId, &gleis1Id, &gleis2Id, &von, &bis, _name, DEFAULT_BUF_LEN, &nameStrLen, &weiche1Id, &weiche2Id));
+	bool success = checkErrorCode(m_pImpl->m_stw_getTrackConnection(gleis1Id, gleis2Id, &von, &bis, _name, DEFAULT_BUF_LEN, &nameStrLen, &weiche1Id, &weiche2Id));
 
 	if(success) {
 		name = std::string(_name);
@@ -393,19 +393,31 @@ bool MwDll::getTrainPosition(int trainTyp, int& direction, std::vector<double>& 
 	return success;
 }
 
-bool MwDll::getEvents(std::vector<int>& typeList, std::vector<int>& idList) {
-	int num, *cTypeList, *cIdList;
-	bool success = checkErrorCode(m_pImpl->m_stw_getEvents(&num, &cTypeList, &cIdList));
+bool MwDll::getEvents(std::vector<int>& typeList, std::vector<std::vector<int>>& paramList) {
+	int num, *cTypeList, **cParamList;
+	bool success = checkErrorCode(m_pImpl->m_stw_getEvents(&num, &cTypeList, &cParamList));
 	if(!success) {
 		return false;
 	}
 	for(int i = 0; i < num; ++i) {
-		typeList.push_back(cTypeList[i]);
-		idList.push_back(cIdList[i]);
+		int type = cTypeList[i];
+		typeList.push_back(type);
+		std::vector<int> params;
+		switch(type) {
+		case ENUM_CMD_TRACK_CONNECTION:
+			params.push_back(cParamList[i][0]);
+			params.push_back(cParamList[i][1]);
+			break;
+		default:
+			params.push_back(cParamList[i][0]);
+			break;
+		}
+		paramList.push_back(params);
+		m_pImpl->m_stw_deallocate((void**)&cParamList[i]);
 	}
 	if(num > 0) {
 		m_pImpl->m_stw_deallocate((void**)&cTypeList);
-		m_pImpl->m_stw_deallocate((void**)&cIdList);
+		m_pImpl->m_stw_deallocate((void**)&cParamList);
 	}
 	return success;
 }

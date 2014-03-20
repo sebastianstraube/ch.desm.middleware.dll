@@ -29,23 +29,27 @@ namespace desm {
 		~Middleware();
 
 	public:
-		void getEvents(std::vector<int>& types, std::vector<int>& ids);
+		void getEvents(std::vector<int>& types, std::vector<std::vector<int>>& params);
 		bool sendCommand(int type, int id = INVALID_ID, const Json::Value& v = Json::Value());
-		bool getCommand(int type, int id, Json::Value& v);
+		bool sendCommand(int type, const std::vector<int>& params, const Json::Value& v = Json::Value());
+		bool getCommand(int type, int, Json::Value& v);
+		bool getCommand(int type, const std::vector<int>& params, Json::Value& v);
 
 	private: // types
 		typedef Thread<typename Middleware, void*> tFetchThread;
 
-		typedef std::pair<int, int> tChangeInfo;
+		typedef std::vector<int> tParams;
+		typedef std::pair<int, tParams> tChangeInfo;
 		typedef SecureQueue<tChangeInfo> tChangeList;
 
-		typedef std::map<int, Json::Value> tCommandMap;
-		typedef std::map<int, tCommandMap> tState;
+		typedef std::pair<tParams, Json::Value> tCommandInfo;
+		typedef std::list<tCommandInfo> tCommandList;
+		typedef std::map<int, tCommandList> tState;
 
 	private: // communication helper
 		DWORD fetch(void*);
 		void parseMessage(const std::string& msg);
-		void storeCommand(int type, int id, const Json::Value& v);
+		void storeCommand(int type, const tParams& params, const Json::Value& v);
 		bool sendMessage(const Json::Value& v);
 		void resetState();
 		

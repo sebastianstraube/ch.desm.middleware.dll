@@ -82,37 +82,71 @@ namespace desm {
 		delete m_cc;
 	}
 	
-	void Middleware::getEvents(std::vector<int>& types, std::vector<int>& ids) {
+	void Middleware::getEvents(std::vector<int>& types, std::vector<std::vector<int>>& params) {
 		tChangeList cmds;
 		m_incomingChanges.moveTo(cmds);
 		tChangeInfo change;
 		while(cmds.pop(change)) {
 			types.push_back(change.first);
-			ids.push_back(change.second);
+			params.push_back(change.second);
 		}
 	}
 
 	bool Middleware::sendCommand(int type, int id, const Json::Value& v) {
-		storeCommand(type, id, v);
+		std::vector<int> params;
+		params.push_back(id);
+		return sendCommand(type, params, v);
+	}
+	
+	bool Middleware::sendCommand(int type, const std::vector<int>& params, const Json::Value& v) {
+		storeCommand(type, params, v);
+
+		Json::Value jsonParams(Json::arrayValue);
+		jsonParams.resize(params.size());
+		for(size_t i = 0; i < params.size(); ++i) {
+			jsonParams[i] = params[i];
+		}
+		
 		Json::Value root;
 		root["t"] = type;
-		root["id"] = id;
+		root["p"] = jsonParams;
 		root["v"] = v;
 		return sendMessage(root);
 	}
 
+	static bool paramsEqual(const std::vector<int>& p1, const std::vector<int>& p2) {
+		if(p1.size() != p2.size()) {
+			return false;
+		}
+		for(size_t i = 0; i < p1.size(); ++i) {
+			if(p1[i] != p2[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	bool Middleware::getCommand(int type, int id, Json::Value& v) {
+		std::vector<int> params;
+		params.push_back(id);
+		return getCommand(type, params, v);
+	}
+
+	bool Middleware::getCommand(int type, const std::vector<int>& params, Json::Value& v) {
 		tState::const_iterator it = m_state.find(type);
 		if(it == m_state.end()) {
 			return false;
 		}
-		const tCommandMap& cmdMap = it->second;
-		tCommandMap::const_iterator cmdIt = cmdMap.find(id);
-		if(cmdIt == cmdMap.end()) {
-			return false;
+		const tCommandList& cmdList = it->second;
+		tCommandList::const_iterator cmdIt = cmdList.begin();
+		for(; cmdIt != cmdList.end(); ++cmdIt) {
+			const tParams& cmdParams = cmdIt->first;
+			if(paramsEqual(cmdParams, params)) {
+				v = cmdIt->second;
+				return true;
+			}
 		}
-		v = cmdIt->second;
-		return true;
+		return false;
 	}
 
 	DWORD Middleware::fetch(void*) {
@@ -134,22 +168,20 @@ namespace desm {
 			return;
 		}
 		int type = util::jsonGet<int>(root, "t");
-		int id = util::jsonGet<int>(root, "id");
+		std::vector<int> params = util::jsonGet<std::vector<int>>(root, "p");
 		Json::Value value = root.get("v", Json::Value());
-		storeCommand(type, id, value);
-		m_incomingChanges.push(std::make_pair(type, id));
+		storeCommand(type, params, value);
+		m_incomingChanges.push(std::make_pair(type, params));
 	}
 
-	void Middleware::storeCommand(int type, int id, const Json::Value& value) {
+	void Middleware::storeCommand(int type, const std::vector<int>& params, const Json::Value& value) {
 		tState::iterator it = m_state.find(type);
 		if(it == m_state.end()) {
-			m_state[type] = tCommandMap();
+			m_state[type] = tCommandList();
 		}
-		tCommandMap& cmdMap = m_state[type];
-		if(cmdMap.find(id) != cmdMap.end()) {
-			// ATTENTION: overwriting existing value!
-		}
-		cmdMap[id] = value;
+		tCommandList& cmdList = m_state[type];
+		// NOTE: will silently overwrite existing values!
+		cmdList.push_back(std::make_pair(params, value));
 	}
 
 	bool Middleware::sendMessage(const Json::Value& v) {

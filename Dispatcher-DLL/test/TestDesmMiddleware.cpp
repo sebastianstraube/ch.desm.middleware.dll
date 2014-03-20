@@ -22,8 +22,8 @@ int main(int argc, char** argv) {
 
 		while(true) {
 			std::vector<int> types;
-			std::vector<int> ids;
-			dll.getEvents(types, ids);
+			std::vector<std::vector<int>> paramList;
+			dll.getEvents(types, paramList);
 			for(size_t i = 0; i < types.size(); ++i) {
 				switch(types[i]) {
 				case ENUM_CMD_KILOMETER_DIRECTION:
@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
 					dispatcher.testGetTrack();
 					break;
 				default:
-					std::cout << "default command [type: " << types[i] << " id: " << ids[i] << "]" << std::endl;
+					std::cout << "default command [type: " << types[i] << "]" << std::endl;
 					break;
 				}
 			}
