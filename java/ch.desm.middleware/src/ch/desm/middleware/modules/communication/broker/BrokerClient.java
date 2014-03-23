@@ -1,6 +1,6 @@
 package ch.desm.middleware.modules.communication.broker;
 
-import ch.desm.middleware.modules.communication.broker.message.MessageCommon;
+import ch.desm.middleware.modules.communication.message.MessageCommon;
 
 public abstract class BrokerClient implements BrokerClientInterface {
 

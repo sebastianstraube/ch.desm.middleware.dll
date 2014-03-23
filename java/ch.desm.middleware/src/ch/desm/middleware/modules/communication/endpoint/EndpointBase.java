@@ -3,7 +3,7 @@ package ch.desm.middleware.modules.communication.endpoint;
 import java.util.HashSet;
 import java.util.Set;
 
-import ch.desm.middleware.modules.communication.broker.message.translator.MessageTranslator;
+import ch.desm.middleware.modules.communication.message.translator.MessageTranslator;
 
 /**
  * 

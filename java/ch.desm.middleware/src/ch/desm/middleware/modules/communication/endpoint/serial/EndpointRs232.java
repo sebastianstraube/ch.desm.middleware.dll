@@ -6,7 +6,7 @@ import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 
-public class EndpointRs232 extends
+public abstract class EndpointRs232 extends
 		EndpointCommon implements SerialPortEventListener {
 
 	protected SerialPort serialPort;

@@ -4,11 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
-import ch.desm.middleware.modules.communication.broker.message.MessageCommon;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase.EnumEndpointType;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32ListenerInterface;
+import ch.desm.middleware.modules.communication.message.MessageCommon;
 import ch.desm.middleware.modules.component.ComponentBase;
 
 public class Re420 extends ComponentBase implements
@@ -51,7 +51,6 @@ public class Re420 extends ComponentBase implements
 		 publish(messageCommon);
 	}
 	
-	@Override
 	/**
 	 * test endpoint message handling
 	 * @param message

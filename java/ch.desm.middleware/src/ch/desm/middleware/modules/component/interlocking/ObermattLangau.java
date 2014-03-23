@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
-import ch.desm.middleware.modules.communication.broker.message.MessageCommon;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32ListenerInterface;
+import ch.desm.middleware.modules.communication.message.MessageCommon;
 import ch.desm.middleware.modules.component.ComponentBase;
 
 public class ObermattLangau extends ComponentBase
@@ -48,7 +48,6 @@ public class ObermattLangau extends ComponentBase
 		
 	}
 	
-	@Override
 	/**
 	 * test endpoint message handling
 	 * @param message

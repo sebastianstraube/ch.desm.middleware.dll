@@ -1,13 +1,14 @@
 package ch.desm.middleware.modules.core;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
-import ch.desm.middleware.modules.communication.broker.message.MessageCommon;
 import ch.desm.middleware.modules.communication.endpoint.dll.EndpointDesmDll;
 import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232.EnumSerialPorts;
-import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32;
-import ch.desm.middleware.modules.component.ComponentBase.EnumComponentType;
-import ch.desm.middleware.modules.component.cabine.Re420;
-import ch.desm.middleware.modules.component.simulation.Locsim;
+import ch.desm.middleware.modules.component.simulation.LocsimEndpointDesmDll;
+import ch.desm.middleware.modules.component.simulation.LocsimEndpointRs232;
+import ch.desm.middleware.modules.component.simulation.LocsimEndpointUbw32;
+import ch.desm.middleware.modules.component.simulation.LocsimImplDll;
+import ch.desm.middleware.modules.component.simulation.LocsimImplRs232;
+import ch.desm.middleware.modules.component.simulation.LocsimImplUbw32;
 
 public class Main {
 
@@ -15,38 +16,27 @@ public class Main {
 
 		Broker broker = new Broker();
 
-		EndpointUbw32 communicationEndpointSimulationUbw32 = new EndpointUbw32(EnumSerialPorts.COM8);
-		EndpointDesmDll communicationEndpointSimulationDll = new EndpointDesmDll();
-//		CommunicationEndpointUbw32 communicationEndpointInterlocking = new CommunicationEndpointUbw32(EnumSerialPorts.COM8);
-		EndpointUbw32 communicationEndpointCabine = new EndpointUbw32(EnumSerialPorts.COM6);
-
-		Locsim componentSimulationLocsimDll = new Locsim(
+		//1# CABINE <> LOCSIM (CABINE FUNCTIONS) - connect to 3#
+		LocsimEndpointRs232 communicationEndpointSimulationRs232 = new LocsimEndpointRs232(EnumSerialPorts.COM8);
+		
+		//2# LOCSIM <> INTERLOCKING (INTERLOCKING FUNCTIONS)
+		LocsimEndpointDesmDll communicationEndpointSimulationDll = new LocsimEndpointDesmDll();
+		
+		//3# CABINE <> LOCSIM (CABINE FUNCTIONS)
+		LocsimEndpointUbw32 communicationEndpointSimulationUbw32 = new LocsimEndpointUbw32(EnumSerialPorts.COM6);
+		
+		LocsimImplDll componentSimulationLocsimDll = new LocsimImplDll(
 				broker, communicationEndpointSimulationDll);
 		
-		Locsim componentSimulationLocsimUbw32 = new Locsim(
+		LocsimImplRs232 componentSimulationLocsimRs232 = new LocsimImplRs232(
+				broker, communicationEndpointSimulationRs232);
+		
+		LocsimImplUbw32 componentSimulationLocsimUbw32 = new LocsimImplUbw32(
 				broker, communicationEndpointSimulationUbw32);
 		
-//		ComponentInterlockingObermattLangau componentInterlockingObermattLangnau = new ComponentInterlockingObermattLangau(
-//				broker, communicationEndpointInterlocking);
+//		MessageCommon message = new Stufenschalter1(EnumMessageType.CABINE, 1, "test common message");
 		
-		Re420 componentCabineRe420 = new Re420(
-				broker, communicationEndpointCabine);
-
-//		communicationEndpointVirtualLocsim.emulateIncomingEndpointMessage("test message from virtual locsim endpoint");
-//		communicationEndpointCabine.emulateIncomingEndpointMessage("test message from virtual cabine endpoint");
-		
-
-//		CommunicationBrokerMessageCommon messageFromLocsim = new CommunicationBrokerMessageCommon(EnumComponentType.SIMULATION, 1, "SIMULATION");
-//		CommunicationBrokerMessageCommon messageFromInterlocking = new CommunicationBrokerMessageCommon(EnumComponentType.INTERLOCKING, 2, "INTERLOCKING");
-//		CommunicationBrokerMessageCommon messageFromCabine = new CommunicationBrokerMessageCommon(EnumComponentType.CABINE, 3, "CABINE");
-		
-		
-		componentSimulationLocsimDll.emulateEndpointMessage("DLL");
-//		componentSimulationLocsimUbw32.emulateEndpointMessage("UBW32");
-		
-//		componentSimulationLocsimDll.emulateBrokerMessage(messageFromLocsim);
-//		componentInterlockingObermattLangnau.emulateBrokerMessage(messageFromInterlocking);
-//		componentInterlockingObermattLangnau.emulateEndpointMessage("C,14784,199,65505,16383,64528,52939,64575");
+		componentSimulationLocsimRs232.emulateEndpointMessage("stufenschalter.1.off");
 	}
 	
 	/* Test Case 1

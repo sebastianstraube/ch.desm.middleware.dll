@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.communication.broker.message.store;
+package ch.desm.middleware.modules.communication.message.store;
 
 public class MessageStore {
 

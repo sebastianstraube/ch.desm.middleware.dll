@@ -1,6 +1,6 @@
-package ch.desm.middleware.modules.communication.broker.message.channel;
+package ch.desm.middleware.modules.communication.message.channel;
 
-import ch.desm.middleware.modules.communication.broker.message.MessageCommon;
+import ch.desm.middleware.modules.communication.message.MessageCommon;
 import ch.desm.middleware.modules.component.ComponentBase;
 
 /**

@@ -1,12 +1,12 @@
-package ch.desm.middleware.modules.communication.broker.message.translator;
+package ch.desm.middleware.modules.communication.message.translator;
 
-import ch.desm.middleware.modules.communication.broker.message.MessageCommon;
-import ch.desm.middleware.modules.communication.broker.message.type.component.cabine.Stufenschalter1;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase.EnumEndpointType;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
-import ch.desm.middleware.modules.communication.endpoint.dll.EndpointDesmDll;
-import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32;
+import ch.desm.middleware.modules.communication.message.MessageCommon;
+import ch.desm.middleware.modules.communication.message.type.component.cabine.Stufenschalter1;
+import ch.desm.middleware.modules.component.simulation.LocsimBase.EnumFunctionTypeLocsim;
+import ch.desm.middleware.modules.component.simulation.LocsimEndpointRs232;
 
 /**
  * TODO implementation
@@ -30,6 +30,8 @@ public class MessageTranslator {
 	public MessageCommon translate(EnumEndpointType fromEndpoint, String message){
 		
 		if(fromEndpoint.equals(EnumEndpointType.SERIAL)){
+			
+			
 			
 		}else if(fromEndpoint.equals(EnumEndpointType.UBW32)){
 		
@@ -57,6 +59,20 @@ public class MessageTranslator {
 	 * @param message
 	 * 
 	 */
+	public void translate(LocsimEndpointRs232 endpoint, EnumFunctionTypeLocsim functionType, String message){
+		
+//		if(functionType.equals(EnumFunctionTypeLocsim.STUFENSCHALTER)){
+//			endpoint.onStufenschalter(1, "translated to locsim rs232");
+//		}
+	}
+	
+	/**
+	 * TODO Implementation
+	 * 
+	 * @param fromEndpoint
+	 * @param message
+	 * 
+	 */
 	public MessageCommon translate(EnumEndpointType fromEndpoint, MessageCommon message){
 		
 		if(fromEndpoint.equals(EnumEndpointType.SERIAL)){
@@ -65,7 +81,7 @@ public class MessageTranslator {
 		
 			if(message instanceof Stufenschalter1) {
 				Stufenschalter1 stufenSchalter = (Stufenschalter1)message;
-				System.out.println(this.getClass().getCanonicalName() + ": stufenschalter an " + stufenSchalter.getParameterTypeId());
+				System.out.println(this.getClass().getCanonicalName() + ": stufenschalter an " + stufenSchalter.getIdParameterType());
 				
 				return stufenSchalter;
 	            
@@ -94,25 +110,12 @@ public class MessageTranslator {
 	 */
 	public MessageCommon translate(EndpointCommon fromEndpoint, MessageCommon message){
 		
-		if(fromEndpoint instanceof EndpointDesmDll){
-			
-			if(message instanceof Stufenschalter1){
-				
-				((EndpointDesmDll)fromEndpoint).stw_setWeiche(message.getParameterTypeId(), true);
-			}
-			
-		}else if(fromEndpoint instanceof EndpointRs232){
-			
-		}else if(fromEndpoint instanceof EndpointUbw32){
+		if(fromEndpoint instanceof EndpointUbw32){
 			
 		}else{
-			try {
-				throw new Exception("message endpoint unknown");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			System.err.println("The message endpoint is not configured, the message will not be processed." + message);
 		}
 		
-		return null;
+		return message;
 	}	
 }
