@@ -6,10 +6,10 @@
 #include "util/String.h"
 
 extern "C" {
-	__declspec(dllexport) int stw_getTrackConnection(int gleis1Id, int gleis2Id,
+	__declspec(dllexport) int stw_getTrackConnection(int* gleisBasisId, int gleis1Id, int gleis2Id,
 		double* von, double* bis, char* nameBuf, int nameBufLen, int* nameStrLen, int* weiche1Id, int* weiche2Id)
 	{
-		if(!gleis1Id || !gleis2Id || !von || !bis || !nameBuf || !nameStrLen || !weiche1Id || !weiche2Id) {
+		if(!gleisBasisId ||!gleis1Id || !gleis2Id || !von || !bis || !nameBuf || !nameStrLen || !weiche1Id || !weiche2Id) {
 			return desm::ERROR_API_MISUSE;
 		}
 		
@@ -22,6 +22,7 @@ extern "C" {
 			return desm::ERROR_API_MISUSE;
 		}
 
+		*gleisBasisId = desm::util::jsonGet<int>(v, "gleisBasisId");
 		*von = desm::util::jsonGet<double>(v, "von");
 		*bis = desm::util::jsonGet<double>(v, "bis");
 		*weiche1Id = desm::util::jsonGet<int>(v, "weiche1Id");

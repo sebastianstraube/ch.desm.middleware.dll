@@ -28,24 +28,24 @@ namespace desm {
 		
 		//SET command
 		bool setTrack(int gleisId, double von, double bis, double abstand, const std::string& name);
-		bool setTrackConnection(int gleis1Id, int gleis2Id, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id);
-		bool setSignal(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, const std::string& name, int stellung);
-		bool setBalise(int baliseId, int gleisId, double position, int stellung, int beeinflussendeSignalId1, int beeinflussendeSignalId2);
-		bool setLoop(int baliseId, int gleisId, double von, double bis, int stellung, int beeinflussendeSignalId1, int beeinflussendeSignalId2);
+		bool setTrackConnection(int gleisBasisId, int gleis1Id, int gleis2Id, double von, double bis, const std::string& name, int weiche1Id, int weiche2Id);
+		bool setSignal(int signalId,  const std::string& name, int stellung);
+		bool setBalise(int baliseId, int stellung, const std::string& protokoll);
+		bool setLoop(int baliseId, int stellung, const std::string& protokoll);
 		bool setIsolierstoss(int isolierstossId, int gleisId, double position);
 		bool setKilometerDirection(int richtung);
 		bool setTrainPosition(int train, int direction, const std::vector<double>& positionList, const std::vector<int>& gleisList);
 		bool setWeiche(int weicheId, int gleisId);
 		
 		//GET Command
-		bool getSignal(int signalId, int& stellung);
-		bool getBalise(int baliseId, int& gleisId, double& position, int& stellung, int& beeinflussendeSignalId1, int& beeinflussendeSignalId2);
-		bool getLoop(int baliseId, int& gleisId, double& von, double& bis, int& stellung, int& beeinflussendeSignalId1, int& beeinflussendeSignalId2);
+		bool getSignal(int signalId, std::string& name, int& stellung);
+		bool getBalise(int baliseId, int& stellung, std::string& protokoll);
+		bool getLoop(int baliseId, int& stellung, std::string& protokoll);
 		bool getKilometerDirection(int& richtung);
 		bool getWeiche(int weicheId, int& gleisId);
 		bool getEvents(std::vector<int>& typeList, std::vector<std::vector<int>>& paramList);
 		bool getTrack(int gleisId, double& von, double& bis, double& abstand, std::string& name);
-		bool getTrackConnection(int gleis1Id, int gleis2Id, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id);
+		bool getTrackConnection(int& gleisBasisId, int gleis1Id, int gleis2Id, double& von, double& bis, std::string& name, int& weiche1Id, int& weiche2Id);
 		bool getIsolierstoss(int isolierstossId, int& gleisId, double& position);
 		bool getTrainPosition(int trainTyp, int& direction, std::vector<double>& positionList, std::vector<int>& gleisList);
 

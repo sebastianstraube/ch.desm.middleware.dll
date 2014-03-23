@@ -5,10 +5,11 @@
 #include "util/Json.h"
 
 extern "C" {
-	__declspec(dllexport) int stw_setTrackConnection(int gleis1Id, int gleis2Id,
+	__declspec(dllexport) int stw_setTrackConnection(int gleisBasisId, int gleis1Id, int gleis2Id,
 		double von, double bis, char* name, int nameLen, int weiche1Id, int weiche2Id)
 	{
 		Json::Value v(Json::objectValue);
+		v["gleisBasisId"] = Json::Value(gleis1Id);
 		v["gleis1Id"] = Json::Value(gleis1Id);
 		v["gleis2Id"] = Json::Value(gleis2Id);
 		v["von"] = Json::Value(von);

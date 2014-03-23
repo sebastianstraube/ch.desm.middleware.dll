@@ -6,24 +6,20 @@
 #include "util/String.h"
 
 extern "C" {
-	__declspec(dllexport) int stw_getLoop(int baliseId, int* gleisId,
-		double* von, double* bis, int* stellung, int* beeinflussendeSignalId1, int* beeinflussendeSignalId2)
+	__declspec(dllexport) int stw_getLoop(int baliseId, int* stellung, char* protokollBuf, int protokollBufLen, int* protokollStrLen)
 	{
-		if(!gleisId || !von || !stellung || !beeinflussendeSignalId1 || !beeinflussendeSignalId2) {
+		if(!baliseId || !stellung || !protokollBuf || !protokollStrLen) {
 			return desm::ERROR_API_MISUSE;
 		}
-
+		
 		Json::Value v;
 		if(!desm::Middleware::get().getCommand(desm::ENUM_CMD_LOOP, baliseId, v)) {
 			return desm::ERROR_API_MISUSE;
 		}
 
-		*gleisId = desm::util::jsonGet<int>(v, "gleisId");
-		*von = desm::util::jsonGet<double>(v, "von");
-		*bis = desm::util::jsonGet<double>(v, "bis");
-		*stellung = desm::util::jsonGet<int>(v, "stellung");
-		*beeinflussendeSignalId1 = desm::util::jsonGet<int>(v, "beeinflussendeSignalId1");
-		*beeinflussendeSignalId2 = desm::util::jsonGet<int>(v, "beeinflussendeSignalId2");
+		*stellung = desm::util::jsonGet<int>(v, "stellung");		
+		std::string protokoll = desm::util::jsonGet<std::string>(v, "protokoll");
+		*protokollStrLen = desm::util::strlcpy(protokollBuf, protokoll.c_str(), protokollBufLen);
 
 		return desm::ERROR_OK;
 	}
