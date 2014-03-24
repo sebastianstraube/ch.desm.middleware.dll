@@ -12,7 +12,7 @@ import ch.desm.middleware.modules.communication.message.translator.MessageTransl
  */
 public abstract class EndpointBase {
 
-	protected Set<EndpointBaseListenerInterface> listeners;
+	protected static Set<EndpointBaseListenerInterface> listeners;
 	protected MessageTranslator messageTranslator;
 	
 	public enum EnumEndpointType{

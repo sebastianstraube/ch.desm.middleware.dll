@@ -6,7 +6,7 @@ import java.util.List;
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
-import ch.desm.middleware.modules.communication.message.MessageCommon;
+import ch.desm.middleware.modules.communication.message.MessageBroker;
 import ch.desm.middleware.modules.component.ComponentBase;
 
 public abstract class LocsimBase extends ComponentBase{
@@ -42,7 +42,7 @@ public abstract class LocsimBase extends ComponentBase{
 	 * 
 	 * @param message
 	 */
-	protected abstract void onIncomingBrokerMessage(MessageCommon message);
+	protected abstract void onIncomingBrokerMessage(MessageBroker message);
 
 
 
@@ -51,16 +51,16 @@ public abstract class LocsimBase extends ComponentBase{
 	 * test endpoint message handling
 	 * @param message
 	 */
-	public void emulateBrokerMessage(MessageCommon message) {
+	public void emulateBrokerMessage(MessageBroker message) {
 		onIncomingBrokerMessage(message);
 	}
 	
-	public EnumComponentType getType() {
-		return EnumComponentType.SIMULATION;
+	public EnumComponentCategorie getType() {
+		return EnumComponentCategorie.SIMULATION;
 	}
 
 	public List<String> getRequiredTypes() {
-		return Arrays.asList(EnumComponentType.INTERLOCKING.name());
+		return Arrays.asList(EnumComponentCategorie.INTERLOCKING.name());
 	}
 
 }

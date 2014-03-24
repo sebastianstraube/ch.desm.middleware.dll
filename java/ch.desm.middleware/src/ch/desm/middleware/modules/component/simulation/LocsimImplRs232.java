@@ -2,9 +2,8 @@ package ch.desm.middleware.modules.component.simulation;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
-import ch.desm.middleware.modules.communication.message.MessageCommon;
-import ch.desm.middleware.modules.communication.message.MessageCommon.EnumMessageType;
-import ch.desm.middleware.modules.communication.message.type.component.cabine.Stufenschalter1;
+import ch.desm.middleware.modules.communication.message.MessageBroker;
+import ch.desm.middleware.modules.communication.message.type.component.cabine.MessageTypeHaupthahn1;
 
 public class LocsimImplRs232 extends LocsimBase implements LocsimListenerRs232{
 
@@ -17,7 +16,7 @@ public class LocsimImplRs232 extends LocsimBase implements LocsimListenerRs232{
 	 * TODO Implementation
 	 * 
 	 */
-	protected void onIncomingBrokerMessage(MessageCommon message) {
+	protected void onIncomingBrokerMessage(MessageBroker message) {
 		System.out.println("received a broker message:" + message
 				+ " from component " + this.getClass());
 		
@@ -25,9 +24,9 @@ public class LocsimImplRs232 extends LocsimBase implements LocsimListenerRs232{
 	}
 
 	@Override
-	public void onStufenschalter(int id, String value) {
+	public void onHaupthahn1(String payload) {
 		
-		publish(new Stufenschalter1(EnumMessageType.CABINE, id, value));
+		publish(new MessageTypeHaupthahn1(payload));
 	}
 
 
@@ -40,22 +39,10 @@ public class LocsimImplRs232 extends LocsimBase implements LocsimListenerRs232{
 		System.out.println("received an endpoint message :\"" + message
 				+ " from endpoint " + this.getClass());
 		
-		if(this instanceof LocsimImplRs232){
-			
-			if(message.equals("stufenschalter.1.off")){
-				onStufenschalter(1, "off");
-			}
-			
-		}else{
-			
-			try {
-				throw new Exception("unknown endpoint");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		
+		//TODO CHECK MESSAGES, if they are relevant then publish to other broker clients
+		if(message.equals("haupthahn.1.off")){
+			onHaupthahn1("off");
+		}		
 	}
 	
 	/**

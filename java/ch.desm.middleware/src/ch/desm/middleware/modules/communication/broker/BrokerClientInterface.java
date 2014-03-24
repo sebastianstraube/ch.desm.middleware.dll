@@ -2,11 +2,11 @@ package ch.desm.middleware.modules.communication.broker;
 
 import java.util.List;
 
-import ch.desm.middleware.modules.component.ComponentBase.EnumComponentType;
+import ch.desm.middleware.modules.component.ComponentBase.EnumComponentCategorie;
 
 
 public interface BrokerClientInterface {
 	
-	public EnumComponentType getType();
+	public EnumComponentCategorie getType();
     public List<String> getRequiredTypes();
 }

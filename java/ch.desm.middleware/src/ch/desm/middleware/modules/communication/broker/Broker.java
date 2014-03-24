@@ -3,7 +3,7 @@ package ch.desm.middleware.modules.communication.broker;
 import java.util.HashSet;
 import java.util.Set;
 
-import ch.desm.middleware.modules.communication.message.MessageCommon;
+import ch.desm.middleware.modules.communication.message.MessageBroker;
 
 public class Broker {
 	
@@ -31,7 +31,7 @@ public class Broker {
      * @param sendingClient
      * @param message
      */
-    protected void publish(BrokerClient sendingClient, MessageCommon message) {
+    protected void publish(BrokerClient sendingClient, MessageBroker message) {
         for(BrokerClient client : Broker.clients) {
             
         	if(client != sendingClient) {

@@ -1,6 +1,6 @@
 package ch.desm.middleware.modules.communication.message.channel;
 
-import ch.desm.middleware.modules.communication.message.MessageCommon;
+import ch.desm.middleware.modules.communication.message.MessageBase;
 import ch.desm.middleware.modules.component.ComponentBase;
 
 /**
@@ -9,12 +9,12 @@ import ch.desm.middleware.modules.component.ComponentBase;
  * @author Sebastian
  *
  */
-public class MessageChannel {
+public abstract class MessageChannel {
 
     private ComponentBase sourceComponent;
-	private MessageCommon message;
+	private MessageBase message;
 	
-	public MessageChannel(ComponentBase sourceComponent, MessageCommon message){
+	public MessageChannel(ComponentBase sourceComponent, MessageBase message){
 		this.sourceComponent = sourceComponent;
 		this.message = message;
 	}

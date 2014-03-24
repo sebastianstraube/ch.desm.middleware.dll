@@ -1,14 +1,14 @@
 package ch.desm.middleware.modules.communication.message.type.component.simulation;
 
-import ch.desm.middleware.modules.communication.message.MessageCommon;
+import ch.desm.middleware.modules.communication.message.MessageBase;
 
-public class MessageZugPositionUpdate extends MessageCommon {
+public class MessageTypeZugPositionUpdate extends MessageBase {
 	private Double x;
 	private Double y;
 	private Double z;
 
-	public MessageZugPositionUpdate(EnumMessageType messageType, int parameterTypeId, String value, Double x, Double y, Double z) {
-		super(messageType, parameterTypeId, value);
+	public MessageTypeZugPositionUpdate(String payload, Double x, Double y, Double z) {
+		super(payload);
 		this.x = x;
 		this.y = y;
 		this.z = z;

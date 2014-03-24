@@ -7,47 +7,31 @@ import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32ListenerInterface;
-import ch.desm.middleware.modules.communication.message.MessageCommon;
+import ch.desm.middleware.modules.communication.message.MessageBroker;
 import ch.desm.middleware.modules.component.ComponentBase;
 
-public class ObermattLangau extends ComponentBase
+public abstract class ObermattLangnauBase extends ComponentBase
 		implements EndpointUbw32ListenerInterface {
 
-	EndpointCommon communicationEndpointUbw32;
+	ObermattLangnauEndpointUbw32 communicationEndpoint;
 	
-	public ObermattLangau(Broker broker, EndpointCommon communicationEndpointUbw32) {
+	public ObermattLangnauBase(Broker broker, EndpointCommon communicationEndpointUbw32) {
 		super(broker);
-		this.communicationEndpointUbw32 = communicationEndpointUbw32;
+		this.communicationEndpoint = (ObermattLangnauEndpointUbw32)communicationEndpointUbw32;
 		
-		this.registerEndpointListener((EndpointBase)communicationEndpointUbw32);
+		this.registerEndpointListener(communicationEndpointUbw32);
 	}
 	
 	@Override
 	protected void registerEndpointListener(
 			EndpointBase listener) {
 		try {
-			communicationEndpointUbw32.addEndpointListener(this);
+			communicationEndpoint.addEndpointListener(this);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
 	}
-	
-	@Override
-	protected void onIncomingBrokerMessage(MessageCommon message) {
-		System.out.println("received a broker message:" + message
-				+ " from component " + this.getClass());
-		
-		
-	}
 
-	@Override
-	public void onIncomingEndpointMessage(String message) {
-		System.out.println("received an endpoint message :\"" + message
-				+ " from endpoint " + this.getClass());
-		
-		
-	}
-	
 	/**
 	 * test endpoint message handling
 	 * @param message
@@ -61,18 +45,18 @@ public class ObermattLangau extends ComponentBase
 	 * test endpoint message handling
 	 * @param message
 	 */
-	public void emulateBrokerMessage(MessageCommon message) {
+	public void emulateBrokerMessage(MessageBroker message) {
 		onIncomingBrokerMessage(message);
 	}
 	
 	@Override
-	public EnumComponentType getType() {
-		return EnumComponentType.INTERLOCKING;
+	public EnumComponentCategorie getType() {
+		return EnumComponentCategorie.INTERLOCKING;
 	}
 
 	@Override
 	public List<String> getRequiredTypes() {
-		return Arrays.asList(EnumComponentType.SIMULATION.name(),
-				EnumComponentType.CABINE.name());
+		return Arrays.asList(EnumComponentCategorie.SIMULATION.name(),
+				EnumComponentCategorie.CABINE.name());
 	}
 }
