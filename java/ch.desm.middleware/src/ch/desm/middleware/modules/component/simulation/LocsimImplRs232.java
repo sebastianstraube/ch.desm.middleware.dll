@@ -2,8 +2,8 @@ package ch.desm.middleware.modules.component.simulation;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
-import ch.desm.middleware.modules.communication.message.MessageBroker;
-import ch.desm.middleware.modules.communication.message.type.component.cabine.MessageTypeHaupthahn1;
+import ch.desm.middleware.modules.communication.message.type.component.MessageComponentBase;
+import ch.desm.middleware.modules.communication.message.type.component.cabine.MessageTypeHaupthahn;
 
 public class LocsimImplRs232 extends LocsimBase implements LocsimListenerRs232{
 
@@ -16,7 +16,7 @@ public class LocsimImplRs232 extends LocsimBase implements LocsimListenerRs232{
 	 * TODO Implementation
 	 * 
 	 */
-	protected void onIncomingBrokerMessage(MessageBroker message) {
+	protected void onIncomingBrokerMessage(MessageComponentBase message) {
 		System.out.println("received a broker message:" + message
 				+ " from component " + this.getClass());
 		
@@ -24,9 +24,9 @@ public class LocsimImplRs232 extends LocsimBase implements LocsimListenerRs232{
 	}
 
 	@Override
-	public void onHaupthahn1(String payload) {
+	public void onHaupthahn(int id, String value) {
 		
-		publish(new MessageTypeHaupthahn1(payload));
+		publish(new MessageTypeHaupthahn(id, value));
 	}
 
 
@@ -39,9 +39,10 @@ public class LocsimImplRs232 extends LocsimBase implements LocsimListenerRs232{
 		System.out.println("received an endpoint message :\"" + message
 				+ " from endpoint " + this.getClass());
 		
+		MessageComponentBase comvertedMessage = messageTranslator.translateToBroker(message);
 		//TODO CHECK MESSAGES, if they are relevant then publish to other broker clients
 		if(message.equals("haupthahn.1.off")){
-			onHaupthahn1("off");
+			onHaupthahn(1, "off");
 		}		
 	}
 	

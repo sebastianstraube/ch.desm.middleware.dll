@@ -2,7 +2,7 @@ package ch.desm.middleware.modules.component.simulation;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
-import ch.desm.middleware.modules.communication.message.MessageBroker;
+import ch.desm.middleware.modules.communication.message.type.component.MessageComponentBase;
 
 public class LocsimImplDll extends LocsimBase implements LocsimListenerDll{
 
@@ -11,7 +11,7 @@ public class LocsimImplDll extends LocsimBase implements LocsimListenerDll{
 	}
 
 	@Override
-	protected void onIncomingBrokerMessage(MessageBroker message) {
+	protected void onIncomingBrokerMessage(MessageComponentBase message) {
 		System.out.println("received a broker message:" + message
 				+ " from component " + this.getClass());
 		

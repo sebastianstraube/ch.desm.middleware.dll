@@ -1,6 +1,6 @@
 package ch.desm.middleware.modules.communication.message.translator;
 
-import ch.desm.middleware.modules.communication.message.MessageBroker;
+import ch.desm.middleware.modules.communication.message.type.component.MessageComponentBase;
 import ch.desm.middleware.modules.component.ComponentBase.EnumComponentType;
 
 /**
@@ -22,9 +22,9 @@ public class MessageTranslator extends MessageTranslatorBase {
 	 * @param message
 	 * 
 	 */
-	public MessageBroker translateToBroker(String message){
+	public MessageComponentBase translateToBroker(String message){
 		
-		MessageBroker temp = new MessageBroker(message);
+		MessageComponentBase temp = encodeMessage(message);;
 		
 		return null;
 	}
@@ -36,7 +36,7 @@ public class MessageTranslator extends MessageTranslatorBase {
 	 * @param message
 	 * 
 	 */
-	public String translateTo(EnumComponentType targetEndpointType, MessageBroker message){
+	public String translateTo(EnumComponentType targetEndpointType, MessageComponentBase message){
 		
 		String endpointMessage = decodeMessage(targetEndpointType, message);
 
@@ -56,7 +56,7 @@ public class MessageTranslator extends MessageTranslatorBase {
 
 	@Override
 	protected String decodeMessage(EnumComponentType targetEndpoint,
-			MessageBroker message) {
+			MessageComponentBase message) {
 
 		if(targetEndpoint.equals(EnumComponentType.CabineRe420)){
 			

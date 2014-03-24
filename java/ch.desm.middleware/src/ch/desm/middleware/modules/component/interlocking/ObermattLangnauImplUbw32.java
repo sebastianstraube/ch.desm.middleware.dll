@@ -2,7 +2,7 @@ package ch.desm.middleware.modules.component.interlocking;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
-import ch.desm.middleware.modules.communication.message.MessageBroker;
+import ch.desm.middleware.modules.communication.message.type.component.MessageComponentBase;
 
 public class ObermattLangnauImplUbw32 extends ObermattLangnauBase implements ObermattLangnauListenerUbw32  {
 
@@ -14,14 +14,11 @@ public class ObermattLangnauImplUbw32 extends ObermattLangnauBase implements Obe
 
 	
 	@Override
-	protected void onIncomingBrokerMessage(MessageBroker message) {
+	protected void onIncomingBrokerMessage(MessageComponentBase message) {
 		System.out.println("received a broker message:" + message
 				+ " from component " + this.getClass());
 	
-		
-		
-		
-		communicationEndpoint.setHaupthahn(message.getPayload());
+		communicationEndpoint.setHaupthahn(message.getElementId(), message.getValue());
 		
 	}
 	
@@ -32,8 +29,7 @@ public class ObermattLangnauImplUbw32 extends ObermattLangnauBase implements Obe
 		
 		
 	}
-
-
+	
 	@Override
 	public void onHaupthahn1(String position) {
 		// TODO Auto-generated method stub
@@ -41,5 +37,8 @@ public class ObermattLangnauImplUbw32 extends ObermattLangnauBase implements Obe
 		
 		
 	}
+
+
+
 	
 }

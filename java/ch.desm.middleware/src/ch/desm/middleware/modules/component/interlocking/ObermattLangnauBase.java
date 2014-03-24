@@ -7,7 +7,7 @@ import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32ListenerInterface;
-import ch.desm.middleware.modules.communication.message.MessageBroker;
+import ch.desm.middleware.modules.communication.message.type.component.MessageComponentBase;
 import ch.desm.middleware.modules.component.ComponentBase;
 
 public abstract class ObermattLangnauBase extends ComponentBase
@@ -45,7 +45,7 @@ public abstract class ObermattLangnauBase extends ComponentBase
 	 * test endpoint message handling
 	 * @param message
 	 */
-	public void emulateBrokerMessage(MessageBroker message) {
+	public void emulateBrokerMessage(MessageComponentBase message) {
 		onIncomingBrokerMessage(message);
 	}
 	

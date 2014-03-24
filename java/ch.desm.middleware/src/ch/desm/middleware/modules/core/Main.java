@@ -35,6 +35,6 @@ public class Main {
 		Re420ImplUbw32 re420ImplUbw32 = new Re420ImplUbw32(
 				broker, re420EndpointUbw32);
 
-		componentSimulationLocsimRs232.emulateEndpointMessage("haupthahn.1.off");
+		componentSimulationLocsimRs232.emulateEndpointMessage("6.90.01;o;schalter;haupthahn;1;on;;#");
 	}
 }

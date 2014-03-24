@@ -9,7 +9,7 @@ public class Re420EndpointUbw32 extends EndpointUbw32{
 		// TODO Auto-generated constructor stub
 	}
 
-	public void setHaupthahn1(String value){
+	public void setHaupthahn(int id, String value){
 
 		System.out.println("transmit setHaupthahn1 to : " + this.getClass());	
 	}

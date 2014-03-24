@@ -27,7 +27,7 @@ public abstract class MessageBase{
     @Override
     public String toString(){
     	String s = "";
-    	s+= "id: "+messageId;
+    	s+= "messageId: "+messageId;
     	s+= ", ";
     	s+= "payload: "+payload;
     	

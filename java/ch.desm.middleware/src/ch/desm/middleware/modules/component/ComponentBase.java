@@ -4,8 +4,8 @@ import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.broker.BrokerClient;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBaseListenerInterface;
-import ch.desm.middleware.modules.communication.message.MessageBroker;
 import ch.desm.middleware.modules.communication.message.translator.MessageTranslator;
+import ch.desm.middleware.modules.communication.message.type.component.MessageComponentBase;
 	
 /**
  * 
@@ -36,5 +36,5 @@ public abstract class ComponentBase extends BrokerClient implements EndpointBase
 	}
 	
 	abstract protected void registerEndpointListener(EndpointBase listener);
-	abstract public void emulateBrokerMessage(MessageBroker message);
+	abstract public void emulateBrokerMessage(MessageComponentBase message);
 }
