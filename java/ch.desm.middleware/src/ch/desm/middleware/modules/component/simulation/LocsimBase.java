@@ -6,7 +6,7 @@ import java.util.List;
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
-import ch.desm.middleware.modules.communication.message.type.component.MessageComponentBase;
+import ch.desm.middleware.modules.communication.message.MessageBase;
 import ch.desm.middleware.modules.component.ComponentBase;
 
 public abstract class LocsimBase extends ComponentBase{
@@ -42,7 +42,7 @@ public abstract class LocsimBase extends ComponentBase{
 	 * 
 	 * @param message
 	 */
-	protected abstract void onIncomingBrokerMessage(MessageComponentBase message);
+	protected abstract void onIncomingBrokerMessage(MessageBase message);
 
 
 
@@ -51,7 +51,7 @@ public abstract class LocsimBase extends ComponentBase{
 	 * test endpoint message handling
 	 * @param message
 	 */
-	public void emulateBrokerMessage(MessageComponentBase message) {
+	public void emulateBrokerMessage(MessageBase message) {
 		onIncomingBrokerMessage(message);
 	}
 	

@@ -4,8 +4,7 @@ import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.broker.BrokerClient;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBaseListenerInterface;
-import ch.desm.middleware.modules.communication.message.translator.MessageTranslator;
-import ch.desm.middleware.modules.communication.message.type.component.MessageComponentBase;
+import ch.desm.middleware.modules.communication.message.MessageBase;
 	
 /**
  * 
@@ -15,19 +14,17 @@ import ch.desm.middleware.modules.communication.message.type.component.MessageCo
 public abstract class ComponentBase extends BrokerClient implements EndpointBaseListenerInterface{
 	
 	private static double id = 0;
-	protected MessageTranslator messageTranslator;
 	
 	public static enum EnumComponentCategorie {
 		SIMULATION, INTERLOCKING, CABINE, CORBA
 	}
 	
 	public static enum EnumComponentType{
-		CabineRe420, InterlockingObermattLangnau, SimulationLocsim
+		CABINE_RE420, INTERLOCKING_OBERMATTLANGNAU, SIMULATION_LOCSIM
 	}
 	
 	public ComponentBase(Broker broker) {
 		super(broker);
-		messageTranslator = new MessageTranslator();
 		id++;
 	}
 	
@@ -36,5 +33,5 @@ public abstract class ComponentBase extends BrokerClient implements EndpointBase
 	}
 	
 	abstract protected void registerEndpointListener(EndpointBase listener);
-	abstract public void emulateBrokerMessage(MessageComponentBase message);
+	abstract public void emulateBrokerMessage(MessageBase message);
 }

@@ -2,7 +2,9 @@ package ch.desm.middleware.modules.component.interlocking;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
-import ch.desm.middleware.modules.communication.message.type.component.MessageComponentBase;
+import ch.desm.middleware.modules.communication.message.MessageBase;
+import ch.desm.middleware.modules.communication.message.router.MessageRouter;
+import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 
 public class ObermattLangnauImplUbw32 extends ObermattLangnauBase implements ObermattLangnauListenerUbw32  {
 
@@ -14,12 +16,15 @@ public class ObermattLangnauImplUbw32 extends ObermattLangnauBase implements Obe
 
 	
 	@Override
-	protected void onIncomingBrokerMessage(MessageComponentBase message) {
+	protected void onIncomingBrokerMessage(MessageBase message) {
 		System.out.println("received a broker message:" + message
 				+ " from component " + this.getClass());
 	
-		communicationEndpoint.setHaupthahn(message.getElementId(), message.getValue());
 		
+		//TODO route and transmit to endpoint
+		MessageRouter router = new MessageRouter();
+		MessageCommon common = new MessageCommon(message.getInstance(), message.getPayload());
+		router.transmitMessage(communicationEndpoint, common);
 	}
 	
 	@Override
@@ -31,9 +36,9 @@ public class ObermattLangnauImplUbw32 extends ObermattLangnauBase implements Obe
 	}
 	
 	@Override
-	public void onHaupthahn1(String position) {
+	public void onHaupthahn(String position) {
 		// TODO Auto-generated method stub
-		System.out.println("Stufenschalter.position = " + position);
+		System.out.println("haupthahn.position = " + position);
 		
 		
 	}

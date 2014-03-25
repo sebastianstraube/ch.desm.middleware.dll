@@ -4,7 +4,7 @@ public abstract class EndpointCommon extends
 		EndpointBase {
 
 	protected void onIncomingEndpointMessage(String message) {
-		for (EndpointBaseListenerInterface listener : this.listeners) {
+		for (EndpointBaseListenerInterface listener : EndpointBase.listeners) {
 
 			((EndpointCommonListenerInterface) listener)
 					.onIncomingEndpointMessage(message);

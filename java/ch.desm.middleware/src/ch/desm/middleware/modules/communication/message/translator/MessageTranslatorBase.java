@@ -1,6 +1,7 @@
 package ch.desm.middleware.modules.communication.message.translator;
 
-import ch.desm.middleware.modules.communication.message.type.component.MessageComponentBase;
+import ch.desm.middleware.modules.communication.message.MessageBase;
+import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.component.ComponentBase.EnumComponentType;
 
 public abstract class MessageTranslatorBase {
@@ -14,9 +15,11 @@ public abstract class MessageTranslatorBase {
 	 * for broker message implementation
 	 * 
 	 * @param message
-	 * @return {@link MessageComponentBase}
+	 * @return {@link MessageBase}
 	 */
-	protected MessageComponentBase encodeMessage(String message){
+	protected MessageCommon encodeMessage(String message){
+		
+		MessageCommon messageCommon = null;
 		
 		try {
 			
@@ -37,17 +40,16 @@ public abstract class MessageTranslatorBase {
 				
 				for(int j=0; j<command.length;j++){
 					commandList[i][j] = command[j];
-	//				System.out.println("command: " + commandList[i][j].toString());
-				}
+					}
 			}
+			
+			messageCommon = new MessageCommon(commandList[0][0], commandList[0][1], commandList[0][2], commandList[0][3], commandList[0][4], commandList[0][5], message);
 		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return null;
+		return messageCommon;
 	}
-	
-	protected abstract String decodeMessage(EnumComponentType targetEndpoint, MessageComponentBase message);
 }

@@ -1,11 +1,11 @@
 package ch.desm.middleware.modules.communication.message.type.component.interlocking;
 
-import ch.desm.middleware.modules.communication.message.type.component.MessageComponentBase;
+import ch.desm.middleware.modules.communication.message.MessageBase;
 
 
-public class MessageTypeSignalLampe extends MessageComponentBase {
+public class MessageTypeSignalLampe extends MessageBase {
 
-    public MessageTypeSignalLampe(int id, String value) {
-    	super(id, value);
+    public MessageTypeSignalLampe(String instance, String value) {
+    	super(instance, value);
     }
 }

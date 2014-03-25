@@ -2,9 +2,11 @@ package ch.desm.middleware.modules.communication.message;
 
 public abstract class MessageBase{
 	
-	
     private static double messageId = 0;
 	private String payload;
+	
+	//TODO move refactoring
+	private String instance;
 	
     /**
      * 
@@ -19,9 +21,10 @@ public abstract class MessageBase{
      * @param messageType 
      * 
      */
-    public MessageBase(String payload) {
+    public MessageBase(String instance, String payload) {
     	this();
     	this.payload = payload;
+    	this.instance = instance;
     }
 
     @Override
@@ -30,6 +33,8 @@ public abstract class MessageBase{
     	s+= "messageId: "+messageId;
     	s+= ", ";
     	s+= "payload: "+payload;
+    	s+= ", ";
+    	s+= "instance: "+instance;
     	
     	return s;
     }
@@ -40,5 +45,9 @@ public abstract class MessageBase{
     
     public String getPayload(){
     	return this.payload;
+    }
+    
+    public String getInstance(){
+    	return this.instance;
     }
 }

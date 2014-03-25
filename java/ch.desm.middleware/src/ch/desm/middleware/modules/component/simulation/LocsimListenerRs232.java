@@ -5,5 +5,5 @@ import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232Lis
 
 public interface LocsimListenerRs232 extends EndpointRs232ListenerInterface{
 
-	public void onHaupthahn(int id, String value);
+	public void onHaupthahn(String id, String value);
 }

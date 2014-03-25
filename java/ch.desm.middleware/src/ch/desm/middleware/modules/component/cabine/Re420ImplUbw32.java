@@ -11,8 +11,9 @@ public class Re420ImplUbw32 extends Re420Base implements Re420ListenerUbw32 {
 	}
 
 	@Override
-	public void onHaupthahn1(String value) {
-		System.out.println("onHaupthahn1 in " + this.getClass());
+	public void onHaupthahn(String value) {
+		
+		System.out.println("onStufenschalter in " + this.getClass());
 		
 	}
 

@@ -11,10 +11,10 @@ public class ObermattLangnauEndpointUbw32 extends EndpointUbw32{
 
 
 	
-	public void setHaupthahn(int elementId, String position) {
-		System.out.println("transmit setHaupthahn1 to : " + this.getClass());
+	public void setHaupthahn(String message) {
+		System.out.println("transmit setHaupthahn to : " + this.getClass());
 		
-		this.sendCommand("haupthahn.1.off");
+		this.sendCommand(message);
 	}
 
 }

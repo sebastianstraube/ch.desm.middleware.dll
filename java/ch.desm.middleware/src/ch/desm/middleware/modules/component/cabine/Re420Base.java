@@ -6,7 +6,10 @@ import java.util.List;
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32ListenerInterface;
-import ch.desm.middleware.modules.communication.message.type.component.MessageComponentBase;
+import ch.desm.middleware.modules.communication.message.MessageBase;
+import ch.desm.middleware.modules.communication.message.router.MessageRouter;
+import ch.desm.middleware.modules.communication.message.translator.MessageTranslator;
+import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.component.ComponentBase;
 
 public abstract class Re420Base extends ComponentBase implements
@@ -33,13 +36,14 @@ public abstract class Re420Base extends ComponentBase implements
 	}
 	
 	@Override
-	protected void onIncomingBrokerMessage(MessageComponentBase message) {
+	protected void onIncomingBrokerMessage(MessageBase message) {
 		System.out.println("received a broker message:" + message
 				+ " from component " + this.getClass());
-		
-		messageTranslator.translateTo(EnumComponentType.CabineRe420, message);
-		
-		communicationEndpoint.setHaupthahn(message.getElementId(), message.getValue());
+
+		//TODO route and transmit to endpoint
+		MessageRouter router = new MessageRouter();
+		MessageCommon common = new MessageCommon(message.getInstance(), message.getPayload());
+		router.transmitMessage(communicationEndpoint, common);
 	}
 
 	@Override
@@ -47,8 +51,10 @@ public abstract class Re420Base extends ComponentBase implements
 		System.out.println("received an endpoint message :\"" + message
 				+ " from endpoint " + this.getClass());
 		
-		 MessageComponentBase messageCommon = messageTranslator.translateToBroker(message);
-		 publish(messageCommon);
+		//TODO 
+		MessageTranslator messageTranslator = new MessageTranslator();
+		MessageBase messageCommon = messageTranslator.translateToBrokerMessage(message);
+		publish(messageCommon);
 	}
 	
 	/**
@@ -64,7 +70,7 @@ public abstract class Re420Base extends ComponentBase implements
 	 * test endpoint message handling
 	 * @param message
 	 */
-	public void emulateBrokerMessage(MessageComponentBase message) {
+	public void emulateBrokerMessage(MessageBase message) {
 		onIncomingBrokerMessage(message);
 	}
 	

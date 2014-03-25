@@ -1,10 +1,10 @@
 package ch.desm.middleware.modules.communication.message.type.component.interlocking;
 
-import ch.desm.middleware.modules.communication.message.type.component.MessageComponentBase;
+import ch.desm.middleware.modules.communication.message.MessageBase;
 
-public class MessageTypeWeichenSchalter extends MessageComponentBase{
+public class MessageTypeWeichenSchalter extends MessageBase{
 
-    public MessageTypeWeichenSchalter(int id, String value) {
-    	super(id, value);
+    public MessageTypeWeichenSchalter(String instance, String value) {
+    	super(instance, value);
     }
 }

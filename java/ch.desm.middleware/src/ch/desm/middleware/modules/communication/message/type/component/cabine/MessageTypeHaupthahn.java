@@ -1,11 +1,11 @@
 package ch.desm.middleware.modules.communication.message.type.component.cabine;
 
-import ch.desm.middleware.modules.communication.message.type.component.MessageComponentBase;
+import ch.desm.middleware.modules.communication.message.MessageBase;
 
-public class MessageTypeHaupthahn extends MessageComponentBase {
+public class MessageTypeHaupthahn extends MessageBase {
 
-    public MessageTypeHaupthahn(int id, String value) {
-        super(id, value);
+    public MessageTypeHaupthahn(String instance, String value) {
+        super(instance, value);
     }
     
 

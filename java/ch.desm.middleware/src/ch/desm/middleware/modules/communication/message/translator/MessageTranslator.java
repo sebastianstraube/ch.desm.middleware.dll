@@ -1,6 +1,7 @@
 package ch.desm.middleware.modules.communication.message.translator;
 
-import ch.desm.middleware.modules.communication.message.type.component.MessageComponentBase;
+import ch.desm.middleware.modules.communication.message.MessageBase;
+import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.component.ComponentBase.EnumComponentType;
 
 /**
@@ -22,11 +23,8 @@ public class MessageTranslator extends MessageTranslatorBase {
 	 * @param message
 	 * 
 	 */
-	public MessageComponentBase translateToBroker(String message){
-		
-		MessageComponentBase temp = encodeMessage(message);;
-		
-		return null;
+	public MessageBase translateToBrokerMessage(String message){
+		return encodeMessage(message);
 	}
 	
 	/**
@@ -36,33 +34,42 @@ public class MessageTranslator extends MessageTranslatorBase {
 	 * @param message
 	 * 
 	 */
-	public String translateTo(EnumComponentType targetEndpointType, MessageComponentBase message){
+	public String translateToEndpointMessage(EnumComponentType targetEndpointType, MessageCommon message){
 		
 		String endpointMessage = decodeMessage(targetEndpointType, message);
-
-		if(targetEndpointType.equals(EnumComponentType.CabineRe420)){
-			
-			
-			
-		}else if(targetEndpointType.equals(EnumComponentType.InterlockingObermattLangnau)){
-			
-		}else if(targetEndpointType.equals(EnumComponentType.SimulationLocsim)){
-			
-		}
 		
-		return null;
+		return endpointMessage;
 
 	}
 
-	@Override
-	protected String decodeMessage(EnumComponentType targetEndpoint,
-			MessageComponentBase message) {
+	/**
+	 * TODO implementation
+	 * decode the message to the endpoint code
+	 * 
+	 * @param
+	 * @param
+	 */
+	protected String decodeMessage(EnumComponentType targetEndpointType,
+			MessageCommon message) {
 
-		if(targetEndpoint.equals(EnumComponentType.CabineRe420)){
+		String endpointMessage = "";
+		
+		if(targetEndpointType.equals(EnumComponentType.CABINE_RE420)){
+			
+			endpointMessage = "cabine.re420.";
+			endpointMessage += message.getElement();
+			endpointMessage += message.getInstance();
+			endpointMessage += message.getParameter();
+			
+			
+		}else if(targetEndpointType.equals(EnumComponentType.INTERLOCKING_OBERMATTLANGNAU)){
+			
+		}else if(targetEndpointType.equals(EnumComponentType.SIMULATION_LOCSIM)){
 			
 		}else{
-			System.err.println("decode not implemented" + this.getClass());
+			System.err.println("decode for endpoint not implemented" + this.getClass());
 		}
-		return null;
+		
+		return endpointMessage;
 	}
 }
