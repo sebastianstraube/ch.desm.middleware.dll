@@ -36,4 +36,15 @@ public class LocsimImplDll extends LocsimBase implements LocsimListenerDll{
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	/**
+	 * TODO implementation
+	 * 
+	 */
+	public void onIncomingEndpointMessage(String message) {
+		System.out.println("received an endpoint message :\"" + message
+				+ " from endpoint " + this.getClass());
+
+	}
 }

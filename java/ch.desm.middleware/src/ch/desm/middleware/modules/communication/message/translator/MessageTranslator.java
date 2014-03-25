@@ -64,10 +64,20 @@ public class MessageTranslator extends MessageTranslatorBase {
 			
 		}else if(targetEndpointType.equals(EnumComponentType.INTERLOCKING_OBERMATTLANGNAU)){
 			
+			endpointMessage = "interlocking.obermattlangnau.";
+			endpointMessage += message.getElement();
+			endpointMessage += message.getInstance();
+			endpointMessage += message.getParameter();
+			
 		}else if(targetEndpointType.equals(EnumComponentType.SIMULATION_LOCSIM)){
 			
+			endpointMessage = "simulation.locsim.";
+			endpointMessage += message.getElement();
+			endpointMessage += message.getInstance();
+			endpointMessage += message.getParameter();
+			
 		}else{
-			System.err.println("decode for endpoint not implemented" + this.getClass());
+			System.err.println("decode not implemented for endpoint:" + targetEndpointType.name() + " in " + this.getClass());
 		}
 		
 		return endpointMessage;

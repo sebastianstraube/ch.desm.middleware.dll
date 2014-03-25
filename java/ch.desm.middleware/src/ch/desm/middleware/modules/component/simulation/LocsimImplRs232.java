@@ -3,9 +3,7 @@ package ch.desm.middleware.modules.component.simulation;
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 import ch.desm.middleware.modules.communication.message.MessageBase;
-import ch.desm.middleware.modules.communication.message.router.MessageRouter;
 import ch.desm.middleware.modules.communication.message.translator.MessageTranslator;
-import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.communication.message.type.component.cabine.MessageTypeHaupthahn;
 
 public class LocsimImplRs232 extends LocsimBase implements LocsimListenerRs232{
