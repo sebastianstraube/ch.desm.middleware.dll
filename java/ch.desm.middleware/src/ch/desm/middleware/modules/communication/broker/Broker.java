@@ -7,6 +7,10 @@ import ch.desm.middleware.modules.communication.message.MessageBase;
 
 public class Broker {
 	
+	public enum EnumTopic{
+		CABINE, INTERLOCKING, SIMULATION
+	};
+	
 	/**
 	 * 
 	 */

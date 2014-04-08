@@ -2,19 +2,45 @@ package ch.desm.middleware.modules.component.interlocking;
 
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32;
 
-public class ObermattLangnauEndpointUbw32 extends EndpointUbw32{
-
-	public ObermattLangnauEndpointUbw32(EnumSerialPorts enumSerialPort) {
-		super(enumSerialPort);
-		// TODO Auto-generated constructor stub
-	}
-
-
+public class ObermattLangnauEndpointUbw32 extends EndpointUbw32 implements ObermattLangnauListenerUbw32  {
 	
-	public void setHaupthahn(String message) {
-		System.out.println("transmit setHaupthahn to : " + this.getClass());
+	protected ObermattLangnauEndpointConfiguration configuration;	
+	
+	public ObermattLangnauEndpointUbw32(EnumSerialPorts enumSerialPort) {
+		super(enumSerialPort, ObermattLangnauEndpointConfiguration.CONFIGURATION);
 		
-		this.sendCommand(message);
+		this.configuration = new ObermattLangnauEndpointConfiguration();
+	}
+	
+	/**
+	 * 
+	 * @param port
+	 * @param pin
+	 * @param value
+	 */
+	public void setBlockVonLangnau(String port, String pin, String value){
+		System.out.println("transmit setBlockVonLangnau: " + this.getClass());	
+		this.sendCommandPinOutput(port, pin, value);
+	};
+	
+
+	/**
+	 * read the BlockVonLangnau pin
+	 * @param message
+	 */
+	public void getBlockVonLangnau(String port, String pin) {
+		System.out.println("transmit getBlockVonLangnau to : " + this.getClass());
+		
+		this.sendCommandPinInput(port, pin);
+	}
+	
+	public ObermattLangnauEndpointConfiguration getConfiguration(){
+		return this.configuration;
 	}
 
+	@Override
+	public void onBlockVonLangnau(String payload) {
+		// TODO Auto-generated method stub
+		
+	}
 }

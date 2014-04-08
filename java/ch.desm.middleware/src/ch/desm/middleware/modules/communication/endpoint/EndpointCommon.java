@@ -1,9 +1,10 @@
 package ch.desm.middleware.modules.communication.endpoint;
 
+
 public abstract class EndpointCommon extends
 		EndpointBase {
 
-	protected void onIncomingEndpointMessage(String message) {
+	public void onIncomingEndpointMessage(String message) {
 		for (EndpointBaseListenerInterface listener : EndpointBase.listeners) {
 
 			((EndpointCommonListenerInterface) listener)

@@ -4,8 +4,8 @@ import ch.desm.middleware.modules.communication.message.MessageBase;
 
 public class MessageTypeHaupthahn extends MessageBase {
 
-    public MessageTypeHaupthahn(String instance, String value) {
-        super(instance, value);
+    public MessageTypeHaupthahn(String payload) {
+        super(payload);
     }
     
 

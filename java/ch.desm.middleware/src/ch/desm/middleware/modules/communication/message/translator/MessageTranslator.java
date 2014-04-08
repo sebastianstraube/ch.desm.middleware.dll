@@ -1,8 +1,6 @@
 package ch.desm.middleware.modules.communication.message.translator;
 
-import ch.desm.middleware.modules.communication.message.MessageBase;
 import ch.desm.middleware.modules.communication.message.type.MessageCommon;
-import ch.desm.middleware.modules.component.ComponentBase.EnumComponentType;
 
 /**
  * TODO implementation
@@ -19,67 +17,20 @@ public class MessageTranslator extends MessageTranslatorBase {
 	/**
 	 * TODO Implementation
 	 * 
-	 * @param fromEndpoint
 	 * @param message
 	 * 
 	 */
-	public MessageBase translateToBrokerMessage(String message){
-		return encodeMessage(message);
+	public MessageCommon translateCommonMessageToMessageObject(String message){
+		return decodeMessage(message);
 	}
 	
 	/**
 	 * TODO Implementation
 	 * 
-	 * @param fromEndpoint
-	 * @param message
+	 * @param commonMessage
 	 * 
 	 */
-	public String translateToEndpointMessage(EnumComponentType targetEndpointType, MessageCommon message){
-		
-		String endpointMessage = decodeMessage(targetEndpointType, message);
-		
-		return endpointMessage;
-
-	}
-
-	/**
-	 * TODO implementation
-	 * decode the message to the endpoint code
-	 * 
-	 * @param
-	 * @param
-	 */
-	protected String decodeMessage(EnumComponentType targetEndpointType,
-			MessageCommon message) {
-
-		String endpointMessage = "";
-		
-		if(targetEndpointType.equals(EnumComponentType.CABINE_RE420)){
-			
-			endpointMessage = "cabine.re420.";
-			endpointMessage += message.getElement();
-			endpointMessage += message.getInstance();
-			endpointMessage += message.getParameter();
-			
-			
-		}else if(targetEndpointType.equals(EnumComponentType.INTERLOCKING_OBERMATTLANGNAU)){
-			
-			endpointMessage = "interlocking.obermattlangnau.";
-			endpointMessage += message.getElement();
-			endpointMessage += message.getInstance();
-			endpointMessage += message.getParameter();
-			
-		}else if(targetEndpointType.equals(EnumComponentType.SIMULATION_LOCSIM)){
-			
-			endpointMessage = "simulation.locsim.";
-			endpointMessage += message.getElement();
-			endpointMessage += message.getInstance();
-			endpointMessage += message.getParameter();
-			
-		}else{
-			System.err.println("decode not implemented for endpoint:" + targetEndpointType.name() + " in " + this.getClass());
-		}
-		
-		return endpointMessage;
+	public String translateToCommonMiddlewareMessage(MessageCommon commonMessage){
+		return encodeMessage(commonMessage);
 	}
 }

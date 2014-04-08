@@ -7,8 +7,8 @@ public class MessageTypeZugPositionUpdate extends MessageBase {
 	private Double y;
 	private Double z;
 
-	public MessageTypeZugPositionUpdate(String instance, String payload, Double x, Double y, Double z) {
-		super(instance, payload);
+	public MessageTypeZugPositionUpdate(String payload, Double x, Double y, Double z) {
+		super(payload);
 		this.x = x;
 		this.y = y;
 		this.z = z;

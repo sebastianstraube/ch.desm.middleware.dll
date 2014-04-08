@@ -34,7 +34,7 @@ public class LocsimImplRs232 extends LocsimBase implements LocsimListenerRs232{
 				+ " from endpoint " + this.getClass());
 
 		MessageTranslator translator = new MessageTranslator();
-		MessageBase brokerMessage = translator.translateToBrokerMessage(message);
+		MessageBase brokerMessage = translator.translateCommonMessageToMessageObject(message);
 		
 		publish(brokerMessage);
 		//TODO CHECK MESSAGES, if they are relevant then publish to other broker clients
@@ -54,9 +54,9 @@ public class LocsimImplRs232 extends LocsimBase implements LocsimListenerRs232{
 	
 	
 	@Override
-	public void onHaupthahn(String id, String value) {
+	public void onHaupthahn(String payload) {
 		
-		publish(new MessageTypeHaupthahn(id, value));
+		publish(new MessageTypeHaupthahn(payload));
 	}
 
 

@@ -21,7 +21,7 @@ public abstract class BrokerClient implements BrokerClientInterface {
      * util to forward message to broker
      * @param message
      */
-    protected void publish(MessageBase message) {
+    public void publish(MessageBase message) {
         broker.publish(this, message);
     }
 

@@ -4,7 +4,7 @@ import ch.desm.middleware.modules.communication.message.MessageBase;
 
 public class MessageTypeWeichenSchalter extends MessageBase{
 
-    public MessageTypeWeichenSchalter(String instance, String value) {
-    	super(instance, value);
+    public MessageTypeWeichenSchalter(String payload) {
+    	super(payload);
     }
 }

@@ -97,17 +97,17 @@ public abstract class EndpointRs232 extends
 	 * TODO refactoring
 	 * the messages will be concatenated with the terminator CR
 	 * 
-	 * @param commandString
+	 * @param command
 	 */
-	protected void sendCommand(String commandString) {
+	protected void sendCommand(String command) {
 		boolean isSendOk = false;
 		
 		//TODO refactoring
 		String terminator = "\n";
-		commandString+=terminator;
+		command+=terminator;
 		
 		try {
-			isSendOk = serialPort.writeString(commandString);
+			isSendOk = serialPort.writeString(command);
 
 			if (isSendOk) {
 				System.out.println("...command successfull sended.");
