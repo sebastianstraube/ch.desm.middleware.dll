@@ -17,7 +17,7 @@ extern "C" {
 		return desm::ERROR_OK;
 	}
 
-	JNIEXPORT jstring JNICALL Java_desm_Dll_infoConnectionStatus(JNIEnv* env, jobject obj)
+	JNIEXPORT jstring JNICALL Java_ch_desm_Dll_infoConnectionStatus(JNIEnv* env, jobject obj)
 	{
 		char info[1024];
 		int infoLen;

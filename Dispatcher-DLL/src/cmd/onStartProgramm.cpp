@@ -17,7 +17,7 @@ extern "C" {
 		return desm::ERROR_OK;
 	}
 
-	JNIEXPORT void JNICALL Java_desm_Dll_onStartProgramm(JNIEnv* env, jobject obj, jstring configPath)
+	JNIEXPORT void JNICALL Java_ch_desm_Dll_onStartProgramm(JNIEnv* env, jobject obj, jstring configPath)
 	{
 		const char* path = env->GetStringUTFChars(configPath, NULL);
 		int rc = stw_onStartProgramm(const_cast<char*>(path));

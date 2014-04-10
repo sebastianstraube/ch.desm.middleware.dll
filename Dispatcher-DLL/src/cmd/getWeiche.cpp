@@ -25,7 +25,7 @@ extern "C" {
 		return desm::ERROR_OK;
 	}
 	
-	JNIEXPORT jint JNICALL Java_desm_Dll_getWeiche(JNIEnv* env, jobject obj, jint weicheId)
+	JNIEXPORT jint JNICALL Java_ch_desm_Dll_getWeiche(JNIEnv* env, jobject obj, jint weicheId)
 	{
 		int gleisId;
 		int rc = stw_getWeiche(weicheId, &gleisId);

@@ -13,7 +13,7 @@ extern "C" {
 		return desm::ERROR_OK;
 	}
 
-	JNIEXPORT void JNICALL Java_desm_Dll_onStopProgramm(JNIEnv* env, jobject obj)
+	JNIEXPORT void JNICALL Java_ch_desm_Dll_onStopProgramm(JNIEnv* env, jobject obj)
 	{
 		desm::util::jni::checkReturnCode(env, stw_onStopProgramm());
 	}

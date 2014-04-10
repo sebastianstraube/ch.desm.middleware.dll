@@ -21,7 +21,7 @@ extern "C" {
 		return desm::ERROR_OK;
 	}
 
-	JNIEXPORT void JNICALL Java_desm_Dll_setWeiche(JNIEnv* env, jobject obj, jint weicheId, jint gleisId)
+	JNIEXPORT void JNICALL Java_ch_desm_Dll_setWeiche(JNIEnv* env, jobject obj, jint weicheId, jint gleisId)
 	{
 		desm::util::jni::checkReturnCode(env, stw_setWeiche(weicheId, gleisId));
 	}
