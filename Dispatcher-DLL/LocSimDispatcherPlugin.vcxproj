@@ -61,6 +61,7 @@
       <WarningLevel>Level3</WarningLevel>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>src;test;..\3rdparty\include;%JAVA_HOME%\include;%JAVA_HOME%\include\win32</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -78,6 +79,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>src;test;..\3rdparty\include;%JAVA_HOME%\include;%JAVA_HOME%\include\win32</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -132,6 +134,7 @@
     <ClInclude Include="src\Middleware.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\util\CriticalSection.h" />
+    <ClInclude Include="src\util\JavaJni.h" />
     <ClInclude Include="src\util\Json.h" />
     <ClInclude Include="src\util\SecureQueue.h" />
     <ClInclude Include="src\util\String.h" />

@@ -1,7 +1,10 @@
 #include <stdafx.h>
 
+#include <jni.h>
+
 #include "Desm.h"
 #include "Middleware.h"
+#include "util/JavaJni.h"
 #include "util/Json.h"
 #include "util/String.h"
 
@@ -16,5 +19,10 @@ extern "C" {
 		}
 		
 		return desm::ERROR_OK;
+	}
+
+	JNIEXPORT void JNICALL Java_desm_Dll_setKilometerDirection(JNIEnv* env, jobject obj, jint richtung)
+	{
+		desm::util::jni::checkReturnCode(env, stw_setKilometerDirection(richtung));
 	}
 };

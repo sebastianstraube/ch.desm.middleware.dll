@@ -1,8 +1,12 @@
 #include <stdafx.h>
 
+#include <jni.h>
+
 #include "Desm.h"
 #include "Middleware.h"
+#include "util/JavaJni.h"
 #include "util/Json.h"
+#include "util/String.h"
 
 extern "C" {
 	__declspec(dllexport) int stw_setTrackConnection(int gleisBasisId, int gleis1Id, int gleis2Id,
@@ -28,4 +32,6 @@ extern "C" {
 		
 		return desm::ERROR_OK;
 	}
+
+
 };

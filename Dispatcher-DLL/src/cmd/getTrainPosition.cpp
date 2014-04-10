@@ -1,7 +1,10 @@
 #include <stdafx.h>
 
+#include <jni.h>
+
 #include "Desm.h"
 #include "Middleware.h"
+#include "util/JavaJni.h"
 #include "util/Json.h"
 #include "util/String.h"
 
