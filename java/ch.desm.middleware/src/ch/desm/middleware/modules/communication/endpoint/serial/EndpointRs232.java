@@ -6,20 +6,18 @@ import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 
-public abstract class EndpointRs232 extends
-		EndpointCommon implements SerialPortEventListener {
+public abstract class EndpointRs232 extends EndpointCommon implements
+		SerialPortEventListener {
 
 	protected SerialPort serialPort;
-	protected boolean ignoreUbw32ControlMessages;
-	
+
 	public static enum EnumSerialPorts {
-		COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9, COM10;
+		COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9, COM10, COM11, COM12, COM13, COM14, COM15, COM16, COM17, COM18, COM19, COM20
 	}
 
 	public EndpointRs232(EnumSerialPorts enumSerialPort) {
 		this.serialPort = new SerialPort(enumSerialPort.name());
-		this.ignoreUbw32ControlMessages = false;
-		
+
 		this.initialize();
 	}
 
@@ -27,7 +25,7 @@ public abstract class EndpointRs232 extends
 		this.initializeSerialPorts();
 		this.showSerialPortName();
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -39,16 +37,15 @@ public abstract class EndpointRs232 extends
 			serialPort.setParams(SerialPort.BAUDRATE_9600,
 					SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
 					SerialPort.PARITY_NONE);
-			
+
 			// Set the prepared mask
 			serialPort.setEventsMask(SerialPort.MASK_RXCHAR);
-			
-			//add event listener
+
+			// add event listener
 			serialPort.addEventListener(this);
-			
+
 			System.out.println("... ready.");
-		}
-		catch (SerialPortException e) {
+		} catch (SerialPortException e) {
 			e.printStackTrace();
 		}
 	}
@@ -90,36 +87,30 @@ public abstract class EndpointRs232 extends
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * sending a message to serial port
 	 * 
-	 * TODO refactoring
-	 * the messages will be concatenated with the terminator CR
+	 * TODO refactoring the messages will be concatenated with the terminator CR
 	 * 
 	 * @param command
+	 * @throws SerialPortException 
 	 */
-	protected void sendCommand(String command) {
+	protected void sendCommand(String command) throws SerialPortException {
 		boolean isSendOk = false;
-		
-		//TODO refactoring
+
+		// TODO refactoring
 		String terminator = "\n";
-		command+=terminator;
-		
-		try {
-			isSendOk = serialPort.writeString(command);
+		command += terminator;
 
-			if (isSendOk) {
-				System.out.println("...command successfull sended.");
-			}
+		isSendOk = serialPort.writeString(command);
 
-		} catch (SerialPortException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (isSendOk) {
+			System.out.println("...command successfull sended.");
 		}
+
 	}
-	
+
 	@Override
 	/**
 	 * this listener receives a command from UBW32
@@ -131,12 +122,19 @@ public abstract class EndpointRs232 extends
 	 * @param SerialPortEvent event
 	 */
 	public void serialEvent(SerialPortEvent event) {
+		String message = this.getSerialPortMessage(event);
+		System.out.println("received serial port message on port: " + this.serialPort.getPortName() + " with message: "+ message);
+
+	}
+	
+	protected String getSerialPortMessage(SerialPortEvent event){
+		String message ="";
+		
 		if (event.isRXCHAR()) {
-			
+
 			if (event.getEventValue() > 1) {
 				try {
 					byte buffer[] = serialPort.readBytes();
-					String message = "";
 
 					for (int i = 0; i < buffer.length; i++) {
 						if (((char) buffer[i]) != '\n'
@@ -144,26 +142,12 @@ public abstract class EndpointRs232 extends
 							message += (char) buffer[i];
 						}
 					}
-
-					//TODO refactoring
-					if(!ignoreUbw32ControlMessages || ( 
-						!message.contains("!") &&
-						!message.endsWith("OK"))){
-						
-						System.out.println("serial event listener receive data on port:"
-								+ serialPort.getPortName() + " with message:" + message);
-						
-						super.onIncomingEndpointMessage(message);
-					}else{
-						System.out.println("the message contains control character from UBW32 and will be ignored, message:\"" + message + "\"");
-					}
-					
 				} catch (SerialPortException ex) {
 					System.out.println(ex);
 				}
 			}
 		}
-		
+
 		// If the CTS line status has changed, then the method
 		// event.getEventValue() returns 1 if the line is ON and 0 if it is OFF.
 		else if (event.isCTS()) {
@@ -179,6 +163,7 @@ public abstract class EndpointRs232 extends
 				System.out.println("DSR - OFF");
 			}
 		}
-
+	
+	return message;
 	}
 }

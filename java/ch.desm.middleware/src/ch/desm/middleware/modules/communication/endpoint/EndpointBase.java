@@ -12,12 +12,8 @@ import ch.desm.middleware.modules.communication.message.translator.MessageTransl
  */
 public abstract class EndpointBase {
 
-	protected static Set<EndpointBaseListenerInterface> listeners;
+	protected Set<EndpointBaseListenerInterface> listeners;
 	protected MessageTranslator messageTranslator;
-	
-	public enum EnumEndpointType{
-		SERIAL, UBW32, TCPIP, CORBA, VIRTUAL, DLL
-	}
 	
 	/**
 	 * 

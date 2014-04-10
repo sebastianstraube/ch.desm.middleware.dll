@@ -3,18 +3,20 @@ package ch.desm.middleware.modules.component.interlocking;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.desm.middleware.modules.component.ComponentConfigurationBase;
-
-public class ObermattLangnauEndpointConfiguration {
+public class ObermattLangnauConfiguration {
 
 	//TODO refactoring
 	public static final String CONFIGURATION = "14784,199,65505,16383,64528,52939,64575";
 	public Map<String, String> map;
 	
-	public ObermattLangnauEndpointConfiguration(){
+	public ObermattLangnauConfiguration(){
 		map = new HashMap<String, String>();
 		
 		this.initialize();
+	}
+	
+	public boolean isKeyAvailable(String id){
+		return map.containsKey(id);
 	}
 	
 	public void initialize(){
@@ -191,7 +193,5 @@ public class ObermattLangnauEndpointConfiguration {
 		map.put("90.99.19",""); //Signallampe defekt; G grün FB3
 	}
 	
-	public boolean isKeyAvailable(String id){
-		return map.containsKey(id);
-	}
+
 }
