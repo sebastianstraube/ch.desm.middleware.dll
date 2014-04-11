@@ -32,6 +32,12 @@ extern "C" {
 		
 		return desm::ERROR_OK;
 	}
-
-
+	
+	JNIEXPORT void JNICALL Java_ch_desm_Dll_setTrackConnection(JNIEnv* env, jobject obj, jint gleisBasisId,
+		jint gleis1Id, jint gleis2Id, jdouble von, jdouble bis, jstring name, jint weiche1Id, jint weiche2Id)
+	{
+		const char* nameStr = env->GetStringUTFChars(name, 0);
+		desm::util::jni::checkReturnCode(env, stw_setTrackConnection(gleisBasisId, gleis1Id, gleis2Id, von, bis, const_cast<char*>(nameStr), 0, weiche1Id, weiche2Id));
+		env->ReleaseStringUTFChars(name, nameStr);
+	}
 };

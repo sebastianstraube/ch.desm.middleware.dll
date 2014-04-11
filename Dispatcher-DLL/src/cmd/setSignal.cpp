@@ -21,4 +21,11 @@ extern "C" {
 		
 		return desm::ERROR_OK;
 	}
+	
+	JNIEXPORT void JNICALL Java_ch_desm_Dll_setSignal(JNIEnv* env, jobject obj, jint signalId, jstring name, jint stellung)
+	{
+		const char* nameStr = env->GetStringUTFChars(name, 0);
+		desm::util::jni::checkReturnCode(env, stw_setSignal(signalId, const_cast<char*>(nameStr), stellung));
+		env->ReleaseStringUTFChars(name, nameStr);
+	}
 };

@@ -21,4 +21,9 @@ extern "C" {
 		
 		return desm::ERROR_OK;
 	}
+	
+	JNIEXPORT void JNICALL Java_ch_desm_Dll_setIsolierstoss(JNIEnv* env, jobject obj, jint isolierstossId, jint gleisId, jdouble position)
+	{
+		desm::util::jni::checkReturnCode(env, stw_setIsolierstoss(isolierstossId, gleisId, position));
+	}
 };
