@@ -43,32 +43,41 @@ import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232;
 public abstract class EndpointUbw32 extends EndpointRs232 {
 
 	public static final String RETURN_INPUT_STATE = "I";
-	public static final String RETURN_OK= "OK";
-	public static final String RETURN_PIN_INPUT= "PI";
-	public static final String RETURN_INPUT_ANALOG= "IA";
-		
-	protected String ubw32Configuration;
+	public static final String RETURN_OK = "OK";
+	public static final String RETURN_PIN_INPUT = "PI";
+	public static final String RETURN_INPUT_ANALOG = "IA";
+	public static final String MESSAGE_TERMINATOR = "\n";
+	
+	protected String configurationDigital;
+	protected String pinbitMaskInputAnalog;
 	protected String lastInputState;
 	private EndpointUbw32Polling polling;
 	boolean ignoreUbw32ControlMessages;
+
 	/**
 	 * 
 	 * @param enumSerialPort
 	 */
-	public EndpointUbw32(EnumSerialPorts enumSerialPort, String ubw32Configuration) {
+	public EndpointUbw32(EnumSerialPorts enumSerialPort,
+			String configurationDigital,
+			String pinbitMaskInputAnalog) {
 		super(enumSerialPort);
-		this.ignoreUbw32ControlMessages = true;
-		this.ubw32Configuration = ubw32Configuration;
-		this.polling = new EndpointUbw32Polling(this);
+		this.ignoreUbw32ControlMessages = false;
+		this.pinbitMaskInputAnalog = pinbitMaskInputAnalog;
+		this.configurationDigital = configurationDigital;
+		this.polling = new EndpointUbw32Polling(this, pinbitMaskInputAnalog);
 		this.lastInputState = "";
 		this.initialize();
 	}
-	
+
 	/**
 	 * do work to initialze the controller on constructor call
 	 */
-	private void initialize(){
-		this.sendCommandConfigure(ubw32Configuration);
+	private void initialize() {
+		this.sendCommandVersion();
+		this.sendCommandConfigure(configurationDigital);
+		this.sendCommandConfigureAnalogInputs(pinbitMaskInputAnalog);
+
 		this.polling.start();
 	}
 
@@ -82,50 +91,53 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	 * 
 	 * @param SerialPortEvent event
 	 */
-	public void serialEvent(SerialPortEvent event) {
-		String actualInputState = super.getSerialPortMessage(event);
+	public synchronized void serialEvent(SerialPortEvent event) {
+		String inputState = super.getSerialPortMessage(event);
 
-		if (!ignoreUbw32ControlMessages) {
-	
-			if (!lastInputState.contains("!")) {
-				
-				System.out
-				.println("ubw32 command error on port:"
-						+ serialPort.getPortName()
-						+ " with message:" + actualInputState);
-				
-			}else if((!lastInputState.contains("OK"))){
-				System.out
-				.println("ubw32 command OK:"
-						+ serialPort.getPortName()
-						+ " with message:" + actualInputState);
+		if (!inputState.isEmpty()) {
+			if (!ignoreUbw32ControlMessages) {
+
+				if (inputState.contains("!")) {
+
+					System.out.println("ubw32 command error on port:"
+							+ serialPort.getPortName() + " with message:"
+							+ inputState);
+
+				} else if ((inputState.contains("OK"))) {
+					System.out.println("ubw32 command OK:"
+							+ serialPort.getPortName() + " with message:"
+							+ inputState);
+				}
+
+				else{
+					super.onIncomingEndpointMessage(inputState);
+				}
+			} else {
+				System.out.println("ignored ubw32 control message:\""
+						+ inputState + "\"");
 			}
-	
-			if(!actualInputState.equals(lastInputState)){
-				super.onIncomingEndpointMessage(actualInputState);
-			}
-		} else {
-			System.out
-					.println("ubw32 control message will be ignored, message:\""
-							+ lastInputState + "\"");
 		}
-		
-		lastInputState = actualInputState;
+		lastInputState = inputState;
 	}
-	
-	
+
 	@Override
 	/**
-	 * 
+	 * TODO refactoring sleep
 	 */
-	protected void sendCommand(String command){
+	protected void sendCommand(String command) {
 		try {
-			super.sendCommand(command);
 			
+			Thread.sleep(1000);
+			command += EndpointUbw32.MESSAGE_TERMINATOR;
+			super.sendCommand(command);
+
 		} catch (SerialPortException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			polling.interrupt();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -145,7 +157,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	 * Example: "T1,200,4" - This would run the pattern four times, with each
 	 * pin going low for 200ms. Return Packet: "OK"
 	 * 
-	 * @param 
+	 * @param
 	 */
 	public void sendCommandT1(String duration, String iterations) {
 		String command = "T1";
@@ -153,7 +165,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += duration;
 		command += ",";
 		command += iterations;
-		
+
 		sendCommand(command);
 	}
 
@@ -172,7 +184,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		String command = "O";
 		command += ",";
 		command += configuration;
-		
+
 		this.sendCommand(command);
 	}
 
@@ -194,7 +206,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		String command = "C";
 		command += ",";
 		command += configuration;
-		
+
 		this.sendCommand(command);
 	}
 
@@ -215,10 +227,10 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	 */
 	public void sendCommandInputState() {
 		String command = "I";
-		
+
 		this.sendCommand(command);
 	}
-	
+
 	/**
 	 * The "V" Command stands for 'Version' and when you send the UBW an "V"
 	 * command, it will respond with a text string that looks something like
@@ -229,7 +241,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	 */
 	public void sendCommandVersion() {
 		String command = "V";
-		
+
 		sendCommand(command);
 	}
 
@@ -242,7 +254,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	 */
 	public void sendCommandReset() {
 		String command = "R";
-		
+
 		sendCommand(command);
 	}
 
@@ -260,7 +272,8 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	 * @param pin
 	 * @param direction
 	 */
-	public void sendCommandPinDirection(String port, String pin, String direction) {
+	public void sendCommandPinDirection(String port, String pin,
+			String direction) {
 		String command = "PD";
 		command += ",";
 		command += port;
@@ -268,7 +281,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += pin;
 		command += ",";
 		command += direction;
-		
+
 		sendCommand(command);
 	}
 
@@ -289,7 +302,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += port;
 		command += ",";
 		command += pin;
-		
+
 		this.sendCommand(command);
 	}
 
@@ -311,7 +324,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += pin;
 		command += ",";
 		command += value;
-		
+
 		this.sendCommand(command);
 	}
 
@@ -329,7 +342,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += channel;
 		command += ",";
 		command += dutyCycle;
-		
+
 		this.sendCommand(command);
 	}
 
@@ -349,17 +362,21 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	 * Example: "SP,4,2899,7,1955,2,0<CR>" - Would set channel 4 to 2899,
 	 * channel 7 to 1955 and channel 5 to 0. Return Packet: "OK"
 	 */
-	public void sendCommandSoftwarePwmOutputValue(String channel, String dutyCycle) {
+	public void sendCommandSoftwarePwmOutputValue(String channel,
+			String dutyCycle) {
 		String command = "SP";
 		command += ",";
 		command += channel;
 		command += ",";
 		command += dutyCycle;
-		
+
 		this.sendCommand(command);
 	}
 
 	/**
+	 * 
+	 * TODO implementation
+	 * 
 	 * The "PC" Command : Configure software PWM paramters PC command (configure
 	 * software PWM parameters) is used in conjunction with the SP command (see
 	 * above). The SC command should be used to set up each of the various
@@ -390,10 +407,10 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	 * rate at 80,000,000/1,000 or 80KHz "PC,0,4096<CR>" - Sets PWM resolution
 	 * to 12 bits, and PWM frequency to 80Khz/4096 = 19.5Hz Return Packet: "OK"
 	 */
-//	public void sendCommandConfigureSoftwarePwmParamters(String subCommand, String value1, String value2,
-//			String value3) {
-//		
-//	}
+	public void sendCommandConfigureSoftwarePwmParamters(String subCommand,
+			String value1, String value2, String value3) {
+
+	}
 
 	/**
 	 * The "CA" Command : Configure Analog inputs CA command configures and
@@ -409,7 +426,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		String command = "CA";
 		command += ",";
 		command += pinBitmask;
-		
+
 		this.sendCommand(command);
 	}
 
@@ -441,10 +458,10 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	 * represents the values of
 	 * AN0,AN1,AN3,AN0,AN1,AN3,AN0,AN1,AN3,AN0,AN1,AN3,AN0,AN1,AN3.
 	 */
-	public void sendCommandIA(String pinBitmask) {
+	public void sendCommandInputAnalog(String pinBitmask) {
 		String delayUs = "0";
 		String count = "1";
-		
+
 		String command = "IA";
 		command += ",";
 		command += pinBitmask;
@@ -452,7 +469,20 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += delayUs;
 		command += ",";
 		command += count;
-		
+
+		this.sendCommand(command);
+	}
+
+	public void sendCommandConfigureUbw32() {
+		String parameter = "1";
+		String value = "0";
+
+		String command = "CU";
+		command += ",";
+		command += parameter;
+		command += ",";
+		command += value;
+
 		this.sendCommand(command);
 	}
 }

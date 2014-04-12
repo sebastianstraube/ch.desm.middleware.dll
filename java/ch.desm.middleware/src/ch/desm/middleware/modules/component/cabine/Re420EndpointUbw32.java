@@ -7,7 +7,7 @@ public class Re420EndpointUbw32 extends EndpointUbw32 implements Re420ListenerUb
 	protected Re420EndpointConfiguration configuration;
 	
 	public Re420EndpointUbw32(EnumSerialPorts enumSerialPort) {		
-		super(enumSerialPort, Re420EndpointConfiguration.CONFIGURATION);
+		super(enumSerialPort, Re420EndpointConfiguration.CONFIGURATION, "");
 		
 		configuration = new Re420EndpointConfiguration();
 	}

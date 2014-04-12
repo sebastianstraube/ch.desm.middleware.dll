@@ -7,7 +7,7 @@ public class ObermattLangnauEndpointUbw32 extends EndpointUbw32 implements Oberm
 	protected ObermattLangnauConfiguration configuration;	
 	
 	public ObermattLangnauEndpointUbw32(EnumSerialPorts enumSerialPort) {
-		super(enumSerialPort, ObermattLangnauConfiguration.CONFIGURATION);
+		super(enumSerialPort, ObermattLangnauConfiguration.PINBITMASK_CONFIGURATION_DIGITAL, ObermattLangnauConfiguration.PINBITMASK_INPUT_ANALOG);
 		
 		this.configuration = new ObermattLangnauConfiguration();
 	}
