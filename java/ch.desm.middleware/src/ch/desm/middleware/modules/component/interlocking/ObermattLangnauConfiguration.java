@@ -6,7 +6,8 @@ import java.util.Map;
 public class ObermattLangnauConfiguration {
 
 	//TODO refactoring
-	public static final String CONFIGURATION = "14784,199,65505,16383,64528,52939,64575";
+	public static final String PINBITMASK_CONFIGURATION_DIGITAL = "14784,199,65505,16383,64528,52939,64575";
+	public static final String PINBITMASK_INPUT_ANALOG = "1";
 	public Map<String, String> map;
 	
 	public ObermattLangnauConfiguration(){

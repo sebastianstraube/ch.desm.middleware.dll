@@ -12,7 +12,9 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	protected SerialPort serialPort;
 
 	public static enum EnumSerialPorts {
-		COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9, COM10, COM11, COM12, COM13, COM14, COM15, COM16, COM17, COM18, COM19, COM20
+		COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9,
+		COM10, COM11, COM12, COM13, COM14, COM15, COM16, COM17,
+		COM18, COM19, COM20, COM21, COM22
 	}
 
 	public EndpointRs232(EnumSerialPorts enumSerialPort) {
@@ -96,17 +98,13 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	 * @param command
 	 * @throws SerialPortException 
 	 */
-	protected void sendCommand(String command) throws SerialPortException {
+	protected synchronized void sendCommand(String command) throws SerialPortException {
 		boolean isSendOk = false;
-
-		// TODO refactoring
-		String terminator = "\n";
-		command += terminator;
 
 		isSendOk = serialPort.writeString(command);
 
 		if (isSendOk) {
-			System.out.println("...command successfull sended.");
+			System.out.println(serialPort.getPortName() + " send stream: " + command);
 		}
 
 	}
@@ -121,7 +119,7 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	 * 
 	 * @param SerialPortEvent event
 	 */
-	public void serialEvent(SerialPortEvent event) {
+	public synchronized void serialEvent(SerialPortEvent event) {
 		String message = this.getSerialPortMessage(event);
 		System.out.println("received serial port message on port: " + this.serialPort.getPortName() + " with message: "+ message);
 

@@ -15,7 +15,7 @@ public class Main {
 //		LocsimEndpointRs232 communicationEndpointSimulationRs232 = new LocsimEndpointRs232(EnumSerialPorts.COM8);
 //		
 //		//2# LOCSIM <> INTERLOCKING (INTERLOCKING FUNCTIONS)
-		ObermattLangnauEndpointUbw32 omlEndpoint = new ObermattLangnauEndpointUbw32(EnumSerialPorts.COM18);
+		ObermattLangnauEndpointUbw32 omlEndpoint = new ObermattLangnauEndpointUbw32(EnumSerialPorts.COM22);
 //		LocsimEndpointDesmDll communicationEndpointSimulationDll = new LocsimEndpointDesmDll();
 //		
 //		//3# CABINE <> LOCSIM (CABINE FUNCTIONS)
@@ -31,12 +31,56 @@ public class Main {
 //				broker, re420EndpointUbw32);
 //
 		ObermattLangnauImplUbw32 omlImpl = new ObermattLangnauImplUbw32(broker, omlEndpoint);
+//		try {
+//		omlEndpoint.sendCommandT1("500", "1");
 		
-		omlEndpoint.sendCommandT1("500", "1");
-//		omlEndpoint.sendCommandOutputState("32768,32768,32768,32768,32768,32768,32768");
+//		omlEndpoint.sendCommandOutputState("0,0,0,0,64,0,0");
 		
+//		Thread.sleep(10000);
+		
+//		omlEndpoint.sendCommandOutputState("0,0,0,0,32,0,0");
+		
+//		omlEndpoint.sendCommandOutputState("32801,25096,0,0,0,0,256");
+//		
+//		Thread.sleep(5000);
+//		
+//		omlEndpoint.sendCommandOutputState("32801,25096,0,0,0,256,256");
+//		
+//		Thread.sleep(5000);
+//		
+//		omlEndpoint.sendCommandOutputState("32800,25096,0,0,0,288,768");
+//		
+//		Thread.sleep(5000);
+//		
+//		omlEndpoint.sendCommandOutputState("32800,25608,0,0,0,292,768");
+//		
+//		Thread.sleep(5000);
+//		
+//		omlEndpoint.sendCommandOutputState("32800,25608,0,16384,0,36,768");
+//		
+//		Thread.sleep(5000);
+//		
+//		omlEndpoint.sendCommandOutputState("32801,50184,0,16384,0,32,256");
+//		
+//		Thread.sleep(5000);
+//		
+//		omlEndpoint.sendCommandOutputState("32801,50184,0,0,0,32,256");
+//		
+//		Thread.sleep(5000);
+//		
+//		omlEndpoint.sendCommandOutputState("32801,17416,0,0,0,32,256");
+//		
+//		Thread.sleep(5000);
+//		
+//		omlEndpoint.sendCommandOutputState("32801,17416,0,0,0,0,256");
+//		
+//		Thread.sleep(5000);
+
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 //		omlEndpoint.sendCommandInputState();
-		
 		
 //		re420ImplUbw32.emulateEndpointMessage("1.90.31;??????");
 		
