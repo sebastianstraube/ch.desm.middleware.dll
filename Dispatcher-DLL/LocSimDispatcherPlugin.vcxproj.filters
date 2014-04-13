@@ -144,5 +144,8 @@
     <ClInclude Include="src\stdafx.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\JavaJni.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

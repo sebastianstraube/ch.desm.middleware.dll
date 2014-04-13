@@ -1,7 +1,10 @@
 #include <stdafx.h>
 
+#include <jni.h>
+
 #include "Desm.h"
 #include "Middleware.h"
+#include "util/JavaJni.h"
 #include "util/Json.h"
 #include "util/String.h"
 
@@ -28,5 +31,27 @@ extern "C" {
 		}
 		
 		return desm::ERROR_OK;
+	}
+
+	JNIEXPORT void JNICALL Java_ch_desm_Dll_setTrainPosition(JNIEnv* env, jobject obj, jint trainTyp, jint direction, jdoubleArray positionList, jintArray gleisList)
+	{
+		jboolean positionListCopy;
+		jdouble* positionListArr = env->GetDoubleArrayElements(positionList, &positionListCopy);
+		int positionListLen = env->GetArrayLength(positionList);
+		
+		jboolean gleisListCopy;
+		jint* gleisListArr = env->GetIntArrayElements(gleisList, &gleisListCopy);
+		int gleisListLen = env->GetArrayLength(gleisList);
+		
+		desm::util::jni::checkReturnCode(env, stw_setTrainPosition(trainTyp, direction,
+			(double*)positionListArr, positionListLen, (int*)gleisListArr, gleisListLen));
+		
+		if(positionListCopy == JNI_TRUE) {
+			env->ReleaseDoubleArrayElements(positionList, positionListArr, JNI_ABORT);
+		}
+
+		if(gleisListCopy == JNI_TRUE) {
+			env->ReleaseIntArrayElements(gleisList, gleisListArr, JNI_ABORT);
+		}
 	}
 };

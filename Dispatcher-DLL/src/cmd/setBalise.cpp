@@ -1,7 +1,10 @@
 #include <stdafx.h>
 
+#include <jni.h>
+
 #include "Desm.h"
 #include "Middleware.h"
+#include "util/JavaJni.h"
 #include "util/Json.h"
 #include "util/String.h"
 
@@ -19,5 +22,12 @@ extern "C" {
 		}
 		
 		return desm::ERROR_OK;
+	}
+	
+	JNIEXPORT void JNICALL Java_ch_desm_Dll_setBalise(JNIEnv* env, jobject obj, jint baliseId, jint stellung, jstring protokoll)
+	{
+		const char* protokollStr = env->GetStringUTFChars(protokoll, 0);
+		desm::util::jni::checkReturnCode(env, stw_setBalise(baliseId, stellung, const_cast<char*>(protokollStr), 0));
+		env->ReleaseStringUTFChars(protokoll, protokollStr);
 	}
 };
