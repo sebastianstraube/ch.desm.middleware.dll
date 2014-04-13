@@ -23,6 +23,8 @@ public class MessageRouter {
 	
 	public void processBrokerMessage(Re420EndpointUbw32 endpoint, MessageCommon messageBase){
 
+		System.out.println("processing message:" + messageBase);
+		
 		if(endpoint.getConfiguration().isKeyAvailable(messageBase.getGlobalId())){
 			String register = endpoint.getConfiguration().map.get(messageBase.getGlobalId());
 			String port = register.substring(0, 1);
@@ -50,9 +52,9 @@ public class MessageRouter {
 				case("1.91.22"):{};
 				case("1.90.31"):{//BLOCK VON LANGNAU
 					if(isReturnPacket){
-//						endpoint
+						endpoint.setHaupthahn(port, pin, value);
 					}else{
-//						endpoint.
+						endpoint.getHaupthahn(port, pin);
 					}
 					
 					
@@ -213,6 +215,8 @@ public class MessageRouter {
 	
 	public void processBrokerMessage(ObermattLangnauEndpointUbw32 endpoint, MessageCommon messageBase){
 		
+		System.out.println("processing message:" + messageBase);
+		
 		if(endpoint.getConfiguration().isKeyAvailable(messageBase.getGlobalId())){
 			String register = endpoint.getConfiguration().map.get(messageBase.getGlobalId());
 			String port = register.substring(0, 1);
@@ -239,8 +243,10 @@ public class MessageRouter {
 			case("1.91.21"):{};
 			case("1.91.22"):{};
 			case("1.90.31"):{//BLOCK VON LANGNAU
-				if(!isReturnPacket){
+				if(isReturnPacket){
 					endpoint.setBlockVonLangnau(port, pin, value);
+				}else{
+					endpoint.getBlockVonLangnau(port, pin);
 				}
 			}
 			case("1.90.32"):{};

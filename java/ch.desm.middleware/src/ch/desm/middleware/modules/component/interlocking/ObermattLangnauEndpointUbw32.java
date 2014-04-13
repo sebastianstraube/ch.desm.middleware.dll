@@ -4,12 +4,12 @@ import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUb
 
 public class ObermattLangnauEndpointUbw32 extends EndpointUbw32 implements ObermattLangnauListenerUbw32  {
 	
-	protected ObermattLangnauEndpointConfiguration configuration;	
+	protected ObermattLangnauConfiguration configuration;	
 	
 	public ObermattLangnauEndpointUbw32(EnumSerialPorts enumSerialPort) {
-		super(enumSerialPort, ObermattLangnauEndpointConfiguration.CONFIGURATION);
+		super(enumSerialPort, ObermattLangnauConfiguration.PINBITMASK_CONFIGURATION_DIGITAL, ObermattLangnauConfiguration.PINBITMASK_INPUT_ANALOG);
 		
-		this.configuration = new ObermattLangnauEndpointConfiguration();
+		this.configuration = new ObermattLangnauConfiguration();
 	}
 	
 	/**
@@ -34,13 +34,17 @@ public class ObermattLangnauEndpointUbw32 extends EndpointUbw32 implements Oberm
 		this.sendCommandPinInput(port, pin);
 	}
 	
-	public ObermattLangnauEndpointConfiguration getConfiguration(){
+	public ObermattLangnauConfiguration getConfiguration(){
 		return this.configuration;
 	}
 
 	@Override
+	/**
+	 * TODO implementation / refactoring
+	 */
 	public void onBlockVonLangnau(String payload) {
 		// TODO Auto-generated method stub
+		System.out.println("entering onBlockVonLangnau...");
 		
 	}
 }

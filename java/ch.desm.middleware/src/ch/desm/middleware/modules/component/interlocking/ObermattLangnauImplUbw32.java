@@ -6,9 +6,9 @@ import ch.desm.middleware.modules.communication.message.MessageBase;
 import ch.desm.middleware.modules.communication.message.router.MessageRouter;
 import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 
-public class ObermattLangnauEndpointImplUbw32 extends ObermattLangnauBase {
+public class ObermattLangnauImplUbw32 extends ObermattLangnauBase {
 
-	public ObermattLangnauEndpointImplUbw32(Broker broker,
+	public ObermattLangnauImplUbw32(Broker broker,
 			EndpointCommon communicationEndpointUbw32) {
 		super(broker, communicationEndpointUbw32);
 		// TODO Auto-generated constructor stub
@@ -21,13 +21,5 @@ public class ObermattLangnauEndpointImplUbw32 extends ObermattLangnauBase {
 		//TODO route and transmit to endpoint
 		MessageRouter router = new MessageRouter();
 		router.processBrokerMessage(communicationEndpoint, (MessageCommon)message);
-	}
-
-
-//	@Override
-//	public void onBlockVonLangnau(String payload) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-	
+	}	
 }
