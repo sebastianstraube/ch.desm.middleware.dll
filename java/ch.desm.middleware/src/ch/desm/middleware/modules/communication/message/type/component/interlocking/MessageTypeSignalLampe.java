@@ -6,6 +6,6 @@ import ch.desm.middleware.modules.communication.message.MessageBase;
 public class MessageTypeSignalLampe extends MessageBase {
 
     public MessageTypeSignalLampe(String payload) {
-    	super(payload);
+    	super(payload, EnumMessageTopic.INTERLOCKING);
     }
 }

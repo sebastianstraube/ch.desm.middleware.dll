@@ -11,25 +11,20 @@ public class MessageCommon extends MessageBase {
 	protected String parameter;
 	protected String instance;
 
+	public MessageCommon(MessageUbw32 message){
+		super(message.getPayload(), message.topic);
+	}
 	
 	public MessageCommon(MessageBase message){
-		super(message.getPayload());
+		super(message.getPayload(), message.topic);
 	}
+
 	
-	public MessageCommon(String payload){
-		super(payload);
-	}
-	
-	public MessageCommon(String instance, String payload){
-		super(payload);
-		this.instance = instance;
-	}
-	
-	public MessageCommon(String nrMatrix, String process, String element,
+	public MessageCommon(EnumMessageTopic topic, String globalId, String process, String element,
 			String function, String instance, String parameter, String payload) {
-		super(payload);
+		super(payload, topic);
 		this.instance = instance;
-		this.globalId = nrMatrix;
+		this.globalId = globalId;
 		this.process = process;
 		this.element = element;
 		this.function = function;

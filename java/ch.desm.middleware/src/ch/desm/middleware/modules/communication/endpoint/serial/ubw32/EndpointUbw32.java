@@ -43,14 +43,12 @@ import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232;
 public abstract class EndpointUbw32 extends EndpointRs232 {
 
 	public static final String RETURN_INPUT_STATE = "I";
-	public static final String RETURN_OK = "OK";
 	public static final String RETURN_PIN_INPUT = "PI";
 	public static final String RETURN_INPUT_ANALOG = "IA";
 	public static final String MESSAGE_TERMINATOR = "\n";
 	
 	protected String configurationDigital;
 	protected String pinbitMaskInputAnalog;
-	protected String lastInputState;
 	private EndpointUbw32Polling polling;
 	boolean ignoreUbw32ControlMessages;
 
@@ -66,7 +64,6 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		this.pinbitMaskInputAnalog = pinbitMaskInputAnalog;
 		this.configurationDigital = configurationDigital;
 		this.polling = new EndpointUbw32Polling(this, pinbitMaskInputAnalog);
-		this.lastInputState = "";
 		this.initialize();
 	}
 
@@ -74,7 +71,9 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	 * do work to initialze the controller on constructor call
 	 */
 	private void initialize() {
+		this.sendCommandConfigureUbw32(); // disable OK return packet
 		this.sendCommandVersion();
+		
 		this.sendCommandConfigure(configurationDigital);
 		this.sendCommandConfigureAnalogInputs(pinbitMaskInputAnalog);
 
@@ -84,10 +83,6 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	@Override
 	/**
 	 * this listener receives a command from UBW32
-	 * 
-	 * TODO refactoring:
-	 * the command will be sended when there is
-	 * no "!" and no "OK" character sequence
 	 * 
 	 * @param SerialPortEvent event
 	 */
@@ -99,12 +94,12 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 
 				if (inputState.contains("!")) {
 
-					System.out.println("ubw32 command error on port:"
+					System.out.println("receive ubw32 error message on port:"
 							+ serialPort.getPortName() + " with message:"
 							+ inputState);
 
 				} else if ((inputState.contains("OK"))) {
-					System.out.println("ubw32 command OK:"
+					System.out.println("receive ubw32 return message:"
 							+ serialPort.getPortName() + " with message:"
 							+ inputState);
 				}
@@ -117,7 +112,6 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 						+ inputState + "\"");
 			}
 		}
-		lastInputState = inputState;
 	}
 
 	@Override

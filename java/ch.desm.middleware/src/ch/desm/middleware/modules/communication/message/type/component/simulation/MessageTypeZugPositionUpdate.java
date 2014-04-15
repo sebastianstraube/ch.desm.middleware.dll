@@ -8,7 +8,7 @@ public class MessageTypeZugPositionUpdate extends MessageBase {
 	private Double z;
 
 	public MessageTypeZugPositionUpdate(String payload, Double x, Double y, Double z) {
-		super(payload);
+		super(payload, EnumMessageTopic.INTERLOCKING);
 		this.x = x;
 		this.y = y;
 		this.z = z;

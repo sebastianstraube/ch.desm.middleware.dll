@@ -7,6 +7,7 @@ import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 import ch.desm.middleware.modules.communication.message.MessageBase;
+import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.component.ComponentBase;
 
 public abstract class LocsimBase extends ComponentBase{
@@ -42,7 +43,7 @@ public abstract class LocsimBase extends ComponentBase{
 	 * 
 	 * @param message
 	 */
-	protected abstract void onIncomingBrokerMessage(MessageBase message);
+	protected abstract void onIncomingBrokerMessage(MessageCommon message);
 
 
 
@@ -51,7 +52,7 @@ public abstract class LocsimBase extends ComponentBase{
 	 * test endpoint message handling
 	 * @param message
 	 */
-	public void emulateBrokerMessage(MessageBase message) {
+	public void emulateBrokerMessage(MessageCommon message) {
 		onIncomingBrokerMessage(message);
 	}
 	

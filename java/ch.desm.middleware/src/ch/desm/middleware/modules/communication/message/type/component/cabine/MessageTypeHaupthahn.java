@@ -5,7 +5,7 @@ import ch.desm.middleware.modules.communication.message.MessageBase;
 public class MessageTypeHaupthahn extends MessageBase {
 
     public MessageTypeHaupthahn(String payload) {
-        super(payload);
+        super(payload, EnumMessageTopic.INTERLOCKING);
     }
     
 

@@ -5,6 +5,6 @@ import ch.desm.middleware.modules.communication.message.MessageBase;
 public class MessageTypeWeichenSchalter extends MessageBase{
 
     public MessageTypeWeichenSchalter(String payload) {
-    	super(payload);
+    	super(payload, EnumMessageTopic.INTERLOCKING);
     }
 }

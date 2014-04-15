@@ -2,14 +2,14 @@ package ch.desm.middleware.modules.core;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232.EnumSerialPorts;
+import ch.desm.middleware.modules.component.interlocking.ObermattLangnauBaseImplUbw32;
 import ch.desm.middleware.modules.component.interlocking.ObermattLangnauEndpointUbw32;
-import ch.desm.middleware.modules.component.interlocking.ObermattLangnauImplUbw32;
 
 public class Main {
 
 	public static void main(String[] args) {
 //
-		Broker broker = new Broker();
+		Broker broker = new Broker();		    
 //
 //		//1# CABINE <> LOCSIM (CABINE FUNCTIONS) - connect to 3#
 //		LocsimEndpointRs232 communicationEndpointSimulationRs232 = new LocsimEndpointRs232(EnumSerialPorts.COM8);
@@ -30,7 +30,7 @@ public class Main {
 //		Re420EndpointImplUbw32 re420ImplUbw32 = new Re420EndpointImplUbw32(
 //				broker, re420EndpointUbw32);
 //
-		ObermattLangnauImplUbw32 omlImpl = new ObermattLangnauImplUbw32(broker, omlEndpoint);
+		ObermattLangnauBaseImplUbw32 omlImpl = new ObermattLangnauBaseImplUbw32(broker, omlEndpoint);
 //		try {
 //		omlEndpoint.sendCommandT1("500", "1");
 		

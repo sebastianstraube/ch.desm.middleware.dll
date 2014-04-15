@@ -1,14 +1,16 @@
 package ch.desm.middleware.modules.component.simulation;
 
+import java.util.Map;
+
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
-import ch.desm.middleware.modules.communication.message.MessageBase;
-import ch.desm.middleware.modules.communication.message.translator.MessageTranslator;
+import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.communication.message.type.component.cabine.MessageTypeHaupthahn;
 
-public class LocsimImplRs232 extends LocsimBase implements LocsimListenerRs232{
+public class LocsimImplRs232 extends LocsimBase implements LocsimListenerRs232 {
 
-	public LocsimImplRs232(Broker broker, EndpointCommon communicationEndpointDll) {
+	public LocsimImplRs232(Broker broker,
+			EndpointCommon communicationEndpointDll) {
 		super(broker, communicationEndpointDll);
 	}
 
@@ -17,11 +19,10 @@ public class LocsimImplRs232 extends LocsimBase implements LocsimListenerRs232{
 	 * TODO Implementation
 	 * 
 	 */
-	protected void onIncomingBrokerMessage(MessageBase message) {
+	protected void onIncomingBrokerMessage(MessageCommon message) {
 		System.out.println("received a broker message:" + message
 				+ " from component " + this.getClass());
-		
-		
+
 	}
 
 	@Override
@@ -33,33 +34,36 @@ public class LocsimImplRs232 extends LocsimBase implements LocsimListenerRs232{
 		System.out.println("received an endpoint message :\"" + message
 				+ " from endpoint " + this.getClass());
 
-		MessageTranslator translator = new MessageTranslator();
-		MessageBase brokerMessage = translator.translateCommonMessageToMessageObject(message);
-		
-		publish(brokerMessage);
-		//TODO CHECK MESSAGES, if they are relevant then publish to other broker clients
-//		if(message.equals("6.90.01;o;schalter;haupthahn;1;on;;#")){
-//			onHaupthahn("1", "off");
-//		}		
 	}
-	
+
 	/**
 	 * test endpoint message handling
+	 * 
 	 * @param message
 	 */
 	public void emulateEndpointMessage(String message) {
 		onIncomingEndpointMessage(message);
 	}
-	
-	
-	
+
+	/**
+	 * TODO implementation
+	 */
 	@Override
 	public void onHaupthahn(String payload) {
-		
-		publish(new MessageTypeHaupthahn(payload));
+
+//		publish(new MessageTypeHaupthahn(payload));
 	}
 
+	@Override
+	public Map<String, String> getInpuAnalogOn() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-
+	@Override
+	public Map<String, String> getInpuDigitalOn() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

@@ -1,7 +1,9 @@
 package ch.desm.middleware.modules.communication.message.translator;
 
 import ch.desm.middleware.modules.communication.message.MessageBase;
+import ch.desm.middleware.modules.communication.message.MessageBase.EnumMessageTopic;
 import ch.desm.middleware.modules.communication.message.type.MessageCommon;
+import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
 
 public abstract class MessageTranslatorBase {
 
@@ -19,15 +21,13 @@ public abstract class MessageTranslatorBase {
 	private static final int INSTANCE= 4;
 	private static final int PARAMETER = 5;
 	
-	
 	/**
-	 * encodes a message to fit the system message,
-	 * for broker message implementation
+	 * decodes a message to fit the message object
 	 * 
 	 * @param message
 	 * @return {@link MessageBase}
 	 */
-	protected MessageCommon decodeMessage(String message){
+	protected MessageCommon decodeMiddlewareMessage(String message, EnumMessageTopic topic){
 		
 		MessageCommon messageCommon = null;
 		
@@ -53,7 +53,7 @@ public abstract class MessageTranslatorBase {
 					}
 			}
 			
-			messageCommon = new MessageCommon(commandList[0][ID], commandList[0][ELEMENT], commandList[0][FUNCTION], commandList[0][INSTANCE], commandList[0][PARAMETER], commandList[0][EXTERN_INTERN], message);
+			messageCommon = new MessageCommon(topic, commandList[0][ID], commandList[0][ELEMENT], commandList[0][FUNCTION], commandList[0][INSTANCE], commandList[0][PARAMETER], commandList[0][EXTERN_INTERN], message);
 		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -63,6 +63,7 @@ public abstract class MessageTranslatorBase {
 		return messageCommon;
 	}
 	
+	
 	/**
 	 * TODO implementation
 	 * decode to the common middleware message
@@ -70,7 +71,7 @@ public abstract class MessageTranslatorBase {
 	 * @param
 	 * @param
 	 */
-	protected String encodeMessage(MessageCommon message) {
+	protected String encodeMiddlewareMessage(MessageCommon message) {
 
 		String endpointMessage = "";
 		endpointMessage += message.getGlobalId();
@@ -85,7 +86,6 @@ public abstract class MessageTranslatorBase {
 		endpointMessage += ELEMENT_CUT;
 		endpointMessage += message.getParameter();
 		endpointMessage += MESSAGE_CUT;
-
 		
 		return endpointMessage;
 	}
