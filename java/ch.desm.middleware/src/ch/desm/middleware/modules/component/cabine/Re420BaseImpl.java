@@ -55,8 +55,6 @@ public class Re420BaseImpl extends Re420Base implements
 		System.out.println("endpoint (" + getEndpoint().getSerialPortName()
 				+ ") received message: " + message);
 
-		MessageCommon messageCommon = null;
-
 		MessageTranslator translator = new MessageTranslator();
 		MessageUbw32 ubw32Message = translator.decodeUbw32EndpointMessage(
 				message, EnumMessageTopic.INTERLOCKING);

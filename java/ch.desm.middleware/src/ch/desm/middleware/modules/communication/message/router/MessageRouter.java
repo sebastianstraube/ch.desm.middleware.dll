@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.component.ComponentBase;
 import ch.desm.middleware.modules.component.cabine.Re420BaseImpl;
-import ch.desm.middleware.modules.component.cabine.Re420EndpointUbw32;
 import ch.desm.middleware.modules.component.interlocking.OMLBaseImpl;
-import ch.desm.middleware.modules.component.interlocking.OMLEndpointUbw32;
 
 /**
  * 
