@@ -2,52 +2,27 @@ package ch.desm.middleware.modules.component.cabine;
 
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32;
 
-public class Re420EndpointUbw32 extends EndpointUbw32 implements Re420ListenerUbw32{
+public class Re420EndpointUbw32 extends EndpointUbw32 {
 	
-	protected Re420EndpointConfiguration configuration;
+	protected Re420EndpointUbw32Configuration configuration;
 	
 	public Re420EndpointUbw32(EnumSerialPorts enumSerialPort) {		
-		super(enumSerialPort, Re420EndpointConfiguration.CONFIGURATION, "");
+		super(enumSerialPort, Re420EndpointUbw32Configuration.PINBITMASK_CONFIGURATION_DIGITAL, Re420EndpointUbw32Configuration.PINBITMASK_INPUT_ANALOG);
 		
-		configuration = new Re420EndpointConfiguration();
+		configuration = new Re420EndpointUbw32Configuration();
 	}
 	
-	public Re420EndpointConfiguration getConfiguration(){
+	public Re420EndpointUbw32Configuration getConfiguration(){
 		return this.configuration;
 	}
 		
 	/**
-	 * 
-	 * @param port
-	 * @param pin
-	 * @param value
+	 * test endpoint message handling
+	 * @param message
 	 */
-	public void setHaupthahn(String port, String pin, String value){
-		
-		System.out.println("transmit setHaupthahn: " + this.getClass());	
-		this.sendCommandPinOutput(port, pin, value);
-	}
-	
-	/**
-	 * 
-	 * @param port
-	 * @param pin
-	 * @param value
-	 */
-	public void getHaupthahn(String port, String pin){
-		
-		System.out.println("transmit getHaupthahn: " + this.getClass());	
-		this.sendCommandPinInput(port, pin);
+	public void emulateEndpointMessage(String message) {
+		onIncomingEndpointMessage(message);
 	}
 	
 
-
-	@Override
-	/**
-	 * TODO implementation
-	 */
-	public void onHaupthahn(String payload) {
-		System.out.println("processing onHaupthahn: " + this.getClass());	
-		
-	}
 }

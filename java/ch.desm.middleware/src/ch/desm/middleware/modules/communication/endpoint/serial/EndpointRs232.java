@@ -25,7 +25,7 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 
 	private void initialize() {
 		this.initializeSerialPorts();
-		this.showSerialPortName();
+		this.getSerialPortName();
 	}
 
 	/**
@@ -53,11 +53,10 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	}
 
 	/**
-	 * Method getPortNames() returns an array of strings. Elements of the array
-	 * is already sorted.
+	 * 
 	 */
-	public void showSerialPortName() {
-		serialPort.getPortName();
+	public String getSerialPortName() {
+		return serialPort.getPortName();
 	}
 
 	/**
@@ -98,13 +97,20 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	 * @param command
 	 * @throws SerialPortException 
 	 */
-	protected synchronized void sendCommand(String command) throws SerialPortException {
+	protected void sendCommand(String command) throws SerialPortException {
 		boolean isSendOk = false;
 
 		isSendOk = serialPort.writeString(command);
 
 		if (isSendOk) {
 			System.out.println(serialPort.getPortName() + " send stream: " + command);
+		}else{
+			try {
+				throw new Exception(serialPort.getPortName() + " failed send stream: " + command);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 	}

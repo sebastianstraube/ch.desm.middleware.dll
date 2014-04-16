@@ -1,18 +1,23 @@
 package ch.desm.middleware.modules.communication.message;
 
+import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32;
+
 public abstract class MessageBase{
 	
+	public enum EnumMessageTopic{
+		SUMLATION, INTERLOCKING, CABINE
+	}
 	
-    private static double messageId = 0;
+	public EnumMessageTopic topic;
+    private String messageId;
     private boolean isReturnMessage;
 	private String payload;
-	
 	
     /**
      * 
      */
     private MessageBase() {
-    	MessageBase.messageId++;
+    	this.messageId = String.valueOf(System.currentTimeMillis());
     }
         
     /**
@@ -21,25 +26,28 @@ public abstract class MessageBase{
      * @param messageType 
      * 
      */
-    public MessageBase(String payload) {
+    public MessageBase(String payload, EnumMessageTopic topic) {
     	this();
     	this.payload = payload;
+    	this.topic = topic;
 
     }
 
     @Override
     public String toString(){
     	String s = "";
+		s += "topic: " + topic;
+		s += ", ";
     	s+= "messageId: "+messageId;
     	s+= ", ";
-    	s+= "payload: "+payload;
-    	s+= ", ";
     	s+= "isReturnMessage: " + isReturnMessage;
+//    	s+= ", ";
+//    	s+= "payload: "+payload;
     	
     	return s;
     }
     
-    public double getMessageId() {
+    public String getMessageId() {
         return messageId;
     }
     
@@ -47,11 +55,22 @@ public abstract class MessageBase{
     	return this.payload;
     }
     
-    public void setReturnMessage(boolean isReturnMessage){
-    	this.isReturnMessage = isReturnMessage;
-    }
-    
-    public boolean isReturnMessage(){
-    	return isReturnMessage;
-    }
+	/**
+	 * 
+	 * @param message
+	 * @return true if the ubw32 returns a state package
+	 */
+	public boolean isReturnMessage() {
+		boolean isReturnMessage = false;
+
+		if (payload.startsWith(EndpointUbw32.RETURN_INPUT_ANALOG)) {
+			isReturnMessage = true;
+		} else if (payload.startsWith(EndpointUbw32.RETURN_INPUT_STATE)) {
+			isReturnMessage = true;
+		} else if (payload.startsWith(EndpointUbw32.RETURN_PIN_INPUT)) {
+			isReturnMessage = true;
+		}
+
+		return isReturnMessage;
+	}
 }

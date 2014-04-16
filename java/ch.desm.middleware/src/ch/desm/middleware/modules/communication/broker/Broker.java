@@ -3,14 +3,8 @@ package ch.desm.middleware.modules.communication.broker;
 import java.util.HashSet;
 import java.util.Set;
 
-import ch.desm.middleware.modules.communication.message.MessageBase;
-
 public class Broker {
-	
-	public enum EnumTopic{
-		CABINE, INTERLOCKING, SIMULATION
-	};
-	
+		
 	/**
 	 * 
 	 */
@@ -35,7 +29,7 @@ public class Broker {
      * @param sendingClient
      * @param message
      */
-    protected void publish(BrokerClient sendingClient, MessageBase message) {
+    protected void publish(BrokerClient sendingClient, String message) {
         for(BrokerClient client : Broker.clients) {
             
         	if(client != sendingClient) {

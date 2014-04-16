@@ -10,12 +10,10 @@ import ch.desm.middleware.modules.core.daemon.DaemonThread;
 class EndpointUbw32Polling extends DaemonThread {
 
 	private EndpointUbw32 endpoint;
-	private String PinbitMaskInputAnalog;
 
-	EndpointUbw32Polling(EndpointUbw32 endpoint, String configurationInputAnalog) {
-		super("EndpointUbw32Polling");
+	EndpointUbw32Polling(EndpointUbw32 endpoint) {
+		super("EndpointUbw32Polling (" + endpoint.getSerialPortName()+")");
 		this.endpoint = endpoint;
-		this.PinbitMaskInputAnalog = configurationInputAnalog;
 	}
 
 	@Override
@@ -26,13 +24,11 @@ class EndpointUbw32Polling extends DaemonThread {
 
 		try {
 			while (!isInterrupted()) {
-				System.out.println("Thread running, name: " + this.getName());
-				Thread.sleep(100);
+				System.out.println("Thread: " + this.getName());
 				endpoint.sendCommandInputState();
-				Thread.sleep(100);
-				endpoint.sendCommandInputAnalog(PinbitMaskInputAnalog);
+				endpoint.sendCommandInputAnalog(endpoint.getPinBitMaskInputAnalog());
 				
-				Thread.sleep(10000);
+				Thread.sleep(1000);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

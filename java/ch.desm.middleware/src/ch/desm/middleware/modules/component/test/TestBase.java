@@ -1,19 +1,23 @@
-package ch.desm.middleware.modules.component.cabine;
+package ch.desm.middleware.modules.component.test;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
+import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 import ch.desm.middleware.modules.component.ComponentBase;
 
-abstract class Re420Base extends ComponentBase {
+abstract class TestBase extends ComponentBase {
 
-	protected Re420EndpointUbw32 endpoint;
+	protected TestEndpointUbw32 endpoint;
 	
-	public Re420Base(Broker broker,
-			Re420EndpointUbw32 endpoint) {
+	public TestBase(Broker broker, EndpointCommon endpoint) {
 		super(broker);
+		this.endpoint = (TestEndpointUbw32)endpoint;
 		
-		this.endpoint = endpoint;
 		this.registerEndpointListener(endpoint);
+	}
+	
+	public TestEndpointUbw32 getEndpoint(){
+		return this.endpoint;
 	}
 	
 	@Override
@@ -22,14 +26,10 @@ abstract class Re420Base extends ComponentBase {
 		try {
 			endpoint.addEndpointListener(this);
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 	}
-	
-	public Re420EndpointUbw32 getEndpoint(){
-		return this.endpoint;
-	}
-	
+
 	@Override
 	/**
 	 * test endpoint message handling
