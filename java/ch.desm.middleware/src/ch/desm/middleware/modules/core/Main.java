@@ -4,8 +4,8 @@ import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232.EnumSerialPorts;
 import ch.desm.middleware.modules.component.cabine.Re420BaseImpl;
 import ch.desm.middleware.modules.component.cabine.Re420EndpointUbw32;
-import ch.desm.middleware.modules.component.interlocking.ObermattLangnauBaseImpl;
-import ch.desm.middleware.modules.component.interlocking.ObermattLangnauEndpointUbw32;
+import ch.desm.middleware.modules.component.interlocking.OMLBaseImpl;
+import ch.desm.middleware.modules.component.interlocking.OMLEndpointUbw32;
 
 public class Main {
 
@@ -13,8 +13,8 @@ public class Main {
 		
 		Broker broker = new Broker();		    
 
-		ObermattLangnauEndpointUbw32 omlEndpoint = new ObermattLangnauEndpointUbw32(EnumSerialPorts.COM22);//
-		ObermattLangnauBaseImpl omlImpl = new ObermattLangnauBaseImpl(broker, omlEndpoint);
+		OMLEndpointUbw32 omlEndpoint = new OMLEndpointUbw32(EnumSerialPorts.COM22);//
+		OMLBaseImpl omlImpl = new OMLBaseImpl(broker, omlEndpoint);
 		
 		
 		Re420EndpointUbw32 re420EndpointUbw32 = new Re420EndpointUbw32(EnumSerialPorts.COM8);

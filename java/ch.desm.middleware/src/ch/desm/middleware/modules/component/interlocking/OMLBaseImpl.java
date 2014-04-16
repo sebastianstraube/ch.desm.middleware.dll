@@ -14,17 +14,17 @@ import ch.desm.middleware.modules.communication.message.translator.MessageTransl
 import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
 
-public class ObermattLangnauBaseImpl extends ObermattLangnauBase implements
+public class OMLBaseImpl extends OMLBase implements
 		EndpointUbw32ListenerInterface {
 
-	private ObermattLangnauFunctionMessages functionMessages;
+	private OMLFunctionMessages functionMessages;
 
-	public ObermattLangnauBaseImpl(Broker broker,
+	public OMLBaseImpl(Broker broker,
 			EndpointCommon communicationEndpointUbw32) {
 		super(broker, communicationEndpointUbw32);
 		// TODO Auto-generated constructor stub
 
-		this.functionMessages = new ObermattLangnauFunctionMessages();
+		this.functionMessages = new OMLFunctionMessages();
 	}
 
 	protected void onIncomingBrokerMessage(String message) {
@@ -80,12 +80,12 @@ public class ObermattLangnauBaseImpl extends ObermattLangnauBase implements
 				if (message.getInputDigitalValue(entry.getKey())) {
 					stream = stream
 							.replaceAll(
-									ObermattLangnauFunctionMessages.PARAMETER_PLACEHOLDER,
+									OMLFunctionMessages.PARAMETER_PLACEHOLDER,
 									"on");
 				} else {
 					stream = stream
 							.replaceAll(
-									ObermattLangnauFunctionMessages.PARAMETER_PLACEHOLDER,
+									OMLFunctionMessages.PARAMETER_PLACEHOLDER,
 									"off");
 				}
 
@@ -111,11 +111,11 @@ public class ObermattLangnauBaseImpl extends ObermattLangnauBase implements
 				// then set message stream parameter on else off
 				if (entry.getValue().equals(globalId)) {
 					stream.replaceAll(
-							ObermattLangnauFunctionMessages.PARAMETER_PLACEHOLDER,
+							OMLFunctionMessages.PARAMETER_PLACEHOLDER,
 							"on");
 				} else {
 					stream.replaceAll(
-							ObermattLangnauFunctionMessages.PARAMETER_PLACEHOLDER,
+							OMLFunctionMessages.PARAMETER_PLACEHOLDER,
 							"off");
 				}
 

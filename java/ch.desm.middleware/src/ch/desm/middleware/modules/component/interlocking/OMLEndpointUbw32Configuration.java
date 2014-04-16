@@ -6,7 +6,7 @@ import java.util.Map;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortAnalog.EnumEndpointUbw32RegisterAnalog;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortDigital.EnumEndpointUbw32RegisterDigital;
 
-public class ObermattLangnauEndpointUbw32Configuration {
+public class OMLEndpointUbw32Configuration {
 
 	//TODO refactoring
 	public static final String PINBITMASK_CONFIGURATION_DIGITAL = "14784,199,65505,16383,64528,52939,64575";
@@ -14,7 +14,7 @@ public class ObermattLangnauEndpointUbw32Configuration {
 	public static Map<EnumEndpointUbw32RegisterDigital, String> mapDigital;
 	public static Map<EnumEndpointUbw32RegisterAnalog, String> mapAnalog;
 	
-	public ObermattLangnauEndpointUbw32Configuration(){
+	public OMLEndpointUbw32Configuration(){
 		mapDigital = new HashMap<EnumEndpointUbw32RegisterDigital, String>();
 		mapAnalog = new HashMap<EnumEndpointUbw32RegisterAnalog, String>();
 		

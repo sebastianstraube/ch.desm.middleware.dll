@@ -12,7 +12,7 @@ import ch.desm.middleware.modules.communication.message.router.MessageRouter;
 import ch.desm.middleware.modules.communication.message.translator.MessageTranslator;
 import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
-import ch.desm.middleware.modules.component.interlocking.ObermattLangnauFunctionMessages;
+import ch.desm.middleware.modules.component.interlocking.OMLFunctionMessages;
 
 public class Re420BaseImpl extends Re420Base implements
 		EndpointUbw32ListenerInterface {
@@ -85,12 +85,12 @@ public class Re420BaseImpl extends Re420Base implements
 				if (message.getInputDigitalValue(entry.getKey())) {
 					stream = stream
 							.replaceAll(
-									ObermattLangnauFunctionMessages.PARAMETER_PLACEHOLDER,
+									OMLFunctionMessages.PARAMETER_PLACEHOLDER,
 									"on");
 				} else {
 					stream = stream
 							.replaceAll(
-									ObermattLangnauFunctionMessages.PARAMETER_PLACEHOLDER,
+									OMLFunctionMessages.PARAMETER_PLACEHOLDER,
 									"off");
 				}
 
@@ -116,11 +116,11 @@ public class Re420BaseImpl extends Re420Base implements
 				// then set message stream parameter on else off
 				if (entry.getValue().equals(globalId)) {
 					stream.replaceAll(
-							ObermattLangnauFunctionMessages.PARAMETER_PLACEHOLDER,
+							OMLFunctionMessages.PARAMETER_PLACEHOLDER,
 							"on");
 				} else {
 					stream.replaceAll(
-							ObermattLangnauFunctionMessages.PARAMETER_PLACEHOLDER,
+							OMLFunctionMessages.PARAMETER_PLACEHOLDER,
 							"off");
 				}
 

@@ -8,18 +8,18 @@ import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 import ch.desm.middleware.modules.component.ComponentBase;
 
-abstract class ObermattLangnauBase extends ComponentBase {
+abstract class OMLBase extends ComponentBase {
 
-	protected ObermattLangnauEndpointUbw32 endpoint;
+	protected OMLEndpointUbw32 endpoint;
 	
-	public ObermattLangnauBase(Broker broker, EndpointCommon endpoint) {
+	public OMLBase(Broker broker, EndpointCommon endpoint) {
 		super(broker);
-		this.endpoint = (ObermattLangnauEndpointUbw32)endpoint;
+		this.endpoint = (OMLEndpointUbw32)endpoint;
 		
 		this.registerEndpointListener(endpoint);
 	}
 	
-	public ObermattLangnauEndpointUbw32 getEndpoint(){
+	public OMLEndpointUbw32 getEndpoint(){
 		return this.endpoint;
 	}
 	

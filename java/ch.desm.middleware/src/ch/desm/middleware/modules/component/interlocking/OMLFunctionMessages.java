@@ -3,12 +3,12 @@ package ch.desm.middleware.modules.component.interlocking;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ObermattLangnauFunctionMessages {
+public class OMLFunctionMessages {
 	public final static String PARAMETER_PLACEHOLDER = "\\?";
 	
 	public static Map<String, String> messages;
 	
-	public ObermattLangnauFunctionMessages(){
+	public OMLFunctionMessages(){
 		messages = new HashMap<String, String>();
 		
 		this.initialize();

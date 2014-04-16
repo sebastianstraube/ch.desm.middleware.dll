@@ -6,7 +6,7 @@ import java.util.HashMap;
 import ch.desm.middleware.modules.communication.message.MessageBase.EnumMessageTopic;
 import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
-import ch.desm.middleware.modules.component.interlocking.ObermattLangnauEndpointUbw32Configuration;
+import ch.desm.middleware.modules.component.interlocking.OMLEndpointUbw32Configuration;
 
 /**
  * TODO implementation
