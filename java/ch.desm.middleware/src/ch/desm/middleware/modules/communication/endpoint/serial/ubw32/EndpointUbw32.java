@@ -75,12 +75,10 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	 * do work to initialze the controller on constructor call
 	 */
 	private void initialize() {
-		this.sendCommandConfigureUbw32(); // disable OK return packet
+//		this.sendCommandConfigureUbw32(); // disable OK return packet
 		this.sendCommandVersion();
-		
 		this.sendCommandConfigure(configurationDigital);
 		this.sendCommandConfigureAnalogInputs(pinbitMaskInputAnalog);
-
 		this.polling.start();
 	}
 
@@ -125,7 +123,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	protected void sendCommand(String command) {
 		try {
 			
-			Thread.sleep(1000);
+			Thread.sleep(50);
 			command += EndpointUbw32.MESSAGE_TERMINATOR;
 			super.sendCommand(command);
 

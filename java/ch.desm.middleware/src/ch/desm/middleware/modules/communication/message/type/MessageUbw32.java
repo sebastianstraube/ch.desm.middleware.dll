@@ -12,8 +12,19 @@ import ch.desm.middleware.modules.communication.message.MessageBase;
 
 public class MessageUbw32 extends MessageBase {
 
-	ArrayList<EndpointUbw32PortAnalog> listAnalog;
-	ArrayList<EndpointUbw32PortDigital> listDigital;
+	public static final String MESSAGE_CHAR_OUTPUT = "o";
+	public static final String MESSAGE_CHAR_INPUT = "i";
+	public static final String MESSAGE_CHAR_EXTERN = "e";
+	public static final String MESSAGE_CHAR_INTERN = "i";
+	public static final String MESSAGE_CHAR_EXTERNINTERN = "ei";
+	/**
+	 * TODO refactoring
+	 */
+	public static final String MESSAGE_PARAMETER_ON = "on";
+	public static final String MESSAGE_PARAMETER_OFF = "off";
+	
+	private ArrayList<EndpointUbw32PortAnalog> listAnalog;
+	private ArrayList<EndpointUbw32PortDigital> listDigital;
 	
 	public EndpointUbw32PortDigital portA;
 	public EndpointUbw32PortDigital portB;

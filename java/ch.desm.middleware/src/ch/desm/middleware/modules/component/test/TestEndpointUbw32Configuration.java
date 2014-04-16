@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.component.cabine;
+package ch.desm.middleware.modules.component.test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortAnalog.EnumEndpointUbw32RegisterAnalog;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortDigital.EnumEndpointUbw32RegisterDigital;
 
-public class Re420EndpointUbw32Configuration {
+public class TestEndpointUbw32Configuration {
 
 	//TODO refactoring
 	public static final String PINBITMASK_CONFIGURATION_DIGITAL = "192,0,0,24560,96,1,2";
@@ -15,7 +15,7 @@ public class Re420EndpointUbw32Configuration {
 	private static Map<String, EnumEndpointUbw32RegisterDigital> mapDigital;
 	private static Map<String, EnumEndpointUbw32RegisterAnalog> mapAnalog;
 	
-	public Re420EndpointUbw32Configuration(){
+	public TestEndpointUbw32Configuration(){
 		mapDigital = new HashMap<String, EnumEndpointUbw32RegisterDigital>();
 		mapAnalog = new HashMap<String, EnumEndpointUbw32RegisterAnalog>();
 		
@@ -46,16 +46,6 @@ public class Re420EndpointUbw32Configuration {
 	
 	public void initializeAnalog(){
 		mapAnalog.put("8.91.01", EnumEndpointUbw32RegisterAnalog.AN0); //FSS Grundstellung
-		mapAnalog.put("8.91.03", EnumEndpointUbw32RegisterAnalog.AN0); //FSS 10° F 
-		mapAnalog.put("8.91.04", EnumEndpointUbw32RegisterAnalog.AN0); //FSS 30° F 
-		mapAnalog.put("8.91.05", EnumEndpointUbw32RegisterAnalog.AN0); //FSS 45° F 
-		mapAnalog.put("8.91.06", EnumEndpointUbw32RegisterAnalog.AN0); //FSS 80° F 
-		mapAnalog.put("8.91.07", EnumEndpointUbw32RegisterAnalog.AN0); //FSS 90° F 
-		mapAnalog.put("8.91.19", EnumEndpointUbw32RegisterAnalog.AN0); //FSS 10° EG 
-		mapAnalog.put("8.91.20", EnumEndpointUbw32RegisterAnalog.AN0); //FSS 30° EG 
-		mapAnalog.put("8.91.21", EnumEndpointUbw32RegisterAnalog.AN0); //FSS 45° EG 
-		mapAnalog.put("8.91.22", EnumEndpointUbw32RegisterAnalog.AN0); //FSS 80° EG 
-		mapAnalog.put("8.91.23", EnumEndpointUbw32RegisterAnalog.AN0); //FSS 90° EG 
 
 	}
 	

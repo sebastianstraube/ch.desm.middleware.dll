@@ -9,7 +9,7 @@ public abstract class MessageBase{
 	}
 	
 	public EnumMessageTopic topic;
-    private static double messageId = 0;
+    private String messageId;
     private boolean isReturnMessage;
 	private String payload;
 	
@@ -17,7 +17,7 @@ public abstract class MessageBase{
      * 
      */
     private MessageBase() {
-    	MessageBase.messageId++;
+    	this.messageId = String.valueOf(System.currentTimeMillis());
     }
         
     /**
@@ -47,7 +47,7 @@ public abstract class MessageBase{
     	return s;
     }
     
-    public double getMessageId() {
+    public String getMessageId() {
         return messageId;
     }
     

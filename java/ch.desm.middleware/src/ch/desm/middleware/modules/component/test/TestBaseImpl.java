@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.component.interlocking;
+package ch.desm.middleware.modules.component.test;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;
@@ -14,16 +14,16 @@ import ch.desm.middleware.modules.communication.message.translator.MessageTransl
 import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
 
-public class OMLBaseImpl extends OMLBase implements
+public class TestBaseImpl extends TestBase implements
 		EndpointUbw32ListenerInterface {
 
-	private OMLFunctionMessages functionMessages;
+	private TestFunctionMessages functionMessages;
 
-	public OMLBaseImpl(Broker broker, EndpointCommon communicationEndpointUbw32) {
+	public TestBaseImpl(Broker broker, EndpointCommon communicationEndpointUbw32) {
 		super(broker, communicationEndpointUbw32);
 		// TODO Auto-generated constructor stub
 
-		this.functionMessages = new OMLFunctionMessages();
+		this.functionMessages = new TestFunctionMessages();
 	}
 
 	protected void onIncomingBrokerMessage(String message) {
@@ -77,10 +77,10 @@ public class OMLBaseImpl extends OMLBase implements
 				String stream = functionMessages.messages.get(entry.getKey());
 				if (message.getInputDigitalValue(entry.getValue())) {
 					stream = stream.replaceAll(
-							OMLFunctionMessages.PARAMETER_PLACEHOLDER, "on");
+							TestFunctionMessages.PARAMETER_PLACEHOLDER, "on");
 				} else {
 					stream = stream.replaceAll(
-							OMLFunctionMessages.PARAMETER_PLACEHOLDER, "off");
+							TestFunctionMessages.PARAMETER_PLACEHOLDER, "off");
 				}
 
 				middlewareMessagesInput = middlewareMessagesInput
@@ -106,10 +106,10 @@ public class OMLBaseImpl extends OMLBase implements
 				// then set message stream parameter on else off
 				if (entry.getValue().equals(globalId)) {
 					stream.replaceAll(
-							OMLFunctionMessages.PARAMETER_PLACEHOLDER, "on");
+							TestFunctionMessages.PARAMETER_PLACEHOLDER, "on");
 				} else {
 					stream.replaceAll(
-							OMLFunctionMessages.PARAMETER_PLACEHOLDER, "off");
+							TestFunctionMessages.PARAMETER_PLACEHOLDER, "off");
 				}
 
 				middlewareMessagesInput = middlewareMessagesInput

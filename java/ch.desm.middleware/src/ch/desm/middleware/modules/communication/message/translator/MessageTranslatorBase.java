@@ -17,11 +17,10 @@ public abstract class MessageTranslatorBase {
 	private static final int ID = 0;
 	private static final int OUTPUT_INPUT = 1;
 	private static final int EXTERN_INTERN = 2;
-	private static final int PROCESS = 3;
-	private static final int ELEMENT = 4;
-	private static final int FUNCTION = 5;
-	private static final int INSTANCE = 6;
-	private static final int PARAMETER = 7;
+	private static final int ELEMENT = 3;
+	private static final int FUNCTION = 4;
+	private static final int INSTANCE = 5;
+	private static final int PARAMETER = 6;
 
 	protected ArrayList<MessageCommon> decodeMiddlewareMessages(String message,
 			EnumMessageTopic topic) {
@@ -52,7 +51,7 @@ public abstract class MessageTranslatorBase {
 			} else {
 				String[] parts = message.split(ELEMENT_CUT);
 				messageCommon = new MessageCommon(topic, parts[ID],
-						parts[OUTPUT_INPUT], parts[EXTERN_INTERN], parts[PROCESS],
+						parts[OUTPUT_INPUT], parts[EXTERN_INTERN],
 						parts[ELEMENT], parts[FUNCTION], parts[INSTANCE],
 						parts[PARAMETER], message);
 			}
@@ -74,9 +73,9 @@ public abstract class MessageTranslatorBase {
 		String endpointMessage = "";
 		endpointMessage += message.getGlobalId();
 		endpointMessage += ELEMENT_CUT;
-		endpointMessage += message.getOutputInput();
+		endpointMessage += message.getGlobalId();
 		endpointMessage += ELEMENT_CUT;
-		endpointMessage += message.getProcess();
+		endpointMessage += message.getExternIntern();
 		endpointMessage += ELEMENT_CUT;
 		endpointMessage += message.getElement();
 		endpointMessage += ELEMENT_CUT;

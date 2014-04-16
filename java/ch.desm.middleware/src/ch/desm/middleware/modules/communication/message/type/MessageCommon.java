@@ -4,12 +4,8 @@ import ch.desm.middleware.modules.communication.message.MessageBase;
 
 public class MessageCommon extends MessageBase {
 
-	public static final String CHAR_OUTPUT = "o";
-	public static final String CHAR_INPUT = "i";
-	public static final String CHAR_EXTERN = "e";
-	public static final String CHAR_INTERN = "i";
-	public static final String CHAR_EXTER_INTERN = "ei";
 
+	
 	protected String globalId;
 	
 	/**
@@ -20,7 +16,6 @@ public class MessageCommon extends MessageBase {
 	 */
 	protected String externIntern;
 	protected String outputInput;
-	protected String process;
 	protected String element;
 	protected String function;
 	protected String parameter;
@@ -35,14 +30,13 @@ public class MessageCommon extends MessageBase {
 	}
 
 	public MessageCommon(EnumMessageTopic topic, String globalId,
-			String outputInput, String externIntern, String process,
+			String outputInput, String externIntern,
 			String element, String function, String instance, String parameter,
 			String payload) {
 		super(payload, topic);
 		this.globalId = globalId;
 		this.outputInput = outputInput;
 		this.externIntern = externIntern;
-		this.process = process;
 		this.element = element;
 		this.function = function;
 		this.instance = instance;
@@ -59,10 +53,6 @@ public class MessageCommon extends MessageBase {
 
 	public String getExternIntern() {
 		return this.externIntern;
-	}
-
-	public String getProcess() {
-		return this.process;
 	}
 
 	public String getElement() {
@@ -89,8 +79,6 @@ public class MessageCommon extends MessageBase {
 		s += "outputInput: " + outputInput;
 		s += ", ";
 		s += "externIntern: " + externIntern;
-		s += ", ";
-		s += "process: " + process;
 		s += ", ";
 		s += "element: " + element;
 		s += ", ";

@@ -76,11 +76,20 @@ public class Re420BaseImpl extends Re420Base implements
 
 		// Digital messages
 		if (message.isDigital) {
-			for (Entry<EnumEndpointUbw32RegisterDigital, String> entry : this
+			for (Entry<String, EnumEndpointUbw32RegisterDigital> entry : this
 					.getEndpoint().getConfiguration().getMapInputDigital().entrySet()) {
 
-				String stream = functionMessages.getMessages().get(entry.getValue());
-				if (message.getInputDigitalValue(entry.getKey())) {
+				String stream = functionMessages.getMessages().get(entry.getKey());
+				if(stream == null){
+					try {
+						throw new Exception("the configuration mapping found a problematic global id:" + entry.getKey() + "with value: " + entry.getValue());
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				if (message.getInputDigitalValue(entry.getValue())) {
 					stream = stream
 							.replaceAll(
 									OMLFunctionMessages.PARAMETER_PLACEHOLDER,
@@ -99,16 +108,16 @@ public class Re420BaseImpl extends Re420Base implements
 			// Analog messages
 		} else {
 
-			for (Entry<EnumEndpointUbw32RegisterAnalog, String> entry : this
+			for (Entry<String, EnumEndpointUbw32RegisterAnalog> entry : this
 					.getEndpoint().getConfiguration().getMapInputAnalog().entrySet()) {
 
-				String stream = functionMessages.getMessages().get(entry.getValue());
+				String stream = functionMessages.getMessages().get(entry.getKey());
 				int analogValue = Integer.parseInt(message
-						.getInputAnalogValue(entry.getKey()));
+						.getInputAnalogValue(entry.getValue()));
 
 				// lookup global id from analog value
 				String globalId = this.getEndpoint().getConfiguration()
-						.getGlobalIdFSS(entry.getKey(), analogValue);
+						.getGlobalIdFSS(entry.getValue(), analogValue);
 
 				// if FSS id is equal map entry,
 				// then set message stream parameter on else off
