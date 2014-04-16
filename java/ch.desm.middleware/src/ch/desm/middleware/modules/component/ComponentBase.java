@@ -3,7 +3,7 @@ package ch.desm.middleware.modules.component;
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.broker.BrokerClient;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
-import ch.desm.middleware.modules.communication.endpoint.ComponentBaseListenerInterface;
+import ch.desm.middleware.modules.communication.endpoint.EndpointCommonListenerInterface;
 
 /**
  * 
@@ -11,7 +11,7 @@ import ch.desm.middleware.modules.communication.endpoint.ComponentBaseListenerIn
  * 
  */
 public abstract class ComponentBase extends BrokerClient
-	implements ComponentBaseListenerInterface {
+	implements EndpointCommonListenerInterface {
 
 	abstract protected void registerEndpointListener(EndpointBase listener);
 	abstract public void emulateBrokerMessage(String message);	

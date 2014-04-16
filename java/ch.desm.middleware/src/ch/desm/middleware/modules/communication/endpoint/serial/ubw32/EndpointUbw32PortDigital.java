@@ -3,6 +3,8 @@ package ch.desm.middleware.modules.communication.endpoint.serial.ubw32;
 
 public class EndpointUbw32PortDigital {
 
+	private static final int ALL_PINS_ON = 65535;
+	
 	/**
 	 * 0 = output
 	 * 1 = input
@@ -12,7 +14,6 @@ public class EndpointUbw32PortDigital {
 	 */
 	private int pinBitMask;
 	private EnumEndpointUbw32PortDigital port;
-	private static final int ALL_PINS_INPUT = 65535;
 
 	public enum EnumEndpointUbw32PortDigital{
 		A, B, C, D, E, F, G
@@ -58,7 +59,7 @@ public class EndpointUbw32PortDigital {
 	}
 
 	private boolean isPinMaskOk(int mask){
-		if(mask < 0 || mask > ALL_PINS_INPUT) return false;
+		if(mask < 0 || mask > ALL_PINS_ON) return false;
 		
 		return true;
 	}

@@ -31,7 +31,7 @@ public class Re420BaseImpl extends Re420Base implements
 	 */
 	protected void onIncomingBrokerMessage(String message) {
 		if (message != null && !message.isEmpty()) {
-			System.out.println("broker (" + getEndpoint().getSerialPortName()
+			System.out.println("broker (" + this.getClass()
 					+ ") received message: " + message);
 
 			MessageTranslator translator = new MessageTranslator();
@@ -141,9 +141,10 @@ public class Re420BaseImpl extends Re420Base implements
 	};
 
 	/**
-	 * read the BlockVonLangnau pin
 	 * 
-	 * @param message
+	 * @param port
+	 * @param pin
+	 * @param value
 	 */
 	@Override
 	public void getFunction(String port, String pin) {

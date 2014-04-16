@@ -12,14 +12,14 @@ import ch.desm.middleware.modules.communication.message.translator.MessageTransl
  */
 public abstract class EndpointBase {
 
-	protected Set<ComponentBaseListenerInterface> listeners;
+	protected Set<EndpointCommonListenerInterface> listeners;
 	protected MessageTranslator messageTranslator;
 	
 	/**
 	 * 
 	 */
 	public EndpointBase() {
-		this.listeners = new HashSet<ComponentBaseListenerInterface>();
+		this.listeners = new HashSet<EndpointCommonListenerInterface>();
 		messageTranslator = new MessageTranslator();
 	}
 
@@ -28,6 +28,6 @@ public abstract class EndpointBase {
 	 * @param listener
 	 * @throws Exception
 	 */
-	abstract public void addEndpointListener(ComponentBaseListenerInterface listener) throws Exception;
+	abstract public void addEndpointListener(EndpointCommonListenerInterface listener) throws Exception;
 
 }

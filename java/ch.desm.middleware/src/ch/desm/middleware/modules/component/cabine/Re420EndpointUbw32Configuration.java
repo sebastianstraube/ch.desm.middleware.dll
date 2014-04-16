@@ -34,6 +34,10 @@ public class Re420EndpointUbw32Configuration {
 		return mapDigital.containsKey(id);
 	}
 	
+	public boolean isValueAvailable(String id){
+		return mapDigital.containsValue(id);
+	}
+	
 	public void initializeDigital(){
 		mapDigital.put(EnumEndpointUbw32RegisterDigital.C4,"S126"); //Steuerstrom
 		mapDigital.put(EnumEndpointUbw32RegisterDigital.G8,"S129"); //Stromabnehmer

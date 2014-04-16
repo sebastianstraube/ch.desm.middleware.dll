@@ -27,7 +27,7 @@ public class OMLBaseImpl extends OMLBase implements
 	}
 
 	protected void onIncomingBrokerMessage(String message) {
-		System.out.println("broker (" + getEndpoint().getSerialPortName()
+		System.out.println("broker (" + this.getClass()
 				+ ") received message: " + message);
 
 		MessageTranslator translator = new MessageTranslator();

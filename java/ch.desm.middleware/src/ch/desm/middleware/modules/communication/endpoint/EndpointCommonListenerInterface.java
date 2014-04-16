@@ -2,7 +2,7 @@ package ch.desm.middleware.modules.communication.endpoint;
 
 
 
-public interface EndpointCommonListenerInterface extends ComponentBaseListenerInterface {
+public interface EndpointCommonListenerInterface {
 
 	public void onIncomingEndpointMessage(String message);
 }

@@ -10,55 +10,61 @@ public abstract class MessageTranslatorBase {
 
 	private static final String ELEMENT_CUT = ";";
 	private static final String MESSAGE_CUT = "#";
-	
+
 	/**
-	 * Array Positions
+	 * positions
 	 */
 	private static final int ID = 0;
-	private static final int EXTERN_INTERN = 1;
-	private static final int ELEMENT = 2;
-	private static final int FUNCTION = 3;
-	private static final int INSTANCE= 4;
-	private static final int PARAMETER = 5;
-	
-	protected ArrayList<MessageCommon> decodeMiddlewareMessages(String message, EnumMessageTopic topic){
+	private static final int OUTPUT_INPUT = 1;
+	private static final int EXTERN_INTERN = 2;
+	private static final int PROCESS = 3;
+	private static final int ELEMENT = 4;
+	private static final int FUNCTION = 5;
+	private static final int INSTANCE = 6;
+	private static final int PARAMETER = 7;
+
+	protected ArrayList<MessageCommon> decodeMiddlewareMessages(String message,
+			EnumMessageTopic topic) {
 		String[] messageArray = message.split(MESSAGE_CUT);
 		ArrayList<MessageCommon> messageList = new ArrayList<MessageCommon>();
-		
-		for(int i=0; i < messageArray.length; i++){
-			messageList.add(decodeMiddlewareMessage(message, topic));
-		}		
+
+		for (int i = 0; i < messageArray.length; i++) {
+			messageList.add(decodeMiddlewareMessage(messageArray[i], topic));
+		}
 		return messageList;
 	}
-	
+
 	/**
 	 * decodes a message to fit the message object
 	 * 
-	 * TODO refactor EnumMessageTopic topic, move it to stanard message stream (Excel)
+	 * TODO refactor EnumMessageTopic topic, move it to standard message stream
+	 * (Excel)
 	 * 
 	 * @param message
 	 * @return {@link MessageBase}
 	 */
-	private MessageCommon decodeMiddlewareMessage(String message, EnumMessageTopic topic){
+	private MessageCommon decodeMiddlewareMessage(String message,
+			EnumMessageTopic topic) {
 		MessageCommon messageCommon = null;
 		try {
-			if(message == null || message.isEmpty()){
+			if (message == null || message.isEmpty()) {
 				throw new Exception("there is no message to translate");
-			}else{
-				String[] parts = message.split(MESSAGE_CUT);
-				messageCommon = new MessageCommon(topic, parts[ID], parts[ELEMENT], parts[FUNCTION], parts[INSTANCE], parts[PARAMETER], parts[EXTERN_INTERN], message);
-			}			
+			} else {
+				String[] parts = message.split(ELEMENT_CUT);
+				messageCommon = new MessageCommon(topic, parts[ID],
+						parts[OUTPUT_INPUT], parts[EXTERN_INTERN], parts[PROCESS],
+						parts[ELEMENT], parts[FUNCTION], parts[INSTANCE],
+						parts[PARAMETER], message);
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return messageCommon;
 	}
-	
-	
+
 	/**
-	 * TODO implementation
-	 * decode to the common middleware message
+	 * TODO implementation decode to the common middleware message
 	 * 
 	 * @param
 	 * @param
@@ -67,6 +73,8 @@ public abstract class MessageTranslatorBase {
 
 		String endpointMessage = "";
 		endpointMessage += message.getGlobalId();
+		endpointMessage += ELEMENT_CUT;
+		endpointMessage += message.getOutputInput();
 		endpointMessage += ELEMENT_CUT;
 		endpointMessage += message.getProcess();
 		endpointMessage += ELEMENT_CUT;
@@ -78,7 +86,7 @@ public abstract class MessageTranslatorBase {
 		endpointMessage += ELEMENT_CUT;
 		endpointMessage += message.getParameter();
 		endpointMessage += MESSAGE_CUT;
-		
+
 		return endpointMessage;
 	}
 }

@@ -34,7 +34,11 @@ public class OMLEndpointUbw32Configuration {
 		return mapDigital.containsKey(id);
 	}
 	
-	public void initializeDigital(){
+	public boolean isValueAvailable(String id){
+		return mapDigital.containsValue(id);
+	}
+	
+	private void initializeDigital(){
 		mapDigital.put(EnumEndpointUbw32RegisterDigital.C4,"1.90.01"); //Störungslampe Einfahrvorsignal F*
 		mapDigital.put(EnumEndpointUbw32RegisterDigital.G6,"1.90.02"); //Einfahrsignal F; Notrot
 		mapDigital.put(EnumEndpointUbw32RegisterDigital.G7,"1.90.03"); //Einfahrsignal F; Grün FB 3

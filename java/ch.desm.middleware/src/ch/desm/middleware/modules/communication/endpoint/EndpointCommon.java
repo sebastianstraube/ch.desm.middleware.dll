@@ -3,7 +3,7 @@ package ch.desm.middleware.modules.communication.endpoint;
 public abstract class EndpointCommon extends EndpointBase {
 
 	public void onIncomingEndpointMessage(String message) {
-		for (ComponentBaseListenerInterface listener : this.listeners) {
+		for (EndpointCommonListenerInterface listener : this.listeners) {
 
 			((EndpointCommonListenerInterface) listener)
 					.onIncomingEndpointMessage(message);
@@ -20,7 +20,7 @@ public abstract class EndpointCommon extends EndpointBase {
 	}
 
 	@Override
-	public void addEndpointListener(ComponentBaseListenerInterface listener)
+	public void addEndpointListener(EndpointCommonListenerInterface listener)
 			throws Exception {
 
 		if (listener instanceof EndpointCommonListenerInterface) {

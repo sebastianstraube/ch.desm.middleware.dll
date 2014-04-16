@@ -44,24 +44,26 @@ public class MessageRouter {
 
 	private void processBrokerMessage(Re420BaseImpl impl,
 			MessageCommon message) {
-
 //		System.out.println(impl.getClass() + "> processBrokerMessage:" + message);
 
-		if (impl.getEndpoint().getConfiguration().isKeyAvailable(message.getGlobalId())) {
+		//is there some interesting message?
+		if (impl.getEndpoint().getConfiguration().isValueAvailable(message.getGlobalId())) {
 			String register = impl.getEndpoint().getConfiguration().getMapInputDigital()
 					.get(message.getGlobalId());
 			String port = register.substring(0, 1);
 			String pin = register.substring(1, register.length());
 			String value = message.getParameter();
-			boolean isReturnMessage = message.isReturnMessage();
-
-			if (isReturnMessage) {
-				impl.setFunction(port, pin, value);
-			} else {
+			boolean isInput = message.getOutputInput().equals(MessageCommon.CHAR_INPUT);
+			
+			//do you need some answer or do you wanna set signals?
+			if (isInput) {
 				impl.getFunction(port, pin);
+			} else{
+				impl.setFunction(port, pin, value);
 			}
+			
 		} else {
-			System.out.println(impl.getClass() + "> processBrokerMessage skipped:" + message);
+			System.out.println(impl.getClass() + "> processBrokerMessage skipped:" + message.getGlobalId());
 		}
 	}
 
@@ -69,10 +71,9 @@ public class MessageRouter {
 			MessageCommon message) {
 
 		String value = message.getParameter();
-		boolean isReturnMessage = message.isReturnMessage();
+		boolean isInput = message.getOutputInput().equals(MessageCommon.CHAR_INPUT);
 
-		if (impl.getEndpoint().getConfiguration().isKeyAvailable(message.getGlobalId())) {
-
+		if (impl.getEndpoint().getConfiguration().isValueAvailable(message.getGlobalId())) {
 			System.out.println(impl.getClass() + ">processBrokerMessage:" + message);
 
 			String register = impl.getEndpoint().getConfiguration().getMapInputDigital()
@@ -80,10 +81,10 @@ public class MessageRouter {
 			String port = register.substring(0, 1);
 			String pin = register.substring(1, register.length());
 
-			if (isReturnMessage) {
-				impl.setFunction(port, pin, value);
-			} else {
+			if (isInput) {
 				impl.getFunction(port, pin);
+			} else {
+				impl.setFunction(port, pin, value);
 			}
 		} else {
 			System.out.println(impl.getClass() + "> processBrokerMessage skipped:" + message);
