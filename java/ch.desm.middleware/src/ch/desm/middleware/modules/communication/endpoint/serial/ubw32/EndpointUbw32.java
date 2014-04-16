@@ -63,7 +63,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		this.ignoreUbw32ControlMessages = false;
 		this.pinbitMaskInputAnalog = pinbitMaskInputAnalog;
 		this.configurationDigital = configurationDigital;
-		this.polling = new EndpointUbw32Polling(this, pinbitMaskInputAnalog);
+		this.polling = new EndpointUbw32Polling(this);
 		this.initialize();
 	}
 

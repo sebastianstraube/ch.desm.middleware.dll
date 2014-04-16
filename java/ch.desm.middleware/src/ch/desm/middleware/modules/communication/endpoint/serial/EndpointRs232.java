@@ -25,7 +25,7 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 
 	private void initialize() {
 		this.initializeSerialPorts();
-		this.showSerialPortName();
+		this.getSerialPortName();
 	}
 
 	/**
@@ -53,11 +53,10 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	}
 
 	/**
-	 * Method getPortNames() returns an array of strings. Elements of the array
-	 * is already sorted.
+	 * 
 	 */
-	public void showSerialPortName() {
-		serialPort.getPortName();
+	public String getSerialPortName() {
+		return serialPort.getPortName();
 	}
 
 	/**

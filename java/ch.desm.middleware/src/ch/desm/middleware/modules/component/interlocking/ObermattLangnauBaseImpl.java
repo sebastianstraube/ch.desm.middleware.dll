@@ -1,9 +1,11 @@
 package ch.desm.middleware.modules.component.interlocking;
 
+import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
+import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32ListenerInterface;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortAnalog.EnumEndpointUbw32RegisterAnalog;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortDigital.EnumEndpointUbw32RegisterDigital;
 import ch.desm.middleware.modules.communication.message.MessageBase.EnumMessageTopic;
@@ -12,15 +14,16 @@ import ch.desm.middleware.modules.communication.message.translator.MessageTransl
 import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
 
-public class ObermattLangnauBaseImplUbw32 extends ObermattLangnauBase {
+public class ObermattLangnauBaseImpl extends ObermattLangnauBase implements
+		EndpointUbw32ListenerInterface {
 
 	private ObermattLangnauFunctionMessages functionMessages;
-	
-	public ObermattLangnauBaseImplUbw32(Broker broker,
+
+	public ObermattLangnauBaseImpl(Broker broker,
 			EndpointCommon communicationEndpointUbw32) {
 		super(broker, communicationEndpointUbw32);
 		// TODO Auto-generated constructor stub
-		
+
 		this.functionMessages = new ObermattLangnauFunctionMessages();
 	}
 
@@ -29,11 +32,13 @@ public class ObermattLangnauBaseImplUbw32 extends ObermattLangnauBase {
 				+ " from component " + this.getClass());
 
 		MessageTranslator translator = new MessageTranslator();
-		MessageCommon messageCommon = translator.translateMiddlewareMessageStreamToCommonMessageObject(message, EnumMessageTopic.INTERLOCKING);
-		
+		ArrayList<MessageCommon> messageCommon = translator
+				.translateMiddlewareMessageStreamToCommonMessageObject(message,
+						EnumMessageTopic.INTERLOCKING);
+
 		// TODO route and transmit to endpoint
 		MessageRouter router = new MessageRouter();
-		router.processBrokerMessage(this.getEndpoint(), messageCommon);
+		router.processBrokerMessage(this, messageCommon);
 	}
 
 	/**
@@ -59,48 +64,86 @@ public class ObermattLangnauBaseImplUbw32 extends ObermattLangnauBase {
 
 	/**
 	 * TODO multiple analog message
+	 * 
 	 * @param message
 	 */
 	public String processInputs(MessageUbw32 message) {
 
 		String middlewareMessagesInput = "";
-		
-		//Digital messages
+
+		// Digital messages
 		if (message.isDigital) {
-			for(Entry<EnumEndpointUbw32RegisterDigital, String> entry : this.getEndpoint().getConfiguration().mapDigital.entrySet()){
-				
+			for (Entry<EnumEndpointUbw32RegisterDigital, String> entry : this
+					.getEndpoint().getConfiguration().mapDigital.entrySet()) {
+
 				String stream = functionMessages.messages.get(entry.getValue());
-				if(message.getInputDigitalValue(entry.getKey())){
-					stream = stream.replaceAll(ObermattLangnauFunctionMessages.PARAMETER_PLACEHOLDER, "on");
-				}else{
-					stream = stream.replaceAll(ObermattLangnauFunctionMessages.PARAMETER_PLACEHOLDER, "off");
+				if (message.getInputDigitalValue(entry.getKey())) {
+					stream = stream
+							.replaceAll(
+									ObermattLangnauFunctionMessages.PARAMETER_PLACEHOLDER,
+									"on");
+				} else {
+					stream = stream
+							.replaceAll(
+									ObermattLangnauFunctionMessages.PARAMETER_PLACEHOLDER,
+									"off");
 				}
-				
-				middlewareMessagesInput = middlewareMessagesInput.concat(stream);
+
+				middlewareMessagesInput = middlewareMessagesInput
+						.concat(stream);
 			}
-		
-		//Analog messages
+
+			// Analog messages
 		} else {
 
-			for(Entry<EnumEndpointUbw32RegisterAnalog, String> entry : this.getEndpoint().getConfiguration().mapAnalog.entrySet()){
-				
+			for (Entry<EnumEndpointUbw32RegisterAnalog, String> entry : this
+					.getEndpoint().getConfiguration().mapAnalog.entrySet()) {
+
 				String stream = functionMessages.messages.get(entry.getValue());
-				int analogValue = Integer.parseInt(message.getInputAnalogValue(entry.getKey()));
-				
-				//lookup global id from analog value
-				String globalId = this.getEndpoint().getConfiguration().getGlobalIdFSS(entry.getKey(), analogValue);
-				
-				//if FSS id is equal map entry,
-				//then set message stream parameter on else off
-				if(entry.getValue().equals(globalId)){
-					stream.replaceAll(ObermattLangnauFunctionMessages.PARAMETER_PLACEHOLDER, "on");
-				}else{
-					stream.replaceAll(ObermattLangnauFunctionMessages.PARAMETER_PLACEHOLDER, "off");
+				int analogValue = Integer.parseInt(message
+						.getInputAnalogValue(entry.getKey()));
+
+				// lookup global id from analog value
+				String globalId = this.getEndpoint().getConfiguration()
+						.getGlobalIdFSS(entry.getKey(), analogValue);
+
+				// if FSS id is equal map entry,
+				// then set message stream parameter on else off
+				if (entry.getValue().equals(globalId)) {
+					stream.replaceAll(
+							ObermattLangnauFunctionMessages.PARAMETER_PLACEHOLDER,
+							"on");
+				} else {
+					stream.replaceAll(
+							ObermattLangnauFunctionMessages.PARAMETER_PLACEHOLDER,
+							"off");
 				}
-				
-				middlewareMessagesInput = middlewareMessagesInput.concat(stream);
-			}		
+
+				middlewareMessagesInput = middlewareMessagesInput
+						.concat(stream);
+			}
 		}
 		return middlewareMessagesInput;
+	}
+
+	/**
+	 * 
+	 * @param port
+	 * @param pin
+	 * @param value
+	 */
+	@Override
+	public void setFunction(String port, String pin, String value) {
+		this.endpoint.sendCommandPinOutput(port, pin, value);
+	};
+
+	/**
+	 * read the BlockVonLangnau pin
+	 * 
+	 * @param message
+	 */
+	@Override
+	public void getFunction(String port, String pin) {
+		this.endpoint.sendCommandPinInput(port, pin);
 	}
 }

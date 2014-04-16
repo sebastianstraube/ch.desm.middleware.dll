@@ -1,27 +1,20 @@
 package ch.desm.middleware.modules.component;
 
-import java.util.Map;
-
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.broker.BrokerClient;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
-import ch.desm.middleware.modules.communication.endpoint.EndpointBaseListenerInterface;
+import ch.desm.middleware.modules.communication.endpoint.ComponentBaseListenerInterface;
 
 /**
  * 
  * @author Sebastian
  * 
  */
-public abstract class ComponentBase extends BrokerClient implements
-		EndpointBaseListenerInterface {
+public abstract class ComponentBase extends BrokerClient
+	implements ComponentBaseListenerInterface {
 
 	abstract protected void registerEndpointListener(EndpointBase listener);
-	abstract public void emulateBrokerMessage(String message);
-	
-	abstract public Map<String, String> getInpuDigitalOn();
-	abstract public Map<String, String> getInpuAnalogOn();
-	
-	
+	abstract public void emulateBrokerMessage(String message);	
 	private static double id = 0;
 
 	public static enum EnumComponentCategorie {

@@ -21,7 +21,9 @@ public abstract class BrokerClient implements BrokerClientInterface {
      * @param message
      */
     public void publish(String message) {
-        broker.publish(this, message);
+    	if(message != null && !message.isEmpty()){
+    		broker.publish(this, message);
+    	}
     }
 
     /**
@@ -29,7 +31,9 @@ public abstract class BrokerClient implements BrokerClientInterface {
      * @param message
      */
     protected void receive(String message) {
-        this.onIncomingBrokerMessage(message);
+    	if(message != null && !message.isEmpty()){
+    		 this.onIncomingBrokerMessage(message);
+    	}
     }
 
     /**

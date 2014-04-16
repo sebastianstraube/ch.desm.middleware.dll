@@ -1,5 +1,6 @@
 package ch.desm.middleware.modules.communication.message.translator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import ch.desm.middleware.modules.communication.message.MessageBase.EnumMessageTopic;
@@ -25,8 +26,8 @@ public class MessageTranslator extends MessageTranslatorBase {
 	 * @param message
 	 * 
 	 */
-	public MessageCommon translateMiddlewareMessageStreamToCommonMessageObject(String message, EnumMessageTopic topic){
-		return decodeMiddlewareMessage(message, topic);
+	public ArrayList<MessageCommon> translateMiddlewareMessageStreamToCommonMessageObject(String message, EnumMessageTopic topic){
+		return decodeMiddlewareMessages(message, topic);
 	}
 	
 	/**

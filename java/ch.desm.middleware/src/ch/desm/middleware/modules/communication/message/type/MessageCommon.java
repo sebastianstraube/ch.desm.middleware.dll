@@ -59,7 +59,7 @@ public class MessageCommon extends MessageBase {
 	public String toString() {
 		String s = super.toString();
 		s += ", ";
-		s += "nrMatrix: " + globalId;
+		s += "globalId: " + globalId;
 		s += ", ";
 		s += "process: " + process;
 		s += ", ";
