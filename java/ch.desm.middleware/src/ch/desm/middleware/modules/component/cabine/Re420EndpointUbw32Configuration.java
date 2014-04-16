@@ -10,15 +10,24 @@ public class Re420EndpointUbw32Configuration {
 
 	//TODO refactoring
 	public static final String PINBITMASK_CONFIGURATION_DIGITAL = "14784,199,65505,16383,64528,52939,64575";
-	public static final String PINBITMASK_INPUT_ANALOG = "11";
-	public static Map<EnumEndpointUbw32RegisterDigital, String> mapDigital;
-	public static Map<EnumEndpointUbw32RegisterAnalog, String> mapAnalog;
+	public static final String PINBITMASK_INPUT_ANALOG = "1";
+
+	private static Map<EnumEndpointUbw32RegisterDigital, String> mapDigital;
+	private static Map<EnumEndpointUbw32RegisterAnalog, String> mapAnalog;
 	
 	public Re420EndpointUbw32Configuration(){
 		mapDigital = new HashMap<EnumEndpointUbw32RegisterDigital, String>();
 		mapAnalog = new HashMap<EnumEndpointUbw32RegisterAnalog, String>();
 		
 		this.initializeDigital();
+	}
+	
+	public Map<EnumEndpointUbw32RegisterDigital, String> getMapInputDigital(){
+		return mapDigital;
+	}
+	
+	public Map<EnumEndpointUbw32RegisterAnalog, String> getMapInputAnalog(){
+		return mapAnalog;
 	}
 	
 	public boolean isKeyAvailable(String id){

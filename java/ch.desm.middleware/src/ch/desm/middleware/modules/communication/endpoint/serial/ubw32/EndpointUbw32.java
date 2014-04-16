@@ -48,7 +48,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	public static final String MESSAGE_TERMINATOR = "\n";
 	
 	protected String configurationDigital;
-	protected String pinbitMaskInputAnalog;
+	private String pinbitMaskInputAnalog;
 	private EndpointUbw32Polling polling;
 	boolean ignoreUbw32ControlMessages;
 
@@ -65,6 +65,10 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		this.configurationDigital = configurationDigital;
 		this.polling = new EndpointUbw32Polling(this);
 		this.initialize();
+	}
+	
+	public String getPinBitMaskInputAnalog(){
+		return this.pinbitMaskInputAnalog;
 	}
 
 	/**

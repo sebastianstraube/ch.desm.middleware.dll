@@ -50,7 +50,7 @@ public class MessageRouter {
 //		System.out.println(impl.getClass() + "> processBrokerMessage:" + message);
 
 		if (impl.getEndpoint().getConfiguration().isKeyAvailable(message.getGlobalId())) {
-			String register = impl.getEndpoint().getConfiguration().mapDigital
+			String register = impl.getEndpoint().getConfiguration().getMapInputDigital()
 					.get(message.getGlobalId());
 			String port = register.substring(0, 1);
 			String pin = register.substring(1, register.length());
@@ -77,7 +77,7 @@ public class MessageRouter {
 
 			System.out.println(impl.getClass() + ">processBrokerMessage:" + message);
 
-			String register = impl.getEndpoint().getConfiguration().mapDigital
+			String register = impl.getEndpoint().getConfiguration().getMapInputDigital()
 					.get(message.getGlobalId());
 			String port = register.substring(0, 1);
 			String pin = register.substring(1, register.length());

@@ -1,8 +1,5 @@
 package ch.desm.middleware.modules.component.interlocking;
 
-import java.util.Arrays;
-import java.util.List;
-
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
@@ -40,16 +37,5 @@ abstract class OMLBase extends ComponentBase {
 	 */
 	public void emulateBrokerMessage(String message) {
 		onIncomingBrokerMessage(message);
-	}
-	
-	@Override
-	public EnumComponentCategorie getType() {
-		return EnumComponentCategorie.INTERLOCKING;
-	}
-
-	@Override
-	public List<String> getRequiredTypes() {
-		return Arrays.asList(EnumComponentCategorie.SIMULATION.name(),
-				EnumComponentCategorie.CABINE.name());
 	}
 }

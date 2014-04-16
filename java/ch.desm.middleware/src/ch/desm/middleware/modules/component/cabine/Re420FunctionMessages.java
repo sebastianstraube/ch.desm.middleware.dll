@@ -6,12 +6,16 @@ import java.util.Map;
 public class Re420FunctionMessages {
 	public final static String PARAMETER_PLACEHOLDER = "\\?";
 	
-	public static Map<String, String> messages;
+	private static Map<String, String> messages;
 	
 	public Re420FunctionMessages(){
 		messages = new HashMap<String, String>();
 		
 		this.initialize();
+	}
+	
+	public Map<String, String> getMessages(){
+		return messages;
 	}
 	
 	private void initialize(){

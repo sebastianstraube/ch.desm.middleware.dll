@@ -19,8 +19,7 @@ public class OMLBaseImpl extends OMLBase implements
 
 	private OMLFunctionMessages functionMessages;
 
-	public OMLBaseImpl(Broker broker,
-			EndpointCommon communicationEndpointUbw32) {
+	public OMLBaseImpl(Broker broker, EndpointCommon communicationEndpointUbw32) {
 		super(broker, communicationEndpointUbw32);
 		// TODO Auto-generated constructor stub
 
@@ -28,12 +27,12 @@ public class OMLBaseImpl extends OMLBase implements
 	}
 
 	protected void onIncomingBrokerMessage(String message) {
-		System.out.println("received a broker message:" + message
-				+ " from component " + this.getClass());
+		System.out.println("broker (" + getEndpoint().getSerialPortName()
+				+ ") received message: " + message);
 
 		MessageTranslator translator = new MessageTranslator();
 		ArrayList<MessageCommon> messageCommon = translator
-				.translateMiddlewareMessageStreamToCommonMessageObject(message,
+				.translateToCommonMessageObjectList(message,
 						EnumMessageTopic.INTERLOCKING);
 
 		// TODO route and transmit to endpoint
@@ -47,8 +46,8 @@ public class OMLBaseImpl extends OMLBase implements
 	 * @param message
 	 */
 	public void onIncomingEndpointMessage(String message) {
-		System.out.println("received an endpoint message :\"" + message
-				+ " from endpoint " + this.getClass());
+		System.out.println("endpoint (" + getEndpoint().getSerialPortName()
+				+ ") received message: " + message);
 
 		MessageCommon messageCommon = null;
 
@@ -74,19 +73,16 @@ public class OMLBaseImpl extends OMLBase implements
 		// Digital messages
 		if (message.isDigital) {
 			for (Entry<EnumEndpointUbw32RegisterDigital, String> entry : this
-					.getEndpoint().getConfiguration().mapDigital.entrySet()) {
+					.getEndpoint().getConfiguration().getMapInputDigital()
+					.entrySet()) {
 
 				String stream = functionMessages.messages.get(entry.getValue());
 				if (message.getInputDigitalValue(entry.getKey())) {
-					stream = stream
-							.replaceAll(
-									OMLFunctionMessages.PARAMETER_PLACEHOLDER,
-									"on");
+					stream = stream.replaceAll(
+							OMLFunctionMessages.PARAMETER_PLACEHOLDER, "on");
 				} else {
-					stream = stream
-							.replaceAll(
-									OMLFunctionMessages.PARAMETER_PLACEHOLDER,
-									"off");
+					stream = stream.replaceAll(
+							OMLFunctionMessages.PARAMETER_PLACEHOLDER, "off");
 				}
 
 				middlewareMessagesInput = middlewareMessagesInput
@@ -97,7 +93,8 @@ public class OMLBaseImpl extends OMLBase implements
 		} else {
 
 			for (Entry<EnumEndpointUbw32RegisterAnalog, String> entry : this
-					.getEndpoint().getConfiguration().mapAnalog.entrySet()) {
+					.getEndpoint().getConfiguration().getMapInputAnalog()
+					.entrySet()) {
 
 				String stream = functionMessages.messages.get(entry.getValue());
 				int analogValue = Integer.parseInt(message
@@ -111,12 +108,10 @@ public class OMLBaseImpl extends OMLBase implements
 				// then set message stream parameter on else off
 				if (entry.getValue().equals(globalId)) {
 					stream.replaceAll(
-							OMLFunctionMessages.PARAMETER_PLACEHOLDER,
-							"on");
+							OMLFunctionMessages.PARAMETER_PLACEHOLDER, "on");
 				} else {
 					stream.replaceAll(
-							OMLFunctionMessages.PARAMETER_PLACEHOLDER,
-							"off");
+							OMLFunctionMessages.PARAMETER_PLACEHOLDER, "off");
 				}
 
 				middlewareMessagesInput = middlewareMessagesInput

@@ -1,8 +1,5 @@
 package ch.desm.middleware.modules.component.cabine;
 
-import java.util.Arrays;
-import java.util.List;
-
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.component.ComponentBase;
@@ -40,14 +37,5 @@ abstract class Re420Base extends ComponentBase {
 	 */
 	public void emulateBrokerMessage(String message) {
 		onIncomingBrokerMessage(message);
-	}
-	
-	public EnumComponentCategorie getType() {
-		return EnumComponentCategorie.CABINE;
-	}
-
-	public List<String> getRequiredTypes() {
-		return Arrays.asList(EnumComponentCategorie.INTERLOCKING.name(),
-				EnumComponentCategorie.SIMULATION.name());
 	}
 }

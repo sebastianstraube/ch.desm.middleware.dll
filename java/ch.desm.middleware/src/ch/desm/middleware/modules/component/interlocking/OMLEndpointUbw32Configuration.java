@@ -11,14 +11,23 @@ public class OMLEndpointUbw32Configuration {
 	//TODO refactoring
 	public static final String PINBITMASK_CONFIGURATION_DIGITAL = "14784,199,65505,16383,64528,52939,64575";
 	public static final String PINBITMASK_INPUT_ANALOG = "11";
-	public static Map<EnumEndpointUbw32RegisterDigital, String> mapDigital;
-	public static Map<EnumEndpointUbw32RegisterAnalog, String> mapAnalog;
+	
+	private static Map<EnumEndpointUbw32RegisterDigital, String> mapDigital;
+	private static Map<EnumEndpointUbw32RegisterAnalog, String> mapAnalog;
 	
 	public OMLEndpointUbw32Configuration(){
 		mapDigital = new HashMap<EnumEndpointUbw32RegisterDigital, String>();
 		mapAnalog = new HashMap<EnumEndpointUbw32RegisterAnalog, String>();
 		
 		this.initializeDigital();
+	}
+	
+	public Map<EnumEndpointUbw32RegisterDigital, String> getMapInputDigital(){
+		return mapDigital;
+	}
+	
+	public Map<EnumEndpointUbw32RegisterAnalog, String> getMapInputAnalog(){
+		return mapAnalog;
 	}
 	
 	public boolean isKeyAvailable(String id){
@@ -117,9 +126,9 @@ public class OMLEndpointUbw32Configuration {
 						if(value > 637 && value < 654){globalId = "8.91.22";} else //FSS 80° EG
 						if(value > 667 && value < 682){globalId = "8.91.23";} else //FSS 90° EG 
 						{
-							System.out.println("the register " + register + " has no mapped value: " + value);
+							System.out.println("the register " + register.name() + " has no mapped value: " + value);
 						}
-			default: System.err.println("no mapping defined for analog register:" + register);
+			default: System.err.println("no mapping defined for analog register:" + register.name());
 		}
 		
 		return globalId;

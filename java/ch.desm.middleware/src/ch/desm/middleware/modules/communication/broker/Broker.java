@@ -3,8 +3,6 @@ package ch.desm.middleware.modules.communication.broker;
 import java.util.HashSet;
 import java.util.Set;
 
-import ch.desm.middleware.modules.communication.message.type.MessageCommon;
-
 public class Broker {
 		
 	/**

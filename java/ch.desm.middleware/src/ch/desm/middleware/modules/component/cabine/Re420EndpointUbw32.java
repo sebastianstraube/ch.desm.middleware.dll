@@ -7,7 +7,7 @@ public class Re420EndpointUbw32 extends EndpointUbw32 {
 	protected Re420EndpointUbw32Configuration configuration;
 	
 	public Re420EndpointUbw32(EnumSerialPorts enumSerialPort) {		
-		super(enumSerialPort, Re420EndpointUbw32Configuration.PINBITMASK_CONFIGURATION_DIGITAL, "");
+		super(enumSerialPort, Re420EndpointUbw32Configuration.PINBITMASK_CONFIGURATION_DIGITAL, Re420EndpointUbw32Configuration.PINBITMASK_INPUT_ANALOG);
 		
 		configuration = new Re420EndpointUbw32Configuration();
 	}

@@ -17,6 +17,10 @@ public abstract class ComponentBase extends BrokerClient
 	abstract public void emulateBrokerMessage(String message);	
 	private static double id = 0;
 
+	private void initialize(){
+		id++;
+	}
+	
 	public static enum EnumComponentCategorie {
 		SIMULATION, INTERLOCKING, CABINE, CORBA
 	}
@@ -26,10 +30,6 @@ public abstract class ComponentBase extends BrokerClient
 		this.initialize();
 	}
 	
-	private void initialize(){
-		id++;
-	}
-
 	public double getId() {
 		return id;
 	}
