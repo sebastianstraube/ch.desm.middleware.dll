@@ -69,8 +69,8 @@ namespace desm {
 			}
 
 			static jobject newArrayList(JNIEnv* env) {
-				jclass cls = env->FindClass("java/lang/Double");
-				jmethodID methodId = env->GetMethodID(cls, "<init>", "(V)V");
+				jclass cls = env->FindClass("java/util/ArrayList");
+				jmethodID methodId = env->GetMethodID(cls, "<init>", "()V");
 				return env->NewObject(cls, methodId);
 			}
 		}
