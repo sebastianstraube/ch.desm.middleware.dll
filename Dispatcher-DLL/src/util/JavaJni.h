@@ -32,6 +32,47 @@ namespace desm {
 				}
 			}
 
+			static void addObjectToArrayList(JNIEnv* env, jobject al, jobject val) {
+				jclass clazz = env->GetObjectClass(al);
+				jmethodID methodId = env->GetMethodID(clazz, "add", "(Ljava/lang/Object;)Z");
+				if(!methodId) {
+					return;
+				}
+				env->CallObjectMethod(al, methodId, val);
+			}
+
+			template<class T> static void addToArrayList(JNIEnv* env, jobject al, T val);
+
+			template<> static void addToArrayList(JNIEnv* env, jobject al, int val) {
+				jclass cls = env->FindClass("java/lang/Integer");
+				jmethodID methodId = env->GetMethodID(cls, "<init>", "(I)V");
+				jobject valObj = env->NewObject(cls, methodId, val);
+				addObjectToArrayList(env, al, valObj);
+			}
+
+			template<> static void addToArrayList(JNIEnv* env, jobject al, float val) {
+				jclass cls = env->FindClass("java/lang/Float");
+				jmethodID methodId = env->GetMethodID(cls, "<init>", "(F)V");
+				jobject valObj = env->NewObject(cls, methodId, val);
+				addObjectToArrayList(env, al, valObj);
+			}
+
+			template<> static void addToArrayList(JNIEnv* env, jobject al, double val) {
+				jclass cls = env->FindClass("java/lang/Double");
+				jmethodID methodId = env->GetMethodID(cls, "<init>", "(D)V");
+				jobject valObj = env->NewObject(cls, methodId, val);
+				addObjectToArrayList(env, al, valObj);
+			}
+			template<> static void addToArrayList(JNIEnv* env, jobject al, std::string val) {
+				jstring valObj = env->NewStringUTF(val.c_str());
+				addObjectToArrayList(env, al, valObj);
+			}
+
+			static jobject newArrayList(JNIEnv* env) {
+				jclass cls = env->FindClass("java/lang/Double");
+				jmethodID methodId = env->GetMethodID(cls, "<init>", "(V)V");
+				return env->NewObject(cls, methodId);
+			}
 		}
 	}
 };

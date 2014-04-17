@@ -46,4 +46,25 @@ extern "C" {
 
 		return desm::ERROR_OK;
 	}
+	
+	JNIEXPORT void JNICALL Java_ch_desm_Dll_getEvents0(JNIEnv* env, jobject obj, jobject al)
+	{
+		std::vector<int> types;
+		std::vector<std::vector<int>> params;
+		desm::Middleware::get().getEvents(types, params);
+
+		if(types.size() != params.size()) {
+			desm::util::jni::throwExceptionWithMessage(env, "malformed events received");
+		}
+
+		for(size_t i = 0;  i < types.size(); ++i) {
+			jobject alEvt = desm::util::jni::newArrayList(env);
+			desm::util::jni::addToArrayList<int>(env, alEvt, types[i]);
+			const std::vector<int>& evtParams = params[i];
+			for(size_t j = 0;  j < evtParams.size(); ++j) {
+				desm::util::jni::addToArrayList<int>(env, alEvt, evtParams[j]);
+			}
+			desm::util::jni::addObjectToArrayList(env, al, alEvt);
+		}
+	}
 };
