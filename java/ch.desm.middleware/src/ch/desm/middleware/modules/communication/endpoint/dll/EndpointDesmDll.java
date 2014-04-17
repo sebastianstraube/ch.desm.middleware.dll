@@ -28,21 +28,28 @@ public abstract class EndpointDesmDll extends EndpointCommon {
 
     private void loop() {
         while(true) {
-            ArrayList<Integer> events = null;
+            ArrayList<Dll.Event> events = null;
             try {
-                events = new ArrayList<Integer>();
-                //dll.getEvents(events);
+                events = dll.getEvents();
             } catch (Exception e) {
                 e.printStackTrace();
+                continue;
             }
-            for(Integer eventType : events) {
+
+            for(Dll.Event event : events) {
+                ArrayList<Integer> params = event.params;
                 try {
-                    switch (eventType) {
-                        case 10: // TODO: where do we get the event types from?
-                            int richtung = dll.getKilometerDirection();
-                            for(EndpointCommonListenerInterface listener : listeners) {
-                                //((EndpointDesmDllListenerInterface)listener).onKilometerDirection()
-                            }
+                    switch (event.type) {
+                        case Dll.ENUM_CMD_TRACK:
+                            int gleisId = params.get(0);
+                            Dll.Track track = dll.getTrack(gleisId);
+                            // TODO: do something with track...
+                            break;
+                        case Dll.ENUM_CMD_TRACK_CONNECTION:
+                            int gleis1Id = params.get(0);
+                            int gleis2Id = params.get(1);
+                            Dll.TrackConnection trackConnection = dll.getTrackConnection(gleis1Id, gleis2Id);
+                            // TODO: do something with track connection...
                             break;
                     }
                 } catch (Exception e) {
