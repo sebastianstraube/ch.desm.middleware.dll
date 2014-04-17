@@ -6,15 +6,19 @@ import ch.desm.Dll;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommonListenerInterface;
 
-public abstract class EndpointDesmDll extends EndpointCommon {
+public class EndpointDesmDll extends EndpointCommon {
 
     private Dll dll;
 
     public EndpointDesmDll() {
         dll = new Dll();
-        dll.onStartProgramm("locsim.json");
+        dll.onStartProgramm("C:\\svn.it-hotspot.de\\Projekte\\DESM\\Simulationskomponenten\\ch.desm.middleware\\Dispatcher-DLL\\Debug\\locsim.json");
     }
 
+    public Dll getDll(){
+    	return dll;
+    }
+    
 	@Override
 	public void addEndpointListener(EndpointCommonListenerInterface listener) throws Exception {
 		

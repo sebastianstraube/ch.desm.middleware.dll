@@ -3,12 +3,12 @@ package ch.desm.middleware.modules.component.interlocking;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OMLFunctionMessages {
+public class OMLMessages {
 	public final static String PARAMETER_PLACEHOLDER = "\\?";
 	
 	public static Map<String, String> messages;
 	
-	public OMLFunctionMessages(){
+	public OMLMessages(){
 		messages = new HashMap<String, String>();
 		
 		this.initialize();
