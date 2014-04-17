@@ -25,12 +25,12 @@ extern "C" {
 		return desm::ERROR_OK;
 	}
 
-	JNIEXPORT jint JNICALL Java_ch_desm_Dll_getKilometerDirection(JNIEnv* env, jobject obj)
+	JNIEXPORT void JNICALL Java_ch_desm_Dll_getKilometerDirection0(JNIEnv* env, jobject obj, jobject al)
 	{
 		int richtung;
 		int rc = stw_getKilometerDirection(&richtung);
 		desm::util::jni::checkReturnCode(env, rc);
-		return richtung;
+		desm::util::jni::addToArrayList<int>(env, al, richtung);
 	}
 
 };

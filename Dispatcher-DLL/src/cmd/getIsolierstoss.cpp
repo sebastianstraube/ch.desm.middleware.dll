@@ -25,4 +25,15 @@ extern "C" {
 
 		return desm::ERROR_OK;
 	}
+	
+	JNIEXPORT void JNICALL Java_ch_desm_Dll_getIsolierstoss0(JNIEnv* env, jobject obj, jint isolierstossId, jobject al)
+	{
+		int gleisId;
+		double position;
+		int rc = stw_getIsolierstoss(isolierstossId, &gleisId, &position);
+		desm::util::jni::checkReturnCode(env, rc);
+		desm::util::jni::addToArrayList<int>(env, al, gleisId);
+		desm::util::jni::addToArrayList<double>(env, al, position);
+	}
+
 };

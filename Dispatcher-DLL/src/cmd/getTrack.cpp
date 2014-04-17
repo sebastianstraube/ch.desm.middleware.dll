@@ -29,4 +29,20 @@ extern "C" {
 
 		return desm::ERROR_OK;
 	}
+
+	JNIEXPORT void JNICALL Java_ch_desm_Dll_getTrack0(JNIEnv* env, jobject obj, jint gleisId, jobject al)
+	{
+		double von;
+		double bis;
+		double abstand;
+		char name[1024];
+		int nameLen;
+		int rc = stw_getTrack(gleisId, &von, &bis, &abstand, &name[0], 1024, &nameLen);
+		desm::util::jni::checkReturnCode(env, rc);
+		desm::util::jni::addToArrayList<double>(env, al, von);
+		desm::util::jni::addToArrayList<double>(env, al, bis);
+		desm::util::jni::addToArrayList<double>(env, al, abstand);
+		desm::util::jni::addToArrayList<std::string>(env, al, std::string(name));
+	}
+
 };
