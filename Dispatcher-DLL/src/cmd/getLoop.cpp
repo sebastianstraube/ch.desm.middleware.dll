@@ -26,4 +26,16 @@ extern "C" {
 
 		return desm::ERROR_OK;
 	}
+
+	JNIEXPORT void JNICALL Java_ch_desm_Dll_getLoop0(JNIEnv* env, jobject obj, jint baliseId, jobject al)
+	{
+		int stellung;
+		char protokoll[1024];
+		int protokollLen;
+		int rc = stw_getLoop(baliseId, &stellung, &protokoll[0], 1024, &protokollLen);
+		desm::util::jni::checkReturnCode(env, rc);
+		desm::util::jni::addToArrayList<int>(env, al, stellung);
+		desm::util::jni::addToArrayList<std::string>(env, al, std::string(protokoll));
+	}
+
 };

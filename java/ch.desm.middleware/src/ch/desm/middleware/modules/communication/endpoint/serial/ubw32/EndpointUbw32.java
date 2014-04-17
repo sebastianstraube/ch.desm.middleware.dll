@@ -46,6 +46,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	public static final String RETURN_PIN_INPUT = "PI";
 	public static final String RETURN_INPUT_ANALOG = "IA";
 	public static final String MESSAGE_TERMINATOR = "\n";
+	public static final int UBW32_POLLING_WAIT = 500;
 	
 	protected String configurationDigital;
 	private String pinbitMaskInputAnalog;
@@ -63,7 +64,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		this.ignoreUbw32ControlMessages = false;
 		this.pinbitMaskInputAnalog = pinbitMaskInputAnalog;
 		this.configurationDigital = configurationDigital;
-		this.polling = new EndpointUbw32Polling(this);
+		this.polling = new EndpointUbw32Polling(this, UBW32_POLLING_WAIT);
 		this.initialize();
 	}
 	
@@ -75,7 +76,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	 * do work to initialze the controller on constructor call
 	 */
 	private void initialize() {
-//		this.sendCommandConfigureUbw32(); // disable OK return packet
+		this.sendCommandConfigureUbw32(); // disable OK return packet
 		this.sendCommandVersion();
 		this.sendCommandConfigure(configurationDigital);
 		this.sendCommandConfigureAnalogInputs(pinbitMaskInputAnalog);

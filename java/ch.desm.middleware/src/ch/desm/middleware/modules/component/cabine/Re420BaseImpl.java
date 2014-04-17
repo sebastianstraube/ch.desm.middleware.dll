@@ -12,18 +12,18 @@ import ch.desm.middleware.modules.communication.message.router.MessageRouter;
 import ch.desm.middleware.modules.communication.message.translator.MessageTranslator;
 import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
-import ch.desm.middleware.modules.component.interlocking.OMLFunctionMessages;
+import ch.desm.middleware.modules.component.interlocking.OMLMessages;
 
 public class Re420BaseImpl extends Re420Base implements
 		EndpointUbw32ListenerInterface {
 
-	private Re420FunctionMessages functionMessages;
+	private Re420Messages functionMessages;
 
 	public Re420BaseImpl(Broker broker, Re420EndpointUbw32 communicationEndpoint) {
 		super(broker, communicationEndpoint);
 		// TODO Auto-generated constructor stub
 
-		this.functionMessages = new Re420FunctionMessages();
+		this.functionMessages = new Re420Messages();
 	}
 
 	/**
@@ -92,12 +92,12 @@ public class Re420BaseImpl extends Re420Base implements
 				if (message.getInputDigitalValue(entry.getValue())) {
 					stream = stream
 							.replaceAll(
-									OMLFunctionMessages.PARAMETER_PLACEHOLDER,
+									OMLMessages.PARAMETER_PLACEHOLDER,
 									"on");
 				} else {
 					stream = stream
 							.replaceAll(
-									OMLFunctionMessages.PARAMETER_PLACEHOLDER,
+									OMLMessages.PARAMETER_PLACEHOLDER,
 									"off");
 				}
 
@@ -123,11 +123,11 @@ public class Re420BaseImpl extends Re420Base implements
 				// then set message stream parameter on else off
 				if (entry.getValue().equals(globalId)) {
 					stream.replaceAll(
-							OMLFunctionMessages.PARAMETER_PLACEHOLDER,
+							OMLMessages.PARAMETER_PLACEHOLDER,
 							"on");
 				} else {
 					stream.replaceAll(
-							OMLFunctionMessages.PARAMETER_PLACEHOLDER,
+							OMLMessages.PARAMETER_PLACEHOLDER,
 							"off");
 				}
 

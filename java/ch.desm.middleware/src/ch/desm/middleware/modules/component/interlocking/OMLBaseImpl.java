@@ -17,13 +17,13 @@ import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
 public class OMLBaseImpl extends OMLBase implements
 		EndpointUbw32ListenerInterface {
 
-	private OMLFunctionMessages functionMessages;
+	private OMLMessages functionMessages;
 
 	public OMLBaseImpl(Broker broker, EndpointCommon communicationEndpointUbw32) {
 		super(broker, communicationEndpointUbw32);
 		// TODO Auto-generated constructor stub
 
-		this.functionMessages = new OMLFunctionMessages();
+		this.functionMessages = new OMLMessages();
 	}
 
 	protected void onIncomingBrokerMessage(String message) {
@@ -77,10 +77,10 @@ public class OMLBaseImpl extends OMLBase implements
 				String stream = functionMessages.messages.get(entry.getKey());
 				if (message.getInputDigitalValue(entry.getValue())) {
 					stream = stream.replaceAll(
-							OMLFunctionMessages.PARAMETER_PLACEHOLDER, "on");
+							OMLMessages.PARAMETER_PLACEHOLDER, "on");
 				} else {
 					stream = stream.replaceAll(
-							OMLFunctionMessages.PARAMETER_PLACEHOLDER, "off");
+							OMLMessages.PARAMETER_PLACEHOLDER, "off");
 				}
 
 				middlewareMessagesInput = middlewareMessagesInput
@@ -106,10 +106,10 @@ public class OMLBaseImpl extends OMLBase implements
 				// then set message stream parameter on else off
 				if (entry.getValue().equals(globalId)) {
 					stream.replaceAll(
-							OMLFunctionMessages.PARAMETER_PLACEHOLDER, "on");
+							OMLMessages.PARAMETER_PLACEHOLDER, "on");
 				} else {
 					stream.replaceAll(
-							OMLFunctionMessages.PARAMETER_PLACEHOLDER, "off");
+							OMLMessages.PARAMETER_PLACEHOLDER, "off");
 				}
 
 				middlewareMessagesInput = middlewareMessagesInput

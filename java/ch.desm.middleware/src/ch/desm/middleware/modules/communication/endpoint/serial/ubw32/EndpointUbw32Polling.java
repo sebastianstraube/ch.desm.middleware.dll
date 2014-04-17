@@ -11,7 +11,7 @@ class EndpointUbw32Polling extends DaemonThread {
 
 	private EndpointUbw32 endpoint;
 
-	EndpointUbw32Polling(EndpointUbw32 endpoint) {
+	EndpointUbw32Polling(EndpointUbw32 endpoint, int waitTimeMs) {
 		super("EndpointUbw32Polling (" + endpoint.getSerialPortName()+")");
 		this.endpoint = endpoint;
 	}
@@ -28,7 +28,7 @@ class EndpointUbw32Polling extends DaemonThread {
 				endpoint.sendCommandInputState();
 				endpoint.sendCommandInputAnalog(endpoint.getPinBitMaskInputAnalog());
 				
-				Thread.sleep(1000);
+				Thread.sleep(10);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

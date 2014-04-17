@@ -26,4 +26,16 @@ extern "C" {
 
 		return desm::ERROR_OK;
 	}
+
+	JNIEXPORT void JNICALL Java_ch_desm_Dll_getSignal0(JNIEnv* env, jobject obj, jint signalId, jobject al)
+	{
+		char name[1024];
+		int nameLen;
+		int stellung;
+		int rc = stw_getSignal(signalId, &name[0], 1024, &nameLen, &stellung);
+		desm::util::jni::checkReturnCode(env, rc);
+		desm::util::jni::addToArrayList<std::string>(env, al, std::string(name));
+		desm::util::jni::addToArrayList<int>(env, al, stellung);
+	}
+
 };

@@ -3,12 +3,12 @@ package ch.desm.middleware.modules.component.cabine;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Re420FunctionMessages {
+public class Re420Messages {
 	public final static String PARAMETER_PLACEHOLDER = "\\?";
 	
 	private static Map<String, String> messages;
 	
-	public Re420FunctionMessages(){
+	public Re420Messages(){
 		messages = new HashMap<String, String>();
 		
 		this.initialize();

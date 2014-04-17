@@ -9,6 +9,7 @@
 #include "util/String.h"
 
 extern "C" {
+	// TODO: is param order really correct?
 	__declspec(dllexport) int stw_getTrackConnection(int* gleisBasisId, int gleis1Id, int gleis2Id,
 		double* von, double* bis, char* nameBuf, int nameBufLen, int* nameStrLen, int* weiche1Id, int* weiche2Id)
 	{
@@ -35,4 +36,24 @@ extern "C" {
 
 		return desm::ERROR_OK;
 	}
+	
+	JNIEXPORT void JNICALL Java_ch_desm_Dll_getTrackConnection0(JNIEnv* env, jobject obj, jint gleis1Id, jint gleis2Id, jobject al)
+	{
+		int gleisBasisId;
+		double von;
+		double bis;
+		char name[1024];
+		int nameLen;
+		int weiche1Id;
+		int weiche2Id;
+		int rc = stw_getTrackConnection(&gleisBasisId, gleis1Id, gleis2Id, &von, &bis, &name[0], 1024, &nameLen, &weiche1Id, &weiche2Id);
+		desm::util::jni::checkReturnCode(env, rc);
+		desm::util::jni::addToArrayList<double>(env, al, gleisBasisId);
+		desm::util::jni::addToArrayList<double>(env, al, von);
+		desm::util::jni::addToArrayList<double>(env, al, bis);
+		desm::util::jni::addToArrayList<std::string>(env, al, std::string(name));
+		desm::util::jni::addToArrayList<int>(env, al, weiche1Id);
+		desm::util::jni::addToArrayList<int>(env, al, weiche2Id);
+	}
+
 };

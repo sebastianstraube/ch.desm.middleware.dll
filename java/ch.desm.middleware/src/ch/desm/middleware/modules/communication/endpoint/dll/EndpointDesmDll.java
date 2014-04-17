@@ -6,15 +6,19 @@ import ch.desm.Dll;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommonListenerInterface;
 
-public abstract class EndpointDesmDll extends EndpointCommon {
+public class EndpointDesmDll extends EndpointCommon {
 
     private Dll dll;
 
     public EndpointDesmDll() {
         dll = new Dll();
-        dll.onStartProgramm("locsim.json");
+        dll.onStartProgramm("C:\\svn.it-hotspot.de\\Projekte\\DESM\\Simulationskomponenten\\ch.desm.middleware\\Dispatcher-DLL\\Debug\\locsim.json");
     }
 
+    public Dll getDll(){
+    	return dll;
+    }
+    
 	@Override
 	public void addEndpointListener(EndpointCommonListenerInterface listener) throws Exception {
 		
@@ -28,16 +32,32 @@ public abstract class EndpointDesmDll extends EndpointCommon {
 
     private void loop() {
         while(true) {
-            ArrayList<Integer> events = new ArrayList<Integer>();
-            //dll.getEvents(events);
-            for(Integer eventType : events) {
-                switch (eventType) {
-                    case 10: // TODO: where do we get the event types from?
-                        int richtung = dll.getKilometerDirection();
-                        for(EndpointCommonListenerInterface listener : listeners) {
-                            //((EndpointDesmDllListenerInterface)listener).onKilometerDirection()
-                        }
-                        break;
+            ArrayList<Dll.Event> events = null;
+            try {
+                events = dll.getEvents();
+            } catch (Exception e) {
+                e.printStackTrace();
+                continue;
+            }
+
+            for(Dll.Event event : events) {
+                ArrayList<Integer> params = event.params;
+                try {
+                    switch (event.type) {
+                        case Dll.ENUM_CMD_TRACK:
+                            int gleisId = params.get(0);
+                            Dll.Track track = dll.getTrack(gleisId);
+                            // TODO: do something with track...
+                            break;
+                        case Dll.ENUM_CMD_TRACK_CONNECTION:
+                            int gleis1Id = params.get(0);
+                            int gleis2Id = params.get(1);
+                            Dll.TrackConnection trackConnection = dll.getTrackConnection(gleis1Id, gleis2Id);
+                            // TODO: do something with track connection...
+                            break;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }
