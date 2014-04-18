@@ -27,11 +27,31 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 		this.initializeSerialPorts();
 		this.getSerialPortName();
 	}
+	
 
 	/**
 	 * 
 	 */
-	private void initializeSerialPorts() {
+	public void testSeriaPort() {
+		try {
+			serialPort.writeString("Write Test to Serialport ..."
+					+ serialPort.getPortName() + "\r\n");
+		} catch (SerialPortException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public String getSerialPortName() {
+		return serialPort.getPortName();
+	}
+
+	/**
+	 * 
+	 */
+	protected void initializeSerialPorts() {
 		System.out.print("intialize serial port:" + serialPort.getPortName());
 
 		try {
@@ -55,13 +75,6 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	/**
 	 * 
 	 */
-	public String getSerialPortName() {
-		return serialPort.getPortName();
-	}
-
-	/**
-	 * 
-	 */
 	public void disconnectSerialPorts() {
 		System.out.print("disconnecting all opened serial ports...");
 
@@ -78,35 +91,21 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	}
 
 	/**
+	 * sending a stream to serial port
 	 * 
-	 */
-	public void testSeriaPort() {
-		try {
-			serialPort.writeString("Write Test to Serialport ..."
-					+ serialPort.getPortName() + "\r\n");
-		} catch (SerialPortException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * sending a message to serial port
-	 * 
-	 * TODO refactoring the messages will be concatenated with the terminator CR
-	 * 
-	 * @param command
+	 * @param stream
 	 * @throws SerialPortException 
 	 */
-	protected void sendCommand(String command) throws SerialPortException {
+	protected void sendStream(String stream) throws SerialPortException {
 		boolean isSendOk = false;
 
-		isSendOk = serialPort.writeString(command);
+		isSendOk = serialPort.writeString(stream);
 
 		if (isSendOk) {
-			System.out.println(serialPort.getPortName() + " send stream: " + command);
+			System.out.println(serialPort.getPortName() + " send stream: " + stream);
 		}else{
 			try {
-				throw new Exception(serialPort.getPortName() + " failed send stream: " + command);
+				throw new Exception(serialPort.getPortName() + " failed send stream: " + stream);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -118,10 +117,6 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	@Override
 	/**
 	 * this listener receives a command from UBW32
-	 * 
-	 * TODO refactoring:
-	 * the command will be sended when there is
-	 * no "!" and no "OK" character sequence
 	 * 
 	 * @param SerialPortEvent event
 	 */
@@ -147,7 +142,7 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 						}
 					}
 				} catch (SerialPortException ex) {
-					System.out.println(ex);
+					ex.printStackTrace();
 				}
 			}
 		}
@@ -156,15 +151,15 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 		// event.getEventValue() returns 1 if the line is ON and 0 if it is OFF.
 		else if (event.isCTS()) {
 			if (event.getEventValue() == 1) {
-				System.out.println("CTS - ON");
+				System.out.println(this.serialPort.getClass() + ": CTS - ON");
 			} else {
-				System.out.println("CTS - OFF");
+				System.out.println(this.serialPort.getClass() + ":CTS - OFF");
 			}
 		} else if (event.isDSR()) {
 			if (event.getEventValue() == 1) {
-				System.out.println("DSR - ON");
+				System.out.println(this.serialPort.getClass() + ":DSR - ON");
 			} else {
-				System.out.println("DSR - OFF");
+				System.out.println(this.serialPort.getClass() + ":DSR - OFF");
 			}
 		}
 	

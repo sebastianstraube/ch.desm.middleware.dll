@@ -121,12 +121,12 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	/**
 	 * TODO refactoring sleep
 	 */
-	protected void sendCommand(String command) {
+	protected void sendStream(String command) {
 		try {
 			
 			Thread.sleep(50);
 			command += EndpointUbw32.MESSAGE_TERMINATOR;
-			super.sendCommand(command);
+			super.sendStream(command);
 
 		} catch (SerialPortException e) {
 			// TODO Auto-generated catch block
@@ -163,7 +163,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += ",";
 		command += iterations;
 
-		sendCommand(command);
+		sendStream(command);
 	}
 
 	/**
@@ -182,7 +182,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += ",";
 		command += configuration;
 
-		this.sendCommand(command);
+		this.sendStream(command);
 	}
 
 	/**
@@ -204,7 +204,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += ",";
 		command += configuration;
 
-		this.sendCommand(command);
+		this.sendStream(command);
 	}
 
 	/**
@@ -225,7 +225,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	public void sendCommandInputState() {
 		String command = "I";
 
-		this.sendCommand(command);
+		this.sendStream(command);
 	}
 
 	/**
@@ -239,7 +239,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	public void sendCommandVersion() {
 		String command = "V";
 
-		sendCommand(command);
+		sendStream(command);
 	}
 
 	/**
@@ -252,7 +252,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	public void sendCommandReset() {
 		String command = "R";
 
-		sendCommand(command);
+		sendStream(command);
 	}
 
 	/**
@@ -279,7 +279,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += ",";
 		command += direction;
 
-		sendCommand(command);
+		sendStream(command);
 	}
 
 	/**
@@ -300,7 +300,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += ",";
 		command += pin;
 
-		this.sendCommand(command);
+		this.sendStream(command);
 	}
 
 	/**
@@ -322,7 +322,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += ",";
 		command += value;
 
-		this.sendCommand(command);
+		this.sendStream(command);
 	}
 
 	/**
@@ -340,7 +340,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += ",";
 		command += dutyCycle;
 
-		this.sendCommand(command);
+		this.sendStream(command);
 	}
 
 	/**
@@ -367,7 +367,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += ",";
 		command += dutyCycle;
 
-		this.sendCommand(command);
+		this.sendStream(command);
 	}
 
 	/**
@@ -424,7 +424,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += ",";
 		command += pinBitmask;
 
-		this.sendCommand(command);
+		this.sendStream(command);
 	}
 
 	/**
@@ -467,7 +467,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += ",";
 		command += count;
 
-		this.sendCommand(command);
+		this.sendStream(command);
 	}
 
 	public void sendCommandConfigureUbw32() {
@@ -480,6 +480,6 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		command += ",";
 		command += value;
 
-		this.sendCommand(command);
+		this.sendStream(command);
 	}
 }

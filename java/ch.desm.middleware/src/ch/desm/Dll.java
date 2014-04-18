@@ -108,6 +108,16 @@ public class Dll {
             this.weicheId = weicheId;
             this.gleisId = gleisId;
         }
+        
+        @Override
+        public String toString(){
+        	String s = "";
+        	s+="weicheId: " + weicheId;
+        	s+=", ";
+        	s+="gleisId:" + gleisId;
+        	
+        	return s;
+        }
     }
     public native void setWeiche(int weicheId, int gleisId);
     private native void getWeiche0(int weicheId, ArrayList res);
@@ -128,6 +138,18 @@ public class Dll {
             this.baliseId = baliseId;
             this.stellung = stellung;
             this.protokoll = protokoll;
+        }
+        
+        @Override
+        public String toString(){
+        	String s = "";
+        	s+="baliseId: " + baliseId;
+        	s+=", ";
+        	s+="stellung: " + stellung;
+        	s+=", ";
+        	s+="protokoll: " + protokoll;
+        	
+        	return s;
         }
     }
     public native void setBalise(int baliseId, int stellung, String protokoll);
@@ -150,6 +172,18 @@ public class Dll {
             this.gleisid = gleisid;
             this.position = position;
         }
+        
+        @Override
+        public String toString(){
+        	String s = "";
+        	s+="isolierstossId: " + isolierstossId;
+        	s+=", ";
+        	s+="gleisid: " + gleisid;
+        	s+=", ";
+        	s+="position: " + position;
+        	
+        	return s;
+        }
     }
     public native void setIsolierstoss(int isolierstossId, int gleisId, double position);
     private native void getIsolierstoss0(int isolierstossId, ArrayList res);
@@ -171,6 +205,18 @@ public class Dll {
             this.stellung = stellung;
             this.protokoll = protokoll;
         }
+        
+        @Override
+        public String toString(){
+        	String s = "";
+        	s+="baliseId: " + baliseId;
+        	s+=", ";
+        	s+="stellung: " + stellung;
+        	s+=", ";
+        	s+="protokoll: " + protokoll;
+        	
+        	return s;
+        }
     }
     public native void setLoop(int baliseId, int stellung, String protokoll);
     private native void getLoop0(int baliseId, ArrayList res);
@@ -191,6 +237,18 @@ public class Dll {
             this.signalId = signalId;
             this.name = name;
             this.stellung = stellung;
+        }
+        
+        @Override
+        public String toString(){
+        	String s = "";
+        	s+="signalId: " + signalId;
+        	s+=", ";
+        	s+="name: " + name;
+        	s+=", ";
+        	s+="stellung: " + stellung;
+        	
+        	return s;
         }
     }
     // TODO: public native void setSignal(int baliseId, int stellung, String protokoll);
@@ -216,6 +274,22 @@ public class Dll {
             this.bis = bis;
             this.abstand = abstand;
             this.name = name;
+        }
+        
+        @Override
+        public String toString(){
+        	String s = "";
+        	s+="gleisId: " + gleisId;
+        	s+=", ";
+        	s+="von: " + von;
+        	s+=", ";
+        	s+="bis: " + bis;
+        	s+=", ";
+        	s+="abstand: " + abstand;
+        	s+=", ";
+        	s+="abstand: " + abstand;
+        	
+        	return s;
         }
     }
     // TODO: public native void setTrack(int baliseId, int stellung, String protokoll);
@@ -246,6 +320,26 @@ public class Dll {
             this.weiche1Id = weiche1Id;
             this.weiche2Id = weiche2Id;
         }
+        
+        @Override
+        public String toString(){
+        	String s = "";
+        	s+="gleis1Id: " + gleis1Id;
+        	s+=", ";
+        	s+="gleis2Id: " + gleis2Id;
+        	s+=", ";
+        	s+="von: " + von;
+        	s+=", ";
+        	s+="bis: " + bis;
+        	s+=", ";
+        	s+="name: " + name;
+        	s+=", ";
+        	s+="weiche1Id: " + weiche1Id;
+        	s+=", ";
+        	s+="weiche2Id: " + weiche2Id;
+        	
+        	return s;
+        }
     }
     // TODO: public native void setTrackConnection(int baliseId, int stellung, String protokoll);
     private native void getTrackConnection0(int gleis1Id, int gleis2Id, ArrayList res);
@@ -269,6 +363,20 @@ public class Dll {
             this.direction = direction;
             this.positions = positions;
             this.gleisList = gleisList;
+        }
+        
+        @Override
+        public String toString(){
+        	String s = "";
+        	s+="trainTyp: " + trainTyp;
+        	s+=", ";
+        	s+="direction: " + direction;
+        	s+=", ";
+        	s+="positions: " + positions;
+        	s+=", ";
+        	s+="gleisList: " + gleisList;       	
+        	
+        	return s;
         }
     }
     // TODO: public native void setTrainPosition(int weicheId, int gleisId);
