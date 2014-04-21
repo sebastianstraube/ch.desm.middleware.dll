@@ -10,10 +10,12 @@ import ch.desm.middleware.modules.core.daemon.DaemonThread;
 class EndpointUbw32Polling extends DaemonThread {
 
 	private EndpointUbw32 endpoint;
-
+	private int waitTimeMs;
+	
 	EndpointUbw32Polling(EndpointUbw32 endpoint, int waitTimeMs) {
 		super("EndpointUbw32Polling (" + endpoint.getSerialPortName()+")");
 		this.endpoint = endpoint;
+		this.waitTimeMs = waitTimeMs;
 	}
 
 	@Override
@@ -28,7 +30,7 @@ class EndpointUbw32Polling extends DaemonThread {
 				endpoint.sendCommandInputState();
 				endpoint.sendCommandInputAnalog(endpoint.getPinBitMaskInputAnalog());
 				
-				Thread.sleep(10);
+				Thread.sleep(waitTimeMs);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

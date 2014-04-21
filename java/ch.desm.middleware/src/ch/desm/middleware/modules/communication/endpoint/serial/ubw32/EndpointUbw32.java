@@ -46,7 +46,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	public static final String RETURN_PIN_INPUT = "PI";
 	public static final String RETURN_INPUT_ANALOG = "IA";
 	public static final String MESSAGE_TERMINATOR = "\n";
-	public static final int UBW32_POLLING_WAIT = 500;
+	public static final int UBW32_POLLING_WAIT = 100000;
 	
 	protected String configurationDigital;
 	private String pinbitMaskInputAnalog;
