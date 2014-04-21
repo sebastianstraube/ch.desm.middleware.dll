@@ -1,0 +1,1 @@
+Main-Class: ch.desm.middleware.modules.core.Main
