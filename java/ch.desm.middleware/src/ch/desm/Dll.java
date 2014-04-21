@@ -189,7 +189,7 @@ public class Dll {
     private native void getIsolierstoss0(int isolierstossId, ArrayList res);
     public Isolierstoss getIsolierstoss(int isolierstossId) throws Exception {
         ArrayList al = new ArrayList();
-        getLoop0(isolierstossId, al);
+        getIsolierstoss0(isolierstossId, al);
         if(al.size() != 2) {
             throw new Exception("invalid result returned");
         }
@@ -222,7 +222,7 @@ public class Dll {
     private native void getLoop0(int baliseId, ArrayList res);
     public Loop getLoop(int baliseId) throws Exception {
         ArrayList al = new ArrayList();
-        getBalise0(baliseId, al);
+        getLoop0(baliseId, al);
         if(al.size() != 2) {
             throw new Exception("invalid result returned");
         }
@@ -287,7 +287,7 @@ public class Dll {
         	s+=", ";
         	s+="abstand: " + abstand;
         	s+=", ";
-        	s+="abstand: " + abstand;
+        	s+="name: " + name;
         	
         	return s;
         }
