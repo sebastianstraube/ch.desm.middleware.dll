@@ -1,21 +1,18 @@
 package ch.desm.middleware.modules.communication.message.type;
 
-import ch.desm.middleware.modules.communication.message.MessageBase;
 
 public class MessageCommon extends MessageBase {
-
-
+	
+	public final static String PARAMETER_PLACEHOLDER = "\\?";
 	
 	protected String globalId;
 	
 	/**
-	 * the signal coming from
-	 * extern components,
-	 * only from system intern or
-	 * from extern components and system intern
+	 * the signal is coming from
+	 * extern components: only from intern system (1) or
+	 * from extern components and intern system (0)
 	 */
 	protected String externIntern;
-	protected String outputInput;
 	protected String element;
 	protected String function;
 	protected String parameter;
@@ -24,18 +21,12 @@ public class MessageCommon extends MessageBase {
 	public MessageCommon(MessageUbw32 message) {
 		super(message.getPayload(), message.topic);
 	}
-
-	public MessageCommon(MessageBase message) {
-		super(message.getPayload(), message.topic);
-	}
-
-	public MessageCommon(EnumMessageTopic topic, String globalId,
-			String outputInput, String externIntern,
+	
+	public MessageCommon(EnumMessageTopic topic, String globalId, String externIntern,
 			String element, String function, String instance, String parameter,
 			String payload) {
 		super(payload, topic);
 		this.globalId = globalId;
-		this.outputInput = outputInput;
 		this.externIntern = externIntern;
 		this.element = element;
 		this.function = function;
@@ -45,10 +36,6 @@ public class MessageCommon extends MessageBase {
 
 	public String getGlobalId() {
 		return this.globalId;
-	}
-
-	public String getOutputInput() {
-		return this.outputInput;
 	}
 
 	public String getExternIntern() {
@@ -75,8 +62,6 @@ public class MessageCommon extends MessageBase {
 		String s = super.toString();
 		s += ", ";
 		s += "globalId: " + globalId;
-		s += ", ";
-		s += "outputInput: " + outputInput;
 		s += ", ";
 		s += "externIntern: " + externIntern;
 		s += ", ";

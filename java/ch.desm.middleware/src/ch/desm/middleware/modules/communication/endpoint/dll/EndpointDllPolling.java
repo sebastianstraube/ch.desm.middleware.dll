@@ -31,13 +31,13 @@ public class EndpointDllPolling extends DaemonThread {
 	@Override
 	public void run() {
 		try {
-			
+
 			while (!isInterrupted()) {
-				System.out.println("Thread: " + this.getName());
+				// System.out.println("Thread: " + this.getName());
 				pollingDllEvents();
 				Thread.sleep(waitTimeMs);
 			}
-			
+
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

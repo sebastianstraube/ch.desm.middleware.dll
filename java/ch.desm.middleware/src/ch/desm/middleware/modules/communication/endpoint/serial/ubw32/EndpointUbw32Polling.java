@@ -26,7 +26,7 @@ class EndpointUbw32Polling extends DaemonThread {
 
 		try {
 			while (!isInterrupted()) {
-				System.out.println("Thread: " + this.getName());
+//				System.out.println("Thread: " + this.getName());
 				endpoint.sendCommandInputState();
 				endpoint.sendCommandInputAnalog(endpoint.getPinBitMaskInputAnalog());
 				

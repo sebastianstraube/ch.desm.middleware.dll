@@ -4,18 +4,18 @@ import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUb
 
 public class TestEndpointUbw32 extends EndpointUbw32 {
 
-	private TestEndpointUbw32Configuration configuration;
+	private TestEndpointUbw32Data configuration;
 
 	public TestEndpointUbw32(EnumSerialPorts enumSerialPort) {
 		super(
 				enumSerialPort,
-				TestEndpointUbw32Configuration.PINBITMASK_CONFIGURATION_DIGITAL,
-				TestEndpointUbw32Configuration.PINBITMASK_INPUT_ANALOG);
+				TestEndpointUbw32Data.PINBITMASK_CONFIGURATION_DIGITAL,
+				TestEndpointUbw32Data.PINBITMASK_INPUT_ANALOG);
 
-		this.configuration = new TestEndpointUbw32Configuration();
+		this.configuration = new TestEndpointUbw32Data();
 	}
 
-	public TestEndpointUbw32Configuration getConfiguration() {
+	public TestEndpointUbw32Data getConfiguration() {
 		return configuration;
 	}
 	

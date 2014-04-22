@@ -8,30 +8,31 @@ import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32ListenerInterface;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortAnalog.EnumEndpointUbw32RegisterAnalog;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortDigital.EnumEndpointUbw32RegisterDigital;
-import ch.desm.middleware.modules.communication.message.MessageBase.EnumMessageTopic;
 import ch.desm.middleware.modules.communication.message.router.MessageRouter;
-import ch.desm.middleware.modules.communication.message.translator.MessageTranslatorCommon;
+import ch.desm.middleware.modules.communication.message.translator.MessageTranslatorMiddleware;
+import ch.desm.middleware.modules.communication.message.type.MessageBase.EnumMessageTopic;
 import ch.desm.middleware.modules.communication.message.type.MessageCommon;
+import ch.desm.middleware.modules.communication.message.type.MessageMiddleware;
 import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
 
 public class OMLBaseImpl extends OMLBase implements
 		EndpointUbw32ListenerInterface {
 
-	private OMLMessages functionMessages;
+	private OMLMiddlewareMessages messages;
 
 	public OMLBaseImpl(Broker broker, EndpointCommon communicationEndpointUbw32) {
 		super(broker, communicationEndpointUbw32);
 		// TODO Auto-generated constructor stub
 
-		this.functionMessages = new OMLMessages();
+		this.messages = new OMLMiddlewareMessages();
 	}
 
 	protected void onIncomingBrokerMessage(String message) {
 		System.out.println("broker (" + this.getClass()
 				+ ") received message: " + message);
 
-		MessageTranslatorCommon translator = new MessageTranslatorCommon();
-		ArrayList<MessageCommon> messageCommon = translator
+		MessageTranslatorMiddleware translator = new MessageTranslatorMiddleware();
+		ArrayList<MessageMiddleware> messageCommon = translator
 				.translateToCommonMessageObjectList(message,
 						EnumMessageTopic.INTERLOCKING);
 
@@ -49,7 +50,7 @@ public class OMLBaseImpl extends OMLBase implements
 		System.out.println("endpoint (" + getEndpoint().getSerialPortName()
 				+ ") received message: " + message);
 
-		MessageTranslatorCommon translator = new MessageTranslatorCommon();
+		MessageTranslatorMiddleware translator = new MessageTranslatorMiddleware();
 		MessageUbw32 ubw32Message = translator.decodeUbw32EndpointMessage(
 				message, EnumMessageTopic.INTERLOCKING);
 
@@ -74,13 +75,13 @@ public class OMLBaseImpl extends OMLBase implements
 					.getEndpoint().getConfiguration().getMapInputDigital()
 					.entrySet()) {
 
-				String stream = functionMessages.messages.get(entry.getKey());
+				String stream = messages.messages.get(entry.getKey());
 				if (message.getInputDigitalValue(entry.getValue())) {
 					stream = stream.replaceAll(
-							OMLMessages.PARAMETER_PLACEHOLDER, "on");
+							MessageCommon.PARAMETER_PLACEHOLDER, "on");
 				} else {
 					stream = stream.replaceAll(
-							OMLMessages.PARAMETER_PLACEHOLDER, "off");
+							MessageCommon.PARAMETER_PLACEHOLDER, "off");
 				}
 
 				middlewareMessagesInput = middlewareMessagesInput
@@ -94,7 +95,7 @@ public class OMLBaseImpl extends OMLBase implements
 					.getEndpoint().getConfiguration().getMapInputAnalog()
 					.entrySet()) {
 
-				String stream = functionMessages.messages.get(entry.getKey());
+				String stream = messages.messages.get(entry.getKey());
 				int analogValue = Integer.parseInt(message
 						.getInputAnalogValue(entry.getValue()));
 
@@ -106,10 +107,10 @@ public class OMLBaseImpl extends OMLBase implements
 				// then set message stream parameter on else off
 				if (entry.getValue().equals(globalId)) {
 					stream.replaceAll(
-							OMLMessages.PARAMETER_PLACEHOLDER, "on");
+							MessageCommon.PARAMETER_PLACEHOLDER, "on");
 				} else {
 					stream.replaceAll(
-							OMLMessages.PARAMETER_PLACEHOLDER, "off");
+							MessageCommon.PARAMETER_PLACEHOLDER, "off");
 				}
 
 				middlewareMessagesInput = middlewareMessagesInput

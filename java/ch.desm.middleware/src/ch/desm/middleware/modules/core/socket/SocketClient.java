@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class SocketClient {
+public abstract class SocketClient {
 
 	Socket client;
 	

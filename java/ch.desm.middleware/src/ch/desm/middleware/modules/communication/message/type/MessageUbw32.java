@@ -8,7 +8,6 @@ import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUb
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortDigital;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortDigital.EnumEndpointUbw32PortDigital;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortDigital.EnumEndpointUbw32RegisterDigital;
-import ch.desm.middleware.modules.communication.message.MessageBase;
 
 public class MessageUbw32 extends MessageBase {
 

@@ -5,7 +5,7 @@ import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectSignal;
 import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectTrainPosition;
 import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectWeiche;
-import ch.desm.middleware.modules.communication.message.translator.MessageTranslatorDllObjects;
+import ch.desm.middleware.modules.communication.message.translator.MessageTranslatorDll;
 
 public abstract class EndpointDll extends EndpointCommon implements
 		EndpointDllListenerInterface {
@@ -14,10 +14,10 @@ public abstract class EndpointDll extends EndpointCommon implements
 	private Dll dll;
 	private EndpointDllPolling eventPollingDaemonDll;
 	
-	protected MessageTranslatorDllObjects messageTranslatorDllObjects;
+	protected MessageTranslatorDll messageTranslatorDllObjects;
 
 	public EndpointDll(String configPath) {
-		this.messageTranslatorDllObjects = new MessageTranslatorDllObjects();
+		this.messageTranslatorDllObjects = new MessageTranslatorDll();
 		
 		dll = new Dll();
 		dll.onStartProgramm(configPath);

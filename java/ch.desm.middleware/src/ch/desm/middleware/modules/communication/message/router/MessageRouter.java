@@ -3,11 +3,12 @@ package ch.desm.middleware.modules.communication.message.router;
 import java.util.ArrayList;
 
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortDigital.EnumEndpointUbw32RegisterDigital;
-import ch.desm.middleware.modules.communication.message.type.MessageCommon;
+import ch.desm.middleware.modules.communication.message.type.MessageMiddleware;
 import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
 import ch.desm.middleware.modules.component.ComponentBase;
 import ch.desm.middleware.modules.component.cabine.Re420BaseImpl;
 import ch.desm.middleware.modules.component.interlocking.OMLBaseImpl;
+import ch.desm.middleware.modules.component.simulation.LocsimBaseImpl;
 import ch.desm.middleware.modules.component.test.TestBaseImpl;
 
 /**
@@ -31,28 +32,43 @@ public class MessageRouter {
 		component.publish(message);
 	}
 
+	public void processBrokerMessage(LocsimBaseImpl impl,
+			ArrayList<MessageMiddleware> messages) {
+		for (MessageMiddleware message : messages) {
+			this.processBrokerMessage(impl, message);
+		}
+	}
+	
 	public void processBrokerMessage(TestBaseImpl impl,
-			ArrayList<MessageCommon> messages) {
-		for (MessageCommon message : messages) {
+			ArrayList<MessageMiddleware> messages) {
+		for (MessageMiddleware message : messages) {
 			this.processBrokerMessage(impl, message);
 		}
 	}
 
 	public void processBrokerMessage(Re420BaseImpl impl,
-			ArrayList<MessageCommon> messages) {
-		for (MessageCommon message : messages) {
+			ArrayList<MessageMiddleware> messages) {
+		for (MessageMiddleware message : messages) {
 			this.processBrokerMessage(impl, message);
 		}
 	}
 
 	public void processBrokerMessage(OMLBaseImpl impl,
-			ArrayList<MessageCommon> messages) {
-		for (MessageCommon message : messages) {
+			ArrayList<MessageMiddleware> messages) {
+		for (MessageMiddleware message : messages) {
 			this.processBrokerMessage(impl, message);
 		}
 	}
+	
+	private void processBrokerMessage(LocsimBaseImpl impl, MessageMiddleware message) {
+		
+		
+		
+		
+		
+	}
 
-	private void processBrokerMessage(TestBaseImpl impl, MessageCommon message) {
+	private void processBrokerMessage(TestBaseImpl impl, MessageMiddleware message) {
 
 		String value = getParameterValue(message.getParameter());
 		
@@ -81,7 +97,7 @@ public class MessageRouter {
 		}
 	}
 
-	private void processBrokerMessage(Re420BaseImpl impl, MessageCommon message) {
+	private void processBrokerMessage(Re420BaseImpl impl, MessageMiddleware message) {
 
 		String value = getParameterValue(message.getParameter());
 		boolean isInput = message.getOutputInput().equals(
@@ -109,7 +125,7 @@ public class MessageRouter {
 		}
 	}
 
-	private void processBrokerMessage(OMLBaseImpl impl, MessageCommon message) {
+	private void processBrokerMessage(OMLBaseImpl impl, MessageMiddleware message) {
 
 		String value = getParameterValue(message.getParameter());
 		boolean isInput = message.getOutputInput().equals(

@@ -4,15 +4,15 @@ import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUb
 
 public class Re420EndpointUbw32 extends EndpointUbw32 {
 	
-	protected Re420EndpointUbw32Configuration configuration;
+	protected Re420EndpointUbw32Data configuration;
 	
 	public Re420EndpointUbw32(EnumSerialPorts enumSerialPort) {		
-		super(enumSerialPort, Re420EndpointUbw32Configuration.PINBITMASK_CONFIGURATION_DIGITAL, Re420EndpointUbw32Configuration.PINBITMASK_INPUT_ANALOG);
+		super(enumSerialPort, Re420EndpointUbw32Data.PINBITMASK_CONFIGURATION_DIGITAL, Re420EndpointUbw32Data.PINBITMASK_INPUT_ANALOG);
 		
-		configuration = new Re420EndpointUbw32Configuration();
+		configuration = new Re420EndpointUbw32Data();
 	}
 	
-	public Re420EndpointUbw32Configuration getConfiguration(){
+	public Re420EndpointUbw32Data getConfiguration(){
 		return this.configuration;
 	}
 		

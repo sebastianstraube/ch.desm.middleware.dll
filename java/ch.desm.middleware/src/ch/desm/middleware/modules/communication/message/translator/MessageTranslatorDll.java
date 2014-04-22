@@ -3,7 +3,7 @@ package ch.desm.middleware.modules.communication.message.translator;
 import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectSignal;
 import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectTrainPosition;
 import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectWeiche;
-import ch.desm.middleware.modules.communication.message.type.MessageDll;
+import ch.desm.middleware.modules.communication.message.type.MessageLocsimDll;
 
 
 /**
@@ -11,7 +11,7 @@ import ch.desm.middleware.modules.communication.message.type.MessageDll;
  * @author Sebastian
  *
  */
-public class MessageTranslatorDllObjects extends MessageTranslatorBase {
+public class MessageTranslatorDll extends MessageTranslatorMiddlewareBase {
 
 	/**
 	 *  Case "INI1"
@@ -492,7 +492,7 @@ public class MessageTranslatorDllObjects extends MessageTranslatorBase {
 	 */
 	public String translateObjectToMiddlewareMessage(EndpointDllObjectTrainPosition obj){
 		
-		String s = MessageDll.DLL_MESSAGE_TRAINPOSITION;
+		String s = MessageLocsimDll.DLL_MESSAGE_TRAINPOSITION;
 		s += obj.gleisList.toString();
 		s+=";";
 		
@@ -505,7 +505,7 @@ public class MessageTranslatorDllObjects extends MessageTranslatorBase {
 	 */
 	public String translateObjectToMiddlewareMessage(EndpointDllObjectSignal obj){
 		
-		String s = MessageDll.DLL_MESSAGE_SIGNAL;
+		String s = MessageLocsimDll.DLL_MESSAGE_SIGNAL;
 		s += obj.signalId;
 		s+=";";
 		s += obj.stellung;
@@ -520,7 +520,7 @@ public class MessageTranslatorDllObjects extends MessageTranslatorBase {
 	 */
 	public String translateObjectToMiddlewareMessage(EndpointDllObjectWeiche obj){
 		
-		String s = MessageDll.DLL_MESSAGE_WEICHE;
+		String s = MessageLocsimDll.DLL_MESSAGE_WEICHE;
 		s += obj.weicheId;
 		s+=";";
 		s += obj.gleisId;
@@ -529,5 +529,9 @@ public class MessageTranslatorDllObjects extends MessageTranslatorBase {
 //		s+=";";
 		
 		return s;
+	}
+	
+	public void translateMiddlewareMessageToObject(){
+		
 	}
 }

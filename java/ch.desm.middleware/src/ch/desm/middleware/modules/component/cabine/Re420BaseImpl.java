@@ -7,23 +7,23 @@ import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32ListenerInterface;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortAnalog.EnumEndpointUbw32RegisterAnalog;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortDigital.EnumEndpointUbw32RegisterDigital;
-import ch.desm.middleware.modules.communication.message.MessageBase.EnumMessageTopic;
 import ch.desm.middleware.modules.communication.message.router.MessageRouter;
-import ch.desm.middleware.modules.communication.message.translator.MessageTranslatorCommon;
+import ch.desm.middleware.modules.communication.message.translator.MessageTranslatorMiddleware;
+import ch.desm.middleware.modules.communication.message.type.MessageBase.EnumMessageTopic;
 import ch.desm.middleware.modules.communication.message.type.MessageCommon;
+import ch.desm.middleware.modules.communication.message.type.MessageMiddleware;
 import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
-import ch.desm.middleware.modules.component.interlocking.OMLMessages;
 
 public class Re420BaseImpl extends Re420Base implements
 		EndpointUbw32ListenerInterface {
 
-	private Re420Messages functionMessages;
+	private Re420MiddlewareMessages messages;
 
 	public Re420BaseImpl(Broker broker, Re420EndpointUbw32 communicationEndpoint) {
 		super(broker, communicationEndpoint);
 		// TODO Auto-generated constructor stub
 
-		this.functionMessages = new Re420Messages();
+		this.messages = new Re420MiddlewareMessages();
 	}
 
 	/**
@@ -34,8 +34,8 @@ public class Re420BaseImpl extends Re420Base implements
 			System.out.println("broker (" + this.getClass()
 					+ ") received message: " + message);
 
-			MessageTranslatorCommon translator = new MessageTranslatorCommon();
-			ArrayList<MessageCommon> messageCommon = translator
+			MessageTranslatorMiddleware translator = new MessageTranslatorMiddleware();
+			ArrayList<MessageMiddleware> messageCommon = translator
 					.translateToCommonMessageObjectList(
 							message, EnumMessageTopic.INTERLOCKING);
 
@@ -55,7 +55,7 @@ public class Re420BaseImpl extends Re420Base implements
 		System.out.println("endpoint (" + getEndpoint().getSerialPortName()
 				+ ") received message: " + message);
 
-		MessageTranslatorCommon translator = new MessageTranslatorCommon();
+		MessageTranslatorMiddleware translator = new MessageTranslatorMiddleware();
 		MessageUbw32 ubw32Message = translator.decodeUbw32EndpointMessage(
 				message, EnumMessageTopic.INTERLOCKING);
 
@@ -66,7 +66,6 @@ public class Re420BaseImpl extends Re420Base implements
 	}
 
 	/**
-	 * TODO multiple analog message
 	 * 
 	 * @param message
 	 */
@@ -79,7 +78,7 @@ public class Re420BaseImpl extends Re420Base implements
 			for (Entry<String, EnumEndpointUbw32RegisterDigital> entry : this
 					.getEndpoint().getConfiguration().getMapInputDigital().entrySet()) {
 
-				String stream = functionMessages.getMessages().get(entry.getKey());
+				String stream = messages.getMessages().get(entry.getKey());
 				if(stream == null){
 					try {
 						throw new Exception("the configuration mapping found a problematic global id:" + entry.getKey() + "with value: " + entry.getValue());
@@ -92,12 +91,12 @@ public class Re420BaseImpl extends Re420Base implements
 				if (message.getInputDigitalValue(entry.getValue())) {
 					stream = stream
 							.replaceAll(
-									OMLMessages.PARAMETER_PLACEHOLDER,
+									MessageCommon.PARAMETER_PLACEHOLDER,
 									"on");
 				} else {
 					stream = stream
 							.replaceAll(
-									OMLMessages.PARAMETER_PLACEHOLDER,
+									MessageCommon.PARAMETER_PLACEHOLDER,
 									"off");
 				}
 
@@ -111,7 +110,7 @@ public class Re420BaseImpl extends Re420Base implements
 			for (Entry<String, EnumEndpointUbw32RegisterAnalog> entry : this
 					.getEndpoint().getConfiguration().getMapInputAnalog().entrySet()) {
 
-				String stream = functionMessages.getMessages().get(entry.getKey());
+				String stream = messages.getMessages().get(entry.getKey());
 				int analogValue = Integer.parseInt(message
 						.getInputAnalogValue(entry.getValue()));
 
@@ -123,11 +122,11 @@ public class Re420BaseImpl extends Re420Base implements
 				// then set message stream parameter on else off
 				if (entry.getValue().equals(globalId)) {
 					stream.replaceAll(
-							OMLMessages.PARAMETER_PLACEHOLDER,
+							MessageCommon.PARAMETER_PLACEHOLDER,
 							"on");
 				} else {
 					stream.replaceAll(
-							OMLMessages.PARAMETER_PLACEHOLDER,
+							MessageCommon.PARAMETER_PLACEHOLDER,
 							"off");
 				}
 

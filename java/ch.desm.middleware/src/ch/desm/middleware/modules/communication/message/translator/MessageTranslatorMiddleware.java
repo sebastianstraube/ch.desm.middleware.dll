@@ -2,9 +2,9 @@ package ch.desm.middleware.modules.communication.message.translator;
 
 import java.util.ArrayList;
 
-import ch.desm.middleware.modules.communication.message.MessageBase.EnumMessageTopic;
-import ch.desm.middleware.modules.communication.message.type.MessageCommon;
+import ch.desm.middleware.modules.communication.message.type.MessageMiddleware;
 import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
+import ch.desm.middleware.modules.communication.message.type.MessageBase.EnumMessageTopic;
 
 /**
  * TODO implementation
@@ -12,10 +12,10 @@ import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
  * @author Sebastian
  *
  */
-public class MessageTranslatorCommon extends MessageTranslatorBase {
+public class MessageTranslatorMiddleware extends MessageTranslatorMiddlewareBase {
 
 	
-	public MessageTranslatorCommon(){
+	public MessageTranslatorMiddleware(){
 	}
 	
 	/**
@@ -24,7 +24,7 @@ public class MessageTranslatorCommon extends MessageTranslatorBase {
 	 * @param message
 	 * 
 	 */
-	public ArrayList<MessageCommon> translateToCommonMessageObjectList(String message, EnumMessageTopic topic){
+	public ArrayList<MessageMiddleware> translateToCommonMessageObjectList(String message, EnumMessageTopic topic){
 		return decodeMiddlewareMessages(message, topic);
 	}
 	
@@ -34,7 +34,7 @@ public class MessageTranslatorCommon extends MessageTranslatorBase {
 	 * @param commonMessage
 	 * 
 	 */
-	public String translateToCommonMiddlewareMessageStream(MessageCommon commonMessage){
+	public String translateToCommonMiddlewareMessageStream(MessageMiddleware commonMessage){
 		return encodeMiddlewareMessage(commonMessage);
 	}
 	

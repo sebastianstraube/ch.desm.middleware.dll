@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class SocketServer {
+public abstract class SocketServer {
 
 	ServerSocket server;
 	Socket client;

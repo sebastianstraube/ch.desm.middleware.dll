@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.component.cabine;
+package ch.desm.middleware.modules.component.interlocking;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortAnalog.EnumEndpointUbw32RegisterAnalog;
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortDigital.EnumEndpointUbw32RegisterDigital;
 
-public class Re420EndpointUbw32Configuration {
+public class OMLEndpointUbw32Data {
 
 	//TODO refactoring
 	public static final String PINBITMASK_CONFIGURATION_DIGITAL = "192,0,0,24560,96,1,2";
@@ -15,7 +15,7 @@ public class Re420EndpointUbw32Configuration {
 	private static Map<String, EnumEndpointUbw32RegisterDigital> mapDigital;
 	private static Map<String, EnumEndpointUbw32RegisterAnalog> mapAnalog;
 	
-	public Re420EndpointUbw32Configuration(){
+	public OMLEndpointUbw32Data(){
 		mapDigital = new HashMap<String, EnumEndpointUbw32RegisterDigital>();
 		mapAnalog = new HashMap<String, EnumEndpointUbw32RegisterAnalog>();
 		

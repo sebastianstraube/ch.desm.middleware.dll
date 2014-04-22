@@ -3,7 +3,7 @@ package ch.desm.middleware.modules.communication.endpoint;
 import java.util.HashSet;
 import java.util.Set;
 
-import ch.desm.middleware.modules.communication.message.translator.MessageTranslatorCommon;
+import ch.desm.middleware.modules.communication.message.translator.MessageTranslatorMiddleware;
 
 /**
  * 
@@ -13,14 +13,14 @@ import ch.desm.middleware.modules.communication.message.translator.MessageTransl
 public abstract class EndpointBase {
 
 	protected Set<EndpointCommonListenerInterface> listeners;
-	protected MessageTranslatorCommon messageTranslator;
+	protected MessageTranslatorMiddleware messageTranslator;
 	
 	/**
 	 * 
 	 */
 	public EndpointBase() {
 		this.listeners = new HashSet<EndpointCommonListenerInterface>();
-		messageTranslator = new MessageTranslatorCommon();
+		messageTranslator = new MessageTranslatorMiddleware();
 	}
 
 	/**

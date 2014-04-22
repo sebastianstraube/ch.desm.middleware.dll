@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.communication.message;
+package ch.desm.middleware.modules.communication.message.type;
 
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32;
 
