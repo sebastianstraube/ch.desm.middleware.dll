@@ -7,8 +7,7 @@ public class OMLEndpointUbw32 extends EndpointUbw32 {
 	private OMLEndpointUbw32Configuration configuration;
 
 	public OMLEndpointUbw32(EnumSerialPorts enumSerialPort) {
-		super(
-				enumSerialPort,
+		super(enumSerialPort,
 				OMLEndpointUbw32Configuration.PINBITMASK_CONFIGURATION_DIGITAL,
 				OMLEndpointUbw32Configuration.PINBITMASK_INPUT_ANALOG);
 
@@ -17,13 +16,5 @@ public class OMLEndpointUbw32 extends EndpointUbw32 {
 
 	public OMLEndpointUbw32Configuration getConfiguration() {
 		return configuration;
-	}
-	
-	/**
-	 * test endpoint message handling
-	 * @param message
-	 */
-	public void emulateEndpointMessage(String message) {
-		onIncomingEndpointMessage(message);
 	}
 }

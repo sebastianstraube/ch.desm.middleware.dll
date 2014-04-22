@@ -10,7 +10,7 @@ import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUb
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortDigital.EnumEndpointUbw32RegisterDigital;
 import ch.desm.middleware.modules.communication.message.MessageBase.EnumMessageTopic;
 import ch.desm.middleware.modules.communication.message.router.MessageRouter;
-import ch.desm.middleware.modules.communication.message.translator.MessageTranslator;
+import ch.desm.middleware.modules.communication.message.translator.MessageTranslatorCommon;
 import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
 
@@ -30,7 +30,7 @@ public class TestBaseImpl extends TestBase implements
 		System.out.println("broker (" + this.getClass()
 				+ ") received message: " + message);
 
-		MessageTranslator translator = new MessageTranslator();
+		MessageTranslatorCommon translator = new MessageTranslatorCommon();
 		ArrayList<MessageCommon> messageCommon = translator
 				.translateToCommonMessageObjectList(message,
 						EnumMessageTopic.INTERLOCKING);
@@ -49,7 +49,7 @@ public class TestBaseImpl extends TestBase implements
 		System.out.println("endpoint (" + getEndpoint().getSerialPortName()
 				+ ") received message: " + message);
 
-		MessageTranslator translator = new MessageTranslator();
+		MessageTranslatorCommon translator = new MessageTranslatorCommon();
 		MessageUbw32 ubw32Message = translator.decodeUbw32EndpointMessage(
 				message, EnumMessageTopic.INTERLOCKING);
 

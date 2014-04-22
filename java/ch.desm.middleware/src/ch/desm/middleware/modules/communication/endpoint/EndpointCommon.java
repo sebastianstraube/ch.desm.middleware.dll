@@ -11,11 +11,10 @@ public abstract class EndpointCommon extends EndpointBase {
 	}
 
 	/**
-	 * test incoming message
-	 * 
+	 * test endpoint message handling
 	 * @param message
 	 */
-	public void emulateIncomingEndpointMessage(String message) {
+	public void emulateEndpointMessage(String message) {
 		onIncomingEndpointMessage(message);
 	}
 

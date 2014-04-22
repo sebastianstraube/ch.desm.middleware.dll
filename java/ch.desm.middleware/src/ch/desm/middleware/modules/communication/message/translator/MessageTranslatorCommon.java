@@ -12,10 +12,10 @@ import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
  * @author Sebastian
  *
  */
-public class MessageTranslator extends MessageTranslatorBase {
+public class MessageTranslatorCommon extends MessageTranslatorBase {
 
 	
-	public MessageTranslator(){
+	public MessageTranslatorCommon(){
 	}
 	
 	/**
@@ -48,4 +48,6 @@ public class MessageTranslator extends MessageTranslatorBase {
 		
 		return messageUbw32;
 	}
+	
+	
 }

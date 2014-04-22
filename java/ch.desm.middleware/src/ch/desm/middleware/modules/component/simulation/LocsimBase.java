@@ -6,28 +6,38 @@ import ch.desm.middleware.modules.component.ComponentBase;
 
 abstract class LocsimBase extends ComponentBase {
 
-	protected LocsimEndpointRs232 endpoint;
+	protected LocsimEndpointRs232 endpointRs232;
+	protected LocsimEndpointDll endpointDll;
 	
 	public LocsimBase(Broker broker,
-			LocsimEndpointRs232 endpoint) {
+			LocsimEndpointRs232 endpointRs232,
+			LocsimEndpointDll endpointDll) {
 		super(broker);
 		
-		this.endpoint = endpoint;
-		this.registerEndpointListener(endpoint);
+		this.endpointRs232 = endpointRs232;
+		this.endpointDll = endpointDll;
+		
+		this.registerEndpointListener(endpointRs232);
+		this.registerEndpointListener(endpointDll);
 	}
 	
 	@Override
 	protected void registerEndpointListener(
 			EndpointBase listener) {
 		try {
-			endpoint.addEndpointListener(this);
+			endpointRs232.addEndpointListener(this);
+			endpointDll.addEndpointListener(this);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public LocsimEndpointRs232 getEndpoint(){
-		return this.endpoint;
+	public LocsimEndpointRs232 getEndpointRs232(){
+		return this.endpointRs232;
+	}
+	
+	public LocsimEndpointDll getEndpointDll(){
+		return this.endpointDll;
 	}
 	
 	@Override
