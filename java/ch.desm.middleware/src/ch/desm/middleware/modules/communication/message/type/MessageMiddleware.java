@@ -11,11 +11,12 @@ public class MessageMiddleware extends MessageCommon {
 
 
 	
-	public MessageMiddleware(EnumMessageTopic topic, String globalId, String externIntern,
+	public MessageMiddleware(String topic, String globalId, String externIntern,
 			String element, String function, String instance, String parameter,
 			String payload, String outputInput) {
-		super(topic, globalId, externIntern, element, element, function, 
-				instance, parameter);
+		super(topic, globalId, externIntern,
+				element, function, instance, parameter,
+				payload);
 		
 		this.outputInput = outputInput;
 	}

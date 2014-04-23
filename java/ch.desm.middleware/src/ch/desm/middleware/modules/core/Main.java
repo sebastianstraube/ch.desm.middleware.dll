@@ -13,14 +13,29 @@ import ch.desm.middleware.modules.component.test.TestEndpointUbw32;
 public class Main {
 
 	public static void main(String[] args) {
-		 testCaseDll();
+		testCaseLocsimEndpointDllRs232Ubw();
 
 		// testCaseEndpointToEndpoint();
 
 		// testPWM(args);
 	}
 
-	public static void testCaseEndpointToEndpoint() {
+	public static void testCaseLocsimEndpointDllRs232Ubw() {
+		Broker broker = new Broker();
+
+		Re420EndpointUbw32 re420EndpointUbw32 = new Re420EndpointUbw32(
+				EnumSerialPorts.COM22);
+		Re420BaseImpl re420Impl = new Re420BaseImpl(broker, re420EndpointUbw32);
+
+		LocsimEndpointDll endpointDll = new
+				LocsimEndpointDll("C:\\svn.it-hotspot.de\\Projekte\\DESM\\Simulationskomponenten\\ch.desm.middleware\\Dispatcher-DLL\\Debug\\dispatcher.json");
+		
+		LocsimEndpointRs232 endpointRs232 = new LocsimEndpointRs232(EnumSerialPorts.COM8);
+		
+		LocsimBaseImpl locsimImpl = new LocsimBaseImpl(broker, endpointRs232, endpointDll);
+	}
+	
+	public static void testCaseEndpointToEndpointBlinkE0() {
 		Broker broker = new Broker();
 
 		TestEndpointUbw32 testEndpoint = new TestEndpointUbw32(
@@ -31,17 +46,15 @@ public class Main {
 				EnumSerialPorts.COM8);
 		Re420BaseImpl re420Impl = new Re420BaseImpl(broker, re420EndpointUbw32);
 
-		// EndpointDll endpointDll = new
-		// EndpointDll("C:\\svn.it-hotspot.de\\Projekte\\DESM\\Simulationskomponenten\\ch.desm.middleware\\Dispatcher-DLL\\Debug\\dispatcher.json");
-
-		// while (true) {
-		// testImpl.emulateBrokerMessage("1.90.02;o;0;lampe;signalf;notrot;on;#");
-		//
-		// // testEndpoint.sendCommandPinOutput("E", "0", "1");
-		// re420EndpointUbw32
-		// .emulateEndpointMessage("I,00192,00000,00000,24560,00111,00009,00014");
-		//
-		// }
+		
+		 while (true) {
+		 testImpl.emulateBrokerMessage("1.90.02;o;0;lampe;signalf;notrot;on;#");
+		
+		 // testEndpoint.sendCommandPinOutput("E", "0", "1");
+		 re420EndpointUbw32
+		 .emulateEndpointMessage("I,00192,00000,00000,24560,00111,00009,00014");
+		
+		 }
 
 	}
 

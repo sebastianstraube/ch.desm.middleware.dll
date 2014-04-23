@@ -3,7 +3,7 @@ package ch.desm.middleware.modules.communication.endpoint.serial.ubw32;
 
 public class EndpointUbw32PortAnalog {
 
-	private static final int MAX_DISCRET_VALUE = 1024;
+	private static final int MAX_DISCRET_VALUE = 1023;
 	
 	private String value;
 	private EnumEndpointUbw32PortAnalog port;

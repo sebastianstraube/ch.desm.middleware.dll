@@ -33,7 +33,7 @@ public class EndpointDllPolling extends DaemonThread {
 		try {
 
 			while (!isInterrupted()) {
-				// System.out.println("Thread: " + this.getName());
+//				System.out.println("Polling Thread active: " + this.getName());
 				pollingDllEvents();
 				Thread.sleep(waitTimeMs);
 			}

@@ -10,7 +10,7 @@ import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUb
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32PortDigital.EnumEndpointUbw32RegisterDigital;
 import ch.desm.middleware.modules.communication.message.router.MessageRouter;
 import ch.desm.middleware.modules.communication.message.translator.MessageTranslatorMiddleware;
-import ch.desm.middleware.modules.communication.message.type.MessageBase.EnumMessageTopic;
+import ch.desm.middleware.modules.communication.message.type.MessageBase;
 import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.communication.message.type.MessageMiddleware;
 import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
@@ -33,10 +33,8 @@ public class OMLBaseImpl extends OMLBase implements
 
 		MessageTranslatorMiddleware translator = new MessageTranslatorMiddleware();
 		ArrayList<MessageMiddleware> messageCommon = translator
-				.translateToCommonMessageObjectList(message,
-						EnumMessageTopic.INTERLOCKING);
+				.translateToCommonMessageObjectList(message);
 
-		// TODO route and transmit to endpoint
 		MessageRouter router = new MessageRouter();
 		router.processBrokerMessage(this, messageCommon);
 	}
@@ -52,12 +50,12 @@ public class OMLBaseImpl extends OMLBase implements
 
 		MessageTranslatorMiddleware translator = new MessageTranslatorMiddleware();
 		MessageUbw32 ubw32Message = translator.decodeUbw32EndpointMessage(
-				message, EnumMessageTopic.INTERLOCKING);
+				message, MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
 
 		String messages = processInputs(ubw32Message);
 
 		MessageRouter router = new MessageRouter();
-		router.processEndpointMessage(this, messages);
+		router.processEndpointMessage(this, messages, MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
 	}
 
 	/**
@@ -139,5 +137,24 @@ public class OMLBaseImpl extends OMLBase implements
 	@Override
 	public void getFunction(String port, String pin) {
 		this.endpoint.sendCommandPinInput(port, pin);
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public boolean hasTopicSigned(String topic) {
+		return signedTopic.contains(topic);
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	protected void intializeSignedTopic() {
+		signedTopic.add(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM);
+		signedTopic.add(MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
+		signedTopic.add(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_DLL);
+		signedTopic.add(MessageBase.MESSAGE_TOPIC_TEST);
 	}
 }

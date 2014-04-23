@@ -29,11 +29,10 @@ public class Broker {
      * @param sendingClient
      * @param message
      */
-    protected void publish(BrokerClient sendingClient, String message) {
+    protected void publish(BrokerClient sendingClient, String message, String topic) {
         for(BrokerClient client : Broker.clients) {
             
-        	if(client != sendingClient) {
-                
+        	if(client.hasTopicSigned(topic)) {
             	client.receive(message);
             }
         }

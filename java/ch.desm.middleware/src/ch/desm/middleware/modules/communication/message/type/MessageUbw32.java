@@ -13,9 +13,7 @@ public class MessageUbw32 extends MessageBase {
 
 	public static final String MESSAGE_CHAR_OUTPUT = "o";
 	public static final String MESSAGE_CHAR_INPUT = "i";
-	public static final String MESSAGE_CHAR_EXTERN = "e";
-	public static final String MESSAGE_CHAR_INTERN = "i";
-	public static final String MESSAGE_CHAR_EXTERNINTERN = "ei";
+	public static final String MESSAGE_CHAR_ONLYSOFTWARE = "os";
 	/**
 	 * TODO refactoring
 	 */
@@ -55,7 +53,7 @@ public class MessageUbw32 extends MessageBase {
 
 	public boolean isDigital;
 	
-	public MessageUbw32(String payload, EnumMessageTopic topic) {
+	public MessageUbw32(String payload, String topic) {
 		super(payload, topic);
 		
 		this.listAnalog = new ArrayList<EndpointUbw32PortAnalog>();
@@ -199,16 +197,6 @@ public class MessageUbw32 extends MessageBase {
 	 String s = super.toString();
 	 
 	 if(isDigital){
-		 s += "analog message: ";
-		 s += "PortAN0: " + portAN0.getValue();
-//		 s += "PortAN1: " + portAN0.getValue();
-//		 s += "PortAN2: " + portAN0.getValue();
-//		 s += "PortAN3: " + portAN0.getValue();
-//		 s += "PortAN4: " + portAN0.getValue();
-//		 s += "PortAN5: " + portAN0.getValue();
-//		 s += "PortAN6: " + portAN0.getValue();
-//		 ....
-	 }else{
 		 s += "digital message: ";
 		 s += "PortA: " + portA.getPinBitMask();
 		 s += ", ";
@@ -223,6 +211,17 @@ public class MessageUbw32 extends MessageBase {
 		 s += "PortF: " + portF.getPinBitMask();
 		 s += ", ";
 		 s += "PortG: " + portG.getPinBitMask();
+	 }else{
+		 s += "analog message: ";
+		 s += "PortAN0: " + portAN0.getValue();
+//		 s += "PortAN1: " + portAN0.getValue();
+//		 s += "PortAN2: " + portAN0.getValue();
+//		 s += "PortAN3: " + portAN0.getValue();
+//		 s += "PortAN4: " + portAN0.getValue();
+//		 s += "PortAN5: " + portAN0.getValue();
+//		 s += "PortAN6: " + portAN0.getValue();
+//		 ....
+
 	 }
 
 	

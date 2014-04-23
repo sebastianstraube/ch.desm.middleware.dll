@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import ch.desm.middleware.modules.communication.message.type.MessageBase;
 import ch.desm.middleware.modules.communication.message.type.MessageMiddleware;
-import ch.desm.middleware.modules.communication.message.type.MessageBase.EnumMessageTopic;
 
 abstract class MessageTranslatorMiddlewareBase {
 
@@ -21,14 +20,14 @@ abstract class MessageTranslatorMiddlewareBase {
 	private static final int FUNCTION = 4;
 	private static final int INSTANCE = 5;
 	private static final int PARAMETER = 6;
+	private static final int TOPIC = 7;
 
-	protected ArrayList<MessageMiddleware> decodeMiddlewareMessages(String message,
-			EnumMessageTopic topic) {
+	protected ArrayList<MessageMiddleware> decodeMiddlewareMessages(String message) {
 		String[] messageArray = message.split(MESSAGE_CUT);
 		ArrayList<MessageMiddleware> messageList = new ArrayList<MessageMiddleware>();
 
 		for (int i = 0; i < messageArray.length; i++) {
-			messageList.add(decodeMiddlewareMessage(messageArray[i], topic));
+			messageList.add(decodeMiddlewareMessage(messageArray[i]));
 		}
 		return messageList;
 	}
@@ -41,15 +40,14 @@ abstract class MessageTranslatorMiddlewareBase {
 	 * @param message
 	 * @return {@link MessageBase}
 	 */
-	private MessageMiddleware decodeMiddlewareMessage(String message,
-			EnumMessageTopic topic) {
+	private MessageMiddleware decodeMiddlewareMessage(String message) {
 		MessageMiddleware messageCommon = null;
 		try {
 			if (message == null || message.isEmpty()) {
 				throw new Exception("there is no message to translate");
 			} else {
 				String[] parts = message.split(ELEMENT_CUT);
-				messageCommon = new MessageMiddleware(topic, parts[ID], parts[EXTERN_INTERN],
+				messageCommon = new MessageMiddleware(parts[TOPIC], parts[ID], parts[EXTERN_INTERN],
 						parts[ELEMENT], parts[FUNCTION], parts[INSTANCE],
 						parts[PARAMETER], message, parts[OUTPUT_INPUT]);
 			}

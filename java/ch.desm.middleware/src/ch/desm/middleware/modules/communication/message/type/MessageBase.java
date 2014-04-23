@@ -1,16 +1,18 @@
 package ch.desm.middleware.modules.communication.message.type;
 
-import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32;
 
 public abstract class MessageBase{
 	
-	public enum EnumMessageTopic{
-		SUMLATION, INTERLOCKING, CABINE
-	}
+	public static final String MESSAGE_TOPIC_SIMULATION_LOCSIM = "Locsim";
+	public static final String MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232_CONFIG = "Locsim-Rs232-configuration";
+	public static final String MESSAGE_TOPIC_SIMULATION_LOCSIM_DLL = "Locsim-DLL";
+	public static final String MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232 = "Locsim-Rs232";
+	public static final String MESSAGE_TOPIC_CABINE_RE420 = "KabineRe420";
+	public static final String MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU= "StellwerkObermattLagnau";
+	public static final String MESSAGE_TOPIC_TEST = "Test";
 	
-	public EnumMessageTopic topic;
+	private String topic;
     private String messageId;
-    private boolean isReturnMessage;
 	private String payload;
 	
     /**
@@ -26,7 +28,7 @@ public abstract class MessageBase{
      * @param messageType 
      * 
      */
-    public MessageBase(String payload, EnumMessageTopic topic) {
+    public MessageBase(String payload, String topic) {
     	this();
     	this.payload = payload;
     	this.topic = topic;
@@ -39,8 +41,6 @@ public abstract class MessageBase{
 		s += "topic: " + topic;
 		s += ", ";
     	s+= "messageId: "+messageId;
-    	s+= ", ";
-    	s+= "isReturnMessage: " + isReturnMessage;
 //    	s+= ", ";
 //    	s+= "payload: "+payload;
     	
@@ -48,29 +48,14 @@ public abstract class MessageBase{
     }
     
     public String getMessageId() {
-        return messageId;
+        return this.messageId;
     }
     
     public String getPayload(){
     	return this.payload;
     }
     
-	/**
-	 * 
-	 * @param message
-	 * @return true if the ubw32 returns a state package
-	 */
-	public boolean isReturnMessage() {
-		boolean isReturnMessage = false;
-
-		if (payload.startsWith(EndpointUbw32.RETURN_INPUT_ANALOG)) {
-			isReturnMessage = true;
-		} else if (payload.startsWith(EndpointUbw32.RETURN_INPUT_STATE)) {
-			isReturnMessage = true;
-		} else if (payload.startsWith(EndpointUbw32.RETURN_PIN_INPUT)) {
-			isReturnMessage = true;
-		}
-
-		return isReturnMessage;
-	}
+    public String getTopic(){
+    	return this.topic;
+    }
 }

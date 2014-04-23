@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class LocsimEndpointRs232Data extends LocsimConfiguration {
+public class LocsimEndpointRs232Data {
 
 	public static final String LOCSIM_INIT_MESSAGE = "INI";
+	public static final String LOCSIM_RS232_IDENTIFIER_CONFIG = "locsim.rs232.config";
 	public static final String LOCSIM_RS232_IDENTIFIER = "locsim.rs232";
 	
 	private Map<String, String> mapGlobalIdToLocsimRs232;
@@ -16,18 +17,18 @@ public class LocsimEndpointRs232Data extends LocsimConfiguration {
 		this.intializeMapGlobalIdToLocsimRs232();
 	}
 
-	public boolean isLocsimRs232Message(String message){
-		if(message.contains(LOCSIM_RS232_IDENTIFIER)){
-			return true;
-		}
-		
-		return false;
+	public boolean isLocsimRs232ConfigurationMessage(String message){
+		return message.startsWith(LOCSIM_RS232_IDENTIFIER_CONFIG);
+	}
+	
+	public boolean isLocsimRs232DataMessage(String message){
+		return message.startsWith(LOCSIM_RS232_IDENTIFIER);
 	}
 	
 	public String getGlobalIdFromMapGlobalIdToLocsimRs232(String value){
 		
 		for(Entry<String, String> entry : mapGlobalIdToLocsimRs232.entrySet()){
-			if(entry.getValue().contains(value)){
+			if(entry.getValue().startsWith(value)){
 				return entry.getKey();
 			}
 		}

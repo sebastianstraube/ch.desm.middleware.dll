@@ -46,7 +46,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	public static final String RETURN_PIN_INPUT = "PI";
 	public static final String RETURN_INPUT_ANALOG = "IA";
 	public static final String MESSAGE_TERMINATOR = "\n";
-	public static final int UBW32_POLLING_WAIT = 100000;
+	public static final int POLLING_WAIT_TIME = 512;
 	
 	protected String configurationDigital;
 	private String pinbitMaskInputAnalog;
@@ -64,7 +64,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 		this.ignoreUbw32ControlMessages = false;
 		this.pinbitMaskInputAnalog = pinbitMaskInputAnalog;
 		this.configurationDigital = configurationDigital;
-		this.polling = new EndpointUbw32Polling(this, UBW32_POLLING_WAIT);
+		this.polling = new EndpointUbw32Polling(this, POLLING_WAIT_TIME);
 		
 		this.initialize();
 	}
@@ -79,12 +79,31 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	private void initialize() {
 		this.sendCommandConfigureUbw32(); // disable OK return packet
 		this.sendCommandVersion();
-		this.sendCommandConfigure(configurationDigital);
-		this.sendCommandConfigureAnalogInputs(pinbitMaskInputAnalog);
+		
+		if(isConfigurationDigitalAvailable())this.sendCommandConfigure(configurationDigital);
+		if(isPinBitMaskAnalogAvailable())this.sendCommandConfigureAnalogInputs(pinbitMaskInputAnalog);
 		
 		this.polling.start();
 	}
 
+	
+	
+		public boolean isConfigurationDigitalAvailable(){
+			if(configurationDigital != null && !configurationDigital.isEmpty()){
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean isPinBitMaskAnalogAvailable(){
+		if(pinbitMaskInputAnalog != null && !pinbitMaskInputAnalog.isEmpty() && !pinbitMaskInputAnalog.equals("0")){
+			return true;
+		}
+		return false;
+	}
+	
+	
 	@Override
 	/**
 	 * this listener receives a command from UBW32

@@ -10,7 +10,7 @@ import ch.desm.middleware.modules.communication.message.translator.MessageTransl
 public abstract class EndpointDll extends EndpointCommon implements
 		EndpointDllListenerInterface {
 
-	private static final int POLLING_WAIT_TIME = 1000;
+	public static final int POLLING_WAIT_TIME = 2048;
 	private Dll dll;
 	private EndpointDllPolling eventPollingDaemonDll;
 	
@@ -47,7 +47,7 @@ public abstract class EndpointDll extends EndpointCommon implements
 			message = messageTranslatorDllObjects.translateObjectToMiddlewareMessage((EndpointDllObjectWeiche)obj);
 		}else{
 			
-			System.err.println("Translation does not support yet endpoint object: " + obj.getClass());
+			System.out.println("Translation does not support yet endpoint object: " + obj.getClass());
 		}
 		
 		if(!message.isEmpty()){

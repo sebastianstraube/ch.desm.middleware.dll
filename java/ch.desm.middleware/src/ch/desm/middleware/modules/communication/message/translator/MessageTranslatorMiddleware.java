@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import ch.desm.middleware.modules.communication.message.type.MessageMiddleware;
 import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
-import ch.desm.middleware.modules.communication.message.type.MessageBase.EnumMessageTopic;
 
 /**
  * TODO implementation
@@ -24,8 +23,8 @@ public class MessageTranslatorMiddleware extends MessageTranslatorMiddlewareBase
 	 * @param message
 	 * 
 	 */
-	public ArrayList<MessageMiddleware> translateToCommonMessageObjectList(String message, EnumMessageTopic topic){
-		return decodeMiddlewareMessages(message, topic);
+	public ArrayList<MessageMiddleware> translateToCommonMessageObjectList(String message){
+		return decodeMiddlewareMessages(message);
 	}
 	
 	/**
@@ -43,7 +42,7 @@ public class MessageTranslatorMiddleware extends MessageTranslatorMiddlewareBase
 	 * @param payload
 	 * @return
 	 */
-	public MessageUbw32 decodeUbw32EndpointMessage(String payload, EnumMessageTopic topic){
+	public MessageUbw32 decodeUbw32EndpointMessage(String payload, String topic){
 		MessageUbw32 messageUbw32 = new MessageUbw32(payload, topic);
 		
 		return messageUbw32;

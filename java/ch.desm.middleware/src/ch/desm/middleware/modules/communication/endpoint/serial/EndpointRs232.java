@@ -12,9 +12,7 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	protected SerialPort serialPort;
 
 	public static enum EnumSerialPorts {
-		COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9,
-		COM10, COM11, COM12, COM13, COM14, COM15, COM16, COM17,
-		COM18, COM19, COM20, COM21, COM22
+		COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9, COM10, COM11, COM12, COM13, COM14, COM15, COM16, COM17, COM18, COM19, COM20, COM21, COM22
 	}
 
 	public EndpointRs232(EnumSerialPorts enumSerialPort) {
@@ -27,7 +25,6 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 		this.initializeSerialPorts();
 		this.getSerialPortName();
 	}
-	
 
 	/**
 	 * 
@@ -40,7 +37,7 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -94,24 +91,12 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	 * sending a stream to serial port
 	 * 
 	 * @param stream
-	 * @throws SerialPortException 
+	 * @throws SerialPortException
 	 */
-	protected void sendStream(String stream) throws SerialPortException {
-		boolean isSendOk = false;
-
-		isSendOk = serialPort.writeString(stream);
-
-		if (isSendOk) {
+	protected synchronized void sendStream(String stream) throws SerialPortException {
+		if (serialPort.writeString(stream)) {
 			System.out.println(serialPort.getPortName() + " send stream: " + stream);
-		}else{
-			try {
-				throw new Exception(serialPort.getPortName() + " failed send stream: " + stream);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
-
 	}
 
 	@Override
@@ -122,13 +107,14 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	 */
 	public synchronized void serialEvent(SerialPortEvent event) {
 		String message = this.getSerialPortMessage(event);
-		System.out.println("received serial port message on port: " + this.serialPort.getPortName() + " with message: "+ message);
+		System.out.println("received serial port message on port: "
+				+ this.serialPort.getPortName() + " with message: " + message);
 
 	}
-	
-	protected String getSerialPortMessage(SerialPortEvent event){
-		String message ="";
-		
+
+	protected String getSerialPortMessage(SerialPortEvent event) {
+		String message = "";
+
 		if (event.isRXCHAR()) {
 
 			if (event.getEventValue() > 1) {
@@ -162,7 +148,7 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 				System.out.println(this.serialPort.getClass() + ":DSR - OFF");
 			}
 		}
-	
-	return message;
+
+		return message;
 	}
 }

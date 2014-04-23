@@ -19,10 +19,10 @@ public class MessageCommon extends MessageBase {
 	protected String instance;
 
 	public MessageCommon(MessageUbw32 message) {
-		super(message.getPayload(), message.topic);
+		super(message.getPayload(), message.getTopic());
 	}
 	
-	public MessageCommon(EnumMessageTopic topic, String globalId, String externIntern,
+	public MessageCommon(String topic, String globalId, String externIntern,
 			String element, String function, String instance, String parameter,
 			String payload) {
 		super(payload, topic);

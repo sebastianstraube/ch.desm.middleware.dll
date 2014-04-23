@@ -4,9 +4,17 @@ import ch.desm.middleware.modules.communication.endpoint.dll.EndpointDll;
 
 public class LocsimEndpointDll extends EndpointDll {
 
+	LocsimEndpointDllData data;
+	
 	public LocsimEndpointDll(String configPath) {
 		super(configPath);
-		// TODO Auto-generated constructor stub
+		
+		data = new LocsimEndpointDllData();
+	}
+	
+	
+	public LocsimEndpointDllData getConfiguration(){
+		return this.data;
 	}
 
 }

@@ -23,22 +23,32 @@ public class MessageRouter {
 
 	/**
 	 * 
-	 * TODO Implementation
-	 * 
 	 * @param component
 	 * @param message
 	 */
-	public void processEndpointMessage(ComponentBase component, String message) {
-		component.publish(message);
+	public void processEndpointMessage(ComponentBase component, String message, String topic) {
+		if (message != null && !message.isEmpty()) {
+			component.publish(message, topic);
+		}
 	}
 
+	/**
+	 * 
+	 * @param impl
+	 * @param messages
+	 */
 	public void processBrokerMessage(LocsimBaseImpl impl,
 			ArrayList<MessageMiddleware> messages) {
 		for (MessageMiddleware message : messages) {
 			this.processBrokerMessage(impl, message);
 		}
 	}
-	
+
+	/**
+	 * 
+	 * @param impl
+	 * @param messages
+	 */
 	public void processBrokerMessage(TestBaseImpl impl,
 			ArrayList<MessageMiddleware> messages) {
 		for (MessageMiddleware message : messages) {
@@ -46,6 +56,11 @@ public class MessageRouter {
 		}
 	}
 
+	/**
+	 * 
+	 * @param impl
+	 * @param messages
+	 */
 	public void processBrokerMessage(Re420BaseImpl impl,
 			ArrayList<MessageMiddleware> messages) {
 		for (MessageMiddleware message : messages) {
@@ -53,123 +68,169 @@ public class MessageRouter {
 		}
 	}
 
+	/**
+	 * 
+	 * @param impl
+	 * @param messages
+	 */
 	public void processBrokerMessage(OMLBaseImpl impl,
 			ArrayList<MessageMiddleware> messages) {
+
 		for (MessageMiddleware message : messages) {
 			this.processBrokerMessage(impl, message);
 		}
 	}
-	
-	private void processBrokerMessage(LocsimBaseImpl impl, MessageMiddleware message) {
-		
-		
-		
-		
-		
-	}
 
-	private void processBrokerMessage(TestBaseImpl impl, MessageMiddleware message) {
-
-		String value = getParameterValue(message.getParameter());
+	/**
+	 * TODO implementation
+	 * 
+	 * @param impl
+	 * @param message
+	 */
+	private void processBrokerMessage(LocsimBaseImpl impl,
+			MessageMiddleware message) {
 		
-		boolean isInput = message.getOutputInput().equals(
-				MessageUbw32.MESSAGE_CHAR_INPUT);
-
-		if (impl.getEndpoint().getConfiguration()
-				.isKeyAvailable(message.getGlobalId())) {
-			System.out.println(impl.getClass() + ">processBrokerMessage:"
-					+ message);
-
-			EnumEndpointUbw32RegisterDigital endpointRegister = impl
-					.getEndpoint().getConfiguration().getMapInputDigital()
-					.get(message.getGlobalId());
-			String registerName = String.valueOf(endpointRegister.name().charAt(0));
-			String pin = String.valueOf(endpointRegister.name().charAt(1));
-
-			if (isInput) {
-				impl.getFunction(registerName, pin);
-			} else {
-				impl.setFunction(registerName, pin, value);
-			}
-		} else {
-			System.out.println(impl.getClass()
-					+ "> processBrokerMessage skipped:" + message);
+		if (impl.hasTopicSigned(message.getTopic())) {
+			System.err
+			.println("processing broker message LocsimBaseImpl not implemented!");			
 		}
 	}
 
-	private void processBrokerMessage(Re420BaseImpl impl, MessageMiddleware message) {
+	/**
+	 * TODO refactoring
+	 * 
+	 * @param impl
+	 * @param message
+	 */
+	private void processBrokerMessage(TestBaseImpl impl,
+			MessageMiddleware message) {
 
-		String value = getParameterValue(message.getParameter());
-		boolean isInput = message.getOutputInput().equals(
-				MessageUbw32.MESSAGE_CHAR_INPUT);
+		if (impl.hasTopicSigned(message.getTopic())) {
 
-		if (impl.getEndpoint().getConfiguration()
-				.isKeyAvailable(message.getGlobalId())) {
-			System.out.println(impl.getClass() + ">processBrokerMessage:"
-					+ message);
+			String value = getParameterValue(message.getParameter());
 
-			EnumEndpointUbw32RegisterDigital endpointRegister = impl
-					.getEndpoint().getConfiguration().getMapInputDigital()
-					.get(message.getGlobalId());
-			String registerName = String.valueOf(endpointRegister.name().charAt(0));
-			String pin = String.valueOf(endpointRegister.name().charAt(1));
+			boolean isInput = message.getOutputInput().equals(
+					MessageUbw32.MESSAGE_CHAR_INPUT);
 
-			if (isInput) {
-				impl.getFunction(registerName, pin);
+			if (impl.getEndpoint().getConfiguration()
+					.isKeyAvailable(message.getGlobalId())) {
+				System.out.println(impl.getClass() + ">processBrokerMessage:"
+						+ message);
+
+				EnumEndpointUbw32RegisterDigital endpointRegister = impl
+						.getEndpoint().getConfiguration().getMapInputDigital()
+						.get(message.getGlobalId());
+				String registerName = String.valueOf(endpointRegister.name()
+						.charAt(0));
+				String pin = String.valueOf(endpointRegister.name().charAt(1));
+
+				if (isInput) {
+					impl.getFunction(registerName, pin);
+				} else {
+					impl.setFunction(registerName, pin, value);
+				}
 			} else {
-				impl.setFunction(registerName, pin, value);
+				System.out.println(impl.getClass()
+						+ "> processBrokerMessage skipped:" + message);
 			}
-		} else {
-			System.out.println(impl.getClass()
-					+ "> processBrokerMessage skipped:" + message);
 		}
 	}
 
-	private void processBrokerMessage(OMLBaseImpl impl, MessageMiddleware message) {
+	/**
+	 * TODO refactoring
+	 * 
+	 * @param impl
+	 * @param message
+	 */
+	private void processBrokerMessage(Re420BaseImpl impl,
+			MessageMiddleware message) {
 
-		String value = getParameterValue(message.getParameter());
-		boolean isInput = message.getOutputInput().equals(
-				MessageUbw32.MESSAGE_CHAR_INPUT);
+		if (impl.hasTopicSigned(message.getTopic())) {
+			String value = getParameterValue(message.getParameter());
+			boolean isInput = message.getOutputInput().equals(
+					MessageUbw32.MESSAGE_CHAR_INPUT);
 
-		if (impl.getEndpoint().getConfiguration()
-				.isKeyAvailable(message.getGlobalId())) {
-			System.out.println(impl.getClass() + ">processBrokerMessage:"
-					+ message);
+			if (impl.getEndpoint().getConfiguration()
+					.isKeyAvailable(message.getGlobalId())) {
+				System.out.println(impl.getClass() + ">processBrokerMessage:"
+						+ message);
 
-			EnumEndpointUbw32RegisterDigital endpointRegister = impl
-					.getEndpoint().getConfiguration().getMapInputDigital()
-					.get(message.getGlobalId());
-			String registerName = String.valueOf(endpointRegister.name().charAt(0));
-			String pin = String.valueOf(endpointRegister.name().charAt(1));
+				EnumEndpointUbw32RegisterDigital endpointRegister = impl
+						.getEndpoint().getConfiguration().getMapInputDigital()
+						.get(message.getGlobalId());
+				String registerName = String.valueOf(endpointRegister.name()
+						.charAt(0));
+				String pin = String.valueOf(endpointRegister.name().charAt(1));
 
-			if (isInput) {
-				impl.getFunction(registerName, pin);
+				if (isInput) {
+					impl.getFunction(registerName, pin);
+				} else {
+					impl.setFunction(registerName, pin, value);
+				}
 			} else {
-				impl.setFunction(registerName, pin, value);
+				System.out.println(impl.getClass()
+						+ "> processBrokerMessage skipped:" + message);
 			}
-		} else {
-			System.out.println(impl.getClass()
-					+ "> processBrokerMessage skipped:" + message);
 		}
 	}
-	
+
+	/**
+	 * TODO refactoring
+	 * 
+	 * @param impl
+	 * @param message
+	 */
+	private void processBrokerMessage(OMLBaseImpl impl,
+			MessageMiddleware message) {
+
+		if (impl.hasTopicSigned(message.getTopic())) {
+
+			String value = getParameterValue(message.getParameter());
+			boolean isInput = message.getOutputInput().equals(
+					MessageUbw32.MESSAGE_CHAR_INPUT);
+
+			if (impl.getEndpoint().getConfiguration()
+					.isKeyAvailable(message.getGlobalId())) {
+				System.out.println(impl.getClass() + ">processBrokerMessage:"
+						+ message);
+
+				EnumEndpointUbw32RegisterDigital endpointRegister = impl
+						.getEndpoint().getConfiguration().getMapInputDigital()
+						.get(message.getGlobalId());
+				String registerName = String.valueOf(endpointRegister.name()
+						.charAt(0));
+				String pin = String.valueOf(endpointRegister.name().charAt(1));
+
+				if (isInput) {
+					impl.getFunction(registerName, pin);
+				} else {
+					impl.setFunction(registerName, pin, value);
+				}
+			} else {
+				System.out.println(impl.getClass()
+						+ "> processBrokerMessage skipped:" + message);
+			}
+		}
+	}
+
 	/**
 	 * TODO refactoring move to translator
+	 * 
 	 * @param value
 	 * @return
 	 */
-	private String getParameterValue(String value){
+	private String getParameterValue(String value) {
 		String returnValue = "";
-		
-		switch(value){
-			case MessageUbw32.MESSAGE_PARAMETER_OFF:{
-				returnValue = "1";
-				break;
-			}
-			case MessageUbw32.MESSAGE_PARAMETER_ON:{
-				returnValue = "0";
-				break;
-			}
+
+		switch (value) {
+		case MessageUbw32.MESSAGE_PARAMETER_OFF: {
+			returnValue = "1";
+			break;
+		}
+		case MessageUbw32.MESSAGE_PARAMETER_ON: {
+			returnValue = "0";
+			break;
+		}
 		}
 		return returnValue;
 	}
