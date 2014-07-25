@@ -17,15 +17,19 @@ public class LocsimBaseImpl extends LocsimBase implements
 
 	private LocsimEndpointDllData dataDll;
 	private LocsimEndpointRs232Data dataRs232;
+	private LocsimEndpointRs232Parser rs232Parser;
 	private LocsimMiddlewareMessagesRs232 midllewareMessagesRs232;
 	private LocsimMiddlewareMessagesDll middlewareMessagesDll;
 
+	private final String initializationMessage = "locsim.rs232.config.ini1;os;0;configuration;initialisation;start;ini1;locsim-rs232-configuration;#";
+	
 	public LocsimBaseImpl(Broker broker, LocsimEndpointRs232 endpointRs232,
 			LocsimEndpointDll endpointDll) {
 		super(broker, endpointRs232, endpointDll);
 
 		this.dataDll = new LocsimEndpointDllData();
 		this.dataRs232 = new LocsimEndpointRs232Data();
+		this.rs232Parser = new LocsimEndpointRs232Parser();
 		this.middlewareMessagesDll = new LocsimMiddlewareMessagesDll();
 		this.midllewareMessagesRs232 = new LocsimMiddlewareMessagesRs232();
 
@@ -34,8 +38,11 @@ public class LocsimBaseImpl extends LocsimBase implements
 
 	@Override
 	public void onIncomingEndpointMessage(String message) {
-		System.out.println("endpoint (" + this.getClass()
-				+ ") received message: " + message);
+		System.out.print("endpoint (" + this.getClass() + ") received message: ");
+		
+		if(!message.isEmpty()){
+			System.out.println(Byte.valueOf(message));
+		}
 
 		if (dataDll.isLocsimDllMessage(message)) {
 			processEndpointDataDll(message);
@@ -72,13 +79,14 @@ public class LocsimBaseImpl extends LocsimBase implements
 			
 			if (dataDll.isLocsimDllMessage(element.getGlobalId())) {
 				System.out.println("dll messsage");
-
+				//TODO implementation
+				
 			} else if (dataRs232.isLocsimRs232ConfigurationMessage(element.getGlobalId())) {
 
 				endpointRs232.sendMessage(element.getParameter().toUpperCase());
 
 			} else if (dataRs232.isLocsimRs232DataMessage(element.getGlobalId())) {
-				String locsimRs232Message = "";
+				String locsimRs232Message = initializationMessage;
 
 				locsimRs232Message = dataRs232.getValueFromMapGlobalIdToLocsimRs232(element.getGlobalId());
 				
@@ -108,8 +116,8 @@ public class LocsimBaseImpl extends LocsimBase implements
 	 * send "INI1" command to Locsim
 	 */
 	private void initializeLocsim() {
-		publish("locsim.rs232.config.ini1;os;0;configuration;initialisation;start;ini1;locsim-rs232-configuration;#",
-				MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232_CONFIG);
+			publish(initializationMessage,
+					MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232_CONFIG);		
 	}
 
 	/**
@@ -119,21 +127,17 @@ public class LocsimBaseImpl extends LocsimBase implements
 	 */
 	private void processEndpointDataDll(String message) {
 
-		MessageLocsimDll messageDll = new MessageLocsimDll(message,
-				MessageCommon.MESSAGE_TOPIC_SIMULATION_LOCSIM_DLL);
+		MessageLocsimDll messageDll = new MessageLocsimDll(message, MessageCommon.MESSAGE_TOPIC_SIMULATION_LOCSIM_DLL);
 
 		String stream = "";
-
+ 
 		if (messageDll.isGleislistMessage()) {
-			System.out
-					.println("processEndpointDataDll: not yet supported message: "
-							+ message);
+			System.out.println("processEndpointDataDll: not yet supported message: " + message);
 
 		} else if (messageDll.isSignalMessage()) {
 
-			stream = middlewareMessagesDll
-					.getMiddlewareMessageFromGlobalId(messageDll.getGlobalId()
-							+ "." + messageDll.getDataId());
+			String id = messageDll.getGlobalId() + "." + messageDll.getDataId();
+			stream = middlewareMessagesDll.getMiddlewareMessageFromGlobalId(id);
 
 			if (stream == null) {
 				try {
@@ -149,58 +153,50 @@ public class LocsimBaseImpl extends LocsimBase implements
 			}
 
 		} else if (messageDll.isTrackMessage()) {
-//			TODO
+//			TODO implementation
 			// System.out.println("processEndpointDataDll: not yet supported message: "
 			// + message);
 
 		} else if (messageDll.isTrainpositionMessage()) {
-//			TODO
+//			TODO implementation
 			// System.out.println("processEndpointDataDll: not yet supported message: "
 			// + message);
 
 		} else if (messageDll.isWeicheMessage()) {
-//			TODO
+//			TODO implementation
 			// System.out.println("processEndpointDataDll: not yet supported message: "
 			// + message);
 
 		} else {
-			System.err
-					.println("processEndpointDataDll: not supported message: "
-							+ message);
+			System.err.println("processEndpointDataDll: not supported message: " + message);
 		}
 
 		MessageRouter router = new MessageRouter();
-		router.processEndpointMessage(this, stream,
-				MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_DLL);
+		router.processEndpointMessage(this, stream, MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_DLL);
 	}
 
 	/**
-	 * TODO implementation of different data values
-	 * 
-	 * Message Definition:
-	 * 
-	 * byte			0 		1 			2-3 	4-7 		8 
-	 * direction	start	Signalart 	Kanal 	Data 		ende
-	 * to locsim	[X]		[D,L,S,U,V]	[00-99] [0000-FFFF] [Y]
-	 * from locsim	[X]		[U,V]		[00-99] [0000-FFFF] [Y]
-	 * 
-	 * @param message
+	 * @param data
 	 */
-	private void processEndpointDataRs232(String message) {
-		MessageLocsimRs232 messageRs232 = new MessageLocsimRs232(message,
-				MessageCommon.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
-
-		String globalId = dataRs232
-				.getGlobalIdFromMapGlobalIdToLocsimRs232(message);
+	private void processEndpointDataRs232(String data) {
+		rs232Parser.addData(data);
+		
+		String message;
+		while((message = rs232Parser.pop()) != null) {
+			
+		}
+		
+		MessageLocsimRs232 messageRs232 = new MessageLocsimRs232(message, MessageCommon.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
+		String globalId = dataRs232.getGlobalIdFromMapGlobalIdToLocsimRs232(messageRs232.getSignalType(), messageRs232.getChannel());
 		String stream = middlewareMessagesDll.getMessages().get(globalId);
 		
-		String parameter = (messageRs232.getData() >= 1 ? "on" : "off");
+		//TODO implementation of different data value (global message)
+		String parameter = (messageRs232.isCommandEnable() ? "on" : "off");
 		
 		stream = stream.replaceAll(MessageCommon.PARAMETER_PLACEHOLDER, parameter);
 
 		MessageRouter router = new MessageRouter();
-		router.processEndpointMessage(this, stream,
-				MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
+		router.processEndpointMessage(this, stream, MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
 	}
 
 	/**
@@ -217,12 +213,10 @@ public class LocsimBaseImpl extends LocsimBase implements
 	@Override
 	protected void intializeSignedTopic() {
 		signedTopic.add(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM);
-		signedTopic
-				.add(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232_CONFIG);
+		signedTopic.add(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232_CONFIG);
 		signedTopic.add(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_DLL);
 		signedTopic.add(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
-		signedTopic
-				.add(MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
+		signedTopic.add(MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
 		signedTopic.add(MessageBase.MESSAGE_TOPIC_CABINE_RE420);
 		signedTopic.add(MessageBase.MESSAGE_TOPIC_TEST);
 	}

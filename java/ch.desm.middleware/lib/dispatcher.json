@@ -1,0 +1,6 @@
+{
+	"mode": "server",
+	"host": "localhost",
+	"port": 2712,
+	"timeout": 1000
+}

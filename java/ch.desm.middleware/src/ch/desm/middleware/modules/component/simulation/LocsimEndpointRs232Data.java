@@ -25,10 +25,10 @@ public class LocsimEndpointRs232Data {
 		return message.startsWith(LOCSIM_RS232_IDENTIFIER);
 	}
 	
-	public String getGlobalIdFromMapGlobalIdToLocsimRs232(String value){
+	public String getGlobalIdFromMapGlobalIdToLocsimRs232(String signalType, String channel){
 		
 		for(Entry<String, String> entry : mapGlobalIdToLocsimRs232.entrySet()){
-			if(entry.getValue().startsWith(value)){
+			if(entry.getValue().startsWith("X"+signalType+channel)){
 				return entry.getKey();
 			}
 		}

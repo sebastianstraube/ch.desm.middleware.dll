@@ -21,6 +21,7 @@ abstract class LocsimBase extends ComponentBase {
 		this.registerEndpointListener(endpointDll);
 	}
 	
+	
 	@Override
 	protected void registerEndpointListener(
 			EndpointBase listener) {

@@ -4,34 +4,44 @@ import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232.EnumSerialPorts;
 import ch.desm.middleware.modules.component.cabine.Re420BaseImpl;
 import ch.desm.middleware.modules.component.cabine.Re420EndpointUbw32;
+import ch.desm.middleware.modules.component.interlocking.OMLBaseImpl;
+import ch.desm.middleware.modules.component.interlocking.OMLEndpointUbw32;
 import ch.desm.middleware.modules.component.simulation.LocsimBaseImpl;
 import ch.desm.middleware.modules.component.simulation.LocsimEndpointDll;
 import ch.desm.middleware.modules.component.simulation.LocsimEndpointRs232;
+import ch.desm.middleware.modules.component.simulation.LocsimEndpointRs232Parser;
 import ch.desm.middleware.modules.component.test.TestBaseImpl;
 import ch.desm.middleware.modules.component.test.TestEndpointUbw32;
 
 public class Main {
 
 	public static void main(String[] args) {
-		testCaseLocsimEndpointDllRs232Ubw();
-
+		//testCaseLocsimEndpointDllRs232Ubw();
+		
+		//LocsimEndpointRs232Parser.runTests();
+		
 		// testCaseEndpointToEndpoint();
 
 		// testPWM(args);
 	}
-
+	
 	public static void testCaseLocsimEndpointDllRs232Ubw() {
+		System.out.println(System.getProperty("java.library.path"));
+		
 		Broker broker = new Broker();
 
-		Re420EndpointUbw32 re420EndpointUbw32 = new Re420EndpointUbw32(
-				EnumSerialPorts.COM22);
-		Re420BaseImpl re420Impl = new Re420BaseImpl(broker, re420EndpointUbw32);
-
-		LocsimEndpointDll endpointDll = new
-				LocsimEndpointDll("C:\\svn.it-hotspot.de\\Projekte\\DESM\\Simulationskomponenten\\ch.desm.middleware\\Dispatcher-DLL\\Debug\\dispatcher.json");
+		//Test Cabine
+//		Re420EndpointUbw32 re420EndpointUbw32 = new Re420EndpointUbw32(
+//				EnumSerialPorts.COM13);
+//		Re420BaseImpl re420Impl = new Re420BaseImpl(broker, re420EndpointUbw32);
 		
-		LocsimEndpointRs232 endpointRs232 = new LocsimEndpointRs232(EnumSerialPorts.COM8);
+		//Test Interlocking
+//		OMLEndpointUbw32 omlEndpoint = new OMLEndpointUbw32(EnumSerialPorts.COM12);
+//		OMLBaseImpl OmlImpl = new OMLBaseImpl(broker, omlEndpoint);
 		
+		//Test Simulation
+		LocsimEndpointDll endpointDll = new LocsimEndpointDll("dispatcher.json");
+		LocsimEndpointRs232 endpointRs232 = new LocsimEndpointRs232(EnumSerialPorts.COM5);
 		LocsimBaseImpl locsimImpl = new LocsimBaseImpl(broker, endpointRs232, endpointDll);
 	}
 	
@@ -59,10 +69,12 @@ public class Main {
 	}
 
 	public static void testCaseDll() {
+		System.out.println("java.library.path");
+		
 		Broker broker = new Broker();
 
 		LocsimEndpointDll locsimEndpointDll = new LocsimEndpointDll(
-				"C:\\svn.it-hotspot.de\\Projekte\\DESM\\Simulationskomponenten\\ch.desm.middleware\\Dispatcher-DLL\\Debug\\dispatcher.json");
+				"C:\\Users\\J�rg\\Dropbox\\DESM-Verein\\Projekte\\DESM-Middleware\\Middleware\\Dispatcher-DLL\\Debug\\dispatcher.json");
 		LocsimEndpointRs232 locsimEndpointRs232 = new LocsimEndpointRs232(
 				EnumSerialPorts.COM22);
 

@@ -8,7 +8,7 @@ public abstract class MessageBase{
 	public static final String MESSAGE_TOPIC_SIMULATION_LOCSIM_DLL = "Locsim-DLL";
 	public static final String MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232 = "Locsim-Rs232";
 	public static final String MESSAGE_TOPIC_CABINE_RE420 = "KabineRe420";
-	public static final String MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU= "StellwerkObermattLagnau";
+	public static final String MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU= "StellwerkObermattLangnau";
 	public static final String MESSAGE_TOPIC_TEST = "Test";
 	
 	private String topic;

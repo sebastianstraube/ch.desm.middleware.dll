@@ -6,11 +6,10 @@ import java.util.Map;
 public class TestFunctionMessages {
 	public final static String PARAMETER_PLACEHOLDER = "\\?";
 	
-	public static Map<String, String> messages;
+	public Map<String, String> messages;
 	
 	public TestFunctionMessages(){
 		messages = new HashMap<String, String>();
-		
 		this.initialize();
 	}
 	

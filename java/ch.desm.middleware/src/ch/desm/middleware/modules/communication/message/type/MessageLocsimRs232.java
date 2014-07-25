@@ -321,8 +321,8 @@ package ch.desm.middleware.modules.communication.message.type;
 public class MessageLocsimRs232 extends MessageBase {
 
 	private String signalType;
-	private int channel;
-	private int data;
+	private String channel;
+	private String data;
 	
 	/**
 	 * 
@@ -342,23 +342,23 @@ public class MessageLocsimRs232 extends MessageBase {
 
 	private void initialize(String message){
 		signalType = message.substring(1);
-		channel = Integer.valueOf(message.substring(2,3));
-		data = Integer.valueOf(message.substring(4,7));
+		channel = message.substring(2,3);
+		data = message.substring(4,7);
 	}
 	
 	public String getSignalType(){
 		return this.signalType;
 	}
 	
-	public int getChannel(){
+	public String getChannel(){
 		return this.channel;
 	}
 	
-	public int getData(){
+	public String getData(){
 		return this.data;
 	}
 	
 	public boolean isCommandEnable(){
-		return data == 1;
+		return Integer.valueOf(data) >= 1;
 	}
 }

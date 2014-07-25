@@ -10,19 +10,15 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 		SerialPortEventListener {
 
 	protected SerialPort serialPort;
-
+	
 	public static enum EnumSerialPorts {
 		COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9, COM10, COM11, COM12, COM13, COM14, COM15, COM16, COM17, COM18, COM19, COM20, COM21, COM22
 	}
 
-	public EndpointRs232(EnumSerialPorts enumSerialPort) {
+	public EndpointRs232(EnumSerialPorts enumSerialPort, EndpointRs232Config config) {
 		this.serialPort = new SerialPort(enumSerialPort.name());
-
-		this.initialize();
-	}
-
-	private void initialize() {
-		this.initializeSerialPorts();
+		this.initializeSerialPort(serialPort, config);
+		// TODO: mxh: why call this getter here? does it have side effects?
 		this.getSerialPortName();
 	}
 
@@ -48,21 +44,16 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	/**
 	 * 
 	 */
-	protected void initializeSerialPorts() {
-		System.out.print("intialize serial port:" + serialPort.getPortName());
+	private void initializeSerialPort(SerialPort port, EndpointRs232Config config) {
+		System.out.print("intialize serial port:" + port.getPortName());
 
 		try {
-			serialPort.openPort();
-			serialPort.setParams(SerialPort.BAUDRATE_9600,
-					SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
-					SerialPort.PARITY_NONE);
-
-			// Set the prepared mask
-			serialPort.setEventsMask(SerialPort.MASK_RXCHAR);
-
-			// add event listener
-			serialPort.addEventListener(this);
-
+			port.openPort();
+			port.setParams(config.getBaudRate(), config.getDataBits(), config.getStopBits(),
+					config.getParity(), config.isRTS(), config.isDTR());
+			port.setFlowControlMode(config.getFlowControl());
+			port.setEventsMask(config.getEventMask());
+			port.addEventListener(this);
 			System.out.println("... ready.");
 		} catch (SerialPortException e) {
 			e.printStackTrace();
@@ -109,7 +100,8 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 		String message = this.getSerialPortMessage(event);
 		System.out.println("received serial port message on port: "
 				+ this.serialPort.getPortName() + " with message: " + message);
-
+		
+		super.onIncomingEndpointMessage(message);
 	}
 
 	protected String getSerialPortMessage(SerialPortEvent event) {

@@ -3,6 +3,8 @@ package ch.desm.middleware.modules.communication.endpoint.serial.ubw32;
 import jssc.SerialPortEvent;
 import jssc.SerialPortException;
 import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232;
+import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232Config;
+import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232ConfigBuilder;
 
 /**
  * 
@@ -60,7 +62,14 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	public EndpointUbw32(EnumSerialPorts enumSerialPort,
 			String configurationDigital,
 			String pinbitMaskInputAnalog) {
-		super(enumSerialPort);
+		super(enumSerialPort, new EndpointRs232ConfigBuilder()
+			.setBaudRate(EndpointRs232Config.BAUDRATE_9600)
+			.setDataBits(EndpointRs232Config.DATABITS_8)
+			.setStopBits(EndpointRs232Config.STOPBITS_1)
+			.setParity(EndpointRs232Config.PARITY_NONE)
+			.setEventMask(EndpointRs232Config.MASK_RXCHAR)
+			.setFlowControl(EndpointRs232Config.FLOWCONTROL_NONE)
+			.build());
 		this.ignoreUbw32ControlMessages = false;
 		this.pinbitMaskInputAnalog = pinbitMaskInputAnalog;
 		this.configurationDigital = configurationDigital;

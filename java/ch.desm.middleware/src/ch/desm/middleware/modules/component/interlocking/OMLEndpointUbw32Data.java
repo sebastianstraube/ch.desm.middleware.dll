@@ -10,7 +10,7 @@ public class OMLEndpointUbw32Data {
 
 	//TODO refactoring
 	public static final String PINBITMASK_CONFIGURATION_DIGITAL = "192,0,0,24560,96,1,2";
-	public static final String PINBITMASK_INPUT_ANALOG = "11";
+	public static final String PINBITMASK_INPUT_ANALOG = "1";
 	
 	private static Map<String, EnumEndpointUbw32RegisterDigital> mapDigital;
 	private static Map<String, EnumEndpointUbw32RegisterAnalog> mapAnalog;
