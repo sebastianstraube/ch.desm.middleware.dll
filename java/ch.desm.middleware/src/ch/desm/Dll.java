@@ -3,14 +3,14 @@ package ch.desm;
 import java.util.ArrayList;
 
 import ch.desm.middleware.modules.communication.endpoint.dll.EndpointDllEvent;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObectIsolierstoss;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectBalise;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectLoop;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectSignal;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectTrack;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectTrackConnection;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectTrainPosition;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectWeiche;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObectDllIsolierstoss;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllBalise;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllLoop;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllSignal;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllTrack;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllTrackConnection;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllTrainPosition;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllWeiche;
 
 /**
  * TODO: implement all stw_set* methods using the according inner classes
@@ -80,26 +80,26 @@ public class Dll {
 
 	private native void getWeiche0(int weicheId, ArrayList res);
 
-	public EndpointDllObjectWeiche getWeiche(int weicheId) throws Exception {
+	public EndpointObjectDllWeiche getWeiche(int weicheId) throws Exception {
 		ArrayList al = new ArrayList();
 		getWeiche0(weicheId, al);
 		if (al.size() != 1) {
 			throw new Exception("invalid result returned");
 		}
-		return new EndpointDllObjectWeiche(weicheId, (int) al.get(0));
+		return new EndpointObjectDllWeiche(weicheId, (int) al.get(0));
 	}
 
 	public native void setBalise(int baliseId, int stellung, String protokoll);
 
 	private native void getBalise0(int baliseId, ArrayList res);
 
-	public EndpointDllObjectBalise getBalise(int baliseId) throws Exception {
+	public EndpointObjectDllBalise getBalise(int baliseId) throws Exception {
 		ArrayList al = new ArrayList();
 		getBalise0(baliseId, al);
 		if (al.size() != 2) {
 			throw new Exception("invalid result returned");
 		}
-		return new EndpointDllObjectBalise(baliseId, (int) al.get(0), (String) al.get(1));
+		return new EndpointObjectDllBalise(baliseId, (int) al.get(0), (String) al.get(1));
 	}
 
 	public native void setIsolierstoss(int isolierstossId, int gleisId,
@@ -107,13 +107,13 @@ public class Dll {
 
 	private native void getIsolierstoss0(int isolierstossId, ArrayList res);
 
-	public EndpointDllObectIsolierstoss getIsolierstoss(int isolierstossId) throws Exception {
+	public EndpointObectDllIsolierstoss getIsolierstoss(int isolierstossId) throws Exception {
 		ArrayList al = new ArrayList();
 		getIsolierstoss0(isolierstossId, al);
 		if (al.size() != 2) {
 			throw new Exception("invalid result returned");
 		}
-		return new EndpointDllObectIsolierstoss(isolierstossId, (int) al.get(0),
+		return new EndpointObectDllIsolierstoss(isolierstossId, (int) al.get(0),
 				(double) al.get(1));
 	}
 
@@ -121,39 +121,39 @@ public class Dll {
 
 	private native void getLoop0(int baliseId, ArrayList res);
 
-	public EndpointDllObjectLoop getLoop(int baliseId) throws Exception {
+	public EndpointObjectDllLoop getLoop(int baliseId) throws Exception {
 		ArrayList al = new ArrayList();
 		getLoop0(baliseId, al);
 		if (al.size() != 2) {
 			throw new Exception("invalid result returned");
 		}
-		return new EndpointDllObjectLoop(baliseId, (int) al.get(0), (String) al.get(1));
+		return new EndpointObjectDllLoop(baliseId, (int) al.get(0), (String) al.get(1));
 	}
 
 	// TODO: public native void setSignal(int baliseId, int stellung, String
 	// protokoll);
 	private native void getSignal0(int signalId, ArrayList res);
 
-	public EndpointDllObjectSignal getSignal(int signalId) throws Exception {
+	public EndpointObjectDllSignal getSignal(int signalId) throws Exception {
 		ArrayList al = new ArrayList();
 		getSignal0(signalId, al);
 		if (al.size() != 2) {
 			throw new Exception("invalid result returned");
 		}
-		return new EndpointDllObjectSignal(signalId, (String) al.get(0), (int) al.get(1));
+		return new EndpointObjectDllSignal(signalId, (String) al.get(0), (int) al.get(1));
 	}
 
 	// TODO: public native void setTrack(int baliseId, int stellung, String
 	// protokoll);
 	private native void getTrack0(int gleisId, ArrayList res);
 
-	public EndpointDllObjectTrack getTrack(int gleisId) throws Exception {
+	public EndpointObjectDllTrack getTrack(int gleisId) throws Exception {
 		ArrayList al = new ArrayList();
 		getTrack0(gleisId, al);
 		if (al.size() != 4) {
 			throw new Exception("invalid result returned");
 		}
-		return new EndpointDllObjectTrack(gleisId, (double) al.get(0), (double) al.get(1),
+		return new EndpointObjectDllTrack(gleisId, (double) al.get(0), (double) al.get(1),
 				(double) al.get(2), (String) al.get(3));
 	}
 
@@ -162,7 +162,7 @@ public class Dll {
 	private native void getTrackConnection0(int gleis1Id, int gleis2Id,
 			ArrayList res);
 
-	public EndpointDllObjectTrackConnection getTrackConnection(int gleis1Id, int gleis2Id)
+	public EndpointObjectDllTrackConnection getTrackConnection(int gleis1Id, int gleis2Id)
 			throws Exception {
 		ArrayList al = new ArrayList();
 		getTrackConnection0(gleis1Id, gleis2Id, al);
@@ -170,7 +170,7 @@ public class Dll {
 			throw new Exception("invalid result returned");
 		}
 		// NOTE: index 0 is gleisBasisId
-		return new EndpointDllObjectTrackConnection(gleis1Id, gleis2Id, (double) al.get(1),
+		return new EndpointObjectDllTrackConnection(gleis1Id, gleis2Id, (double) al.get(1),
 				(double) al.get(2), (String) al.get(3), (int) al.get(4),
 				(int) al.get(5));
 	}
@@ -179,7 +179,7 @@ public class Dll {
 	private native void getTrainPosition0(int trainTyp, ArrayList res,
 			ArrayList positions, ArrayList gleisList);
 
-	public EndpointDllObjectTrainPosition getTrainPosition(int trainTyp) throws Exception {
+	public EndpointObjectDllTrainPosition getTrainPosition(int trainTyp) throws Exception {
 		ArrayList al = new ArrayList();
 		ArrayList alP = new ArrayList();
 		ArrayList alG = new ArrayList();
@@ -187,7 +187,7 @@ public class Dll {
 		if (al.size() != 1) {
 			throw new Exception("invalid result returned");
 		}
-		return new EndpointDllObjectTrainPosition(trainTyp, (int) al.get(0), alP, alG);
+		return new EndpointObjectDllTrainPosition(trainTyp, (int) al.get(0), alP, alG);
 	}
 
 }

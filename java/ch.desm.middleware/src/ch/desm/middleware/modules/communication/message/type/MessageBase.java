@@ -3,6 +3,9 @@ package ch.desm.middleware.modules.communication.message.type;
 
 public abstract class MessageBase{
 	
+	public static final String MESSAGE_PARAMETER_ON = "on";
+	public static final String MESSAGE_PARAMETER_OFF = "off";
+	
 	public static final String MESSAGE_TOPIC_SIMULATION_LOCSIM = "Locsim";
 	public static final String MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232_CONFIG = "Locsim-Rs232-configuration";
 	public static final String MESSAGE_TOPIC_SIMULATION_LOCSIM_DLL = "Locsim-DLL";

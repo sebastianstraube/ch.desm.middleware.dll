@@ -3,7 +3,8 @@ package ch.desm.middleware.modules.communication.message.translator;
 import java.util.ArrayList;
 
 import ch.desm.middleware.modules.communication.message.type.MessageMiddleware;
-import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
+import ch.desm.middleware.modules.communication.message.type.MessageUbw32Analog;
+import ch.desm.middleware.modules.communication.message.type.MessageUbw32Digital;
 
 /**
  * TODO implementation
@@ -12,23 +13,26 @@ import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
  *
  */
 public class MessageTranslatorMiddleware extends MessageTranslatorMiddlewareBase {
-
-	
-	public MessageTranslatorMiddleware(){
-	}
 	
 	/**
-	 * TODO Implementation
 	 * 
 	 * @param message
 	 * 
 	 */
-	public ArrayList<MessageMiddleware> translateToCommonMessageObjectList(String message){
-		return decodeMiddlewareMessages(message);
+	public MessageMiddleware translateToCommonMiddlewareMessage(String message){
+		return decodeMiddlewareMessage(message);
 	}
 	
 	/**
-	 * TODO Implementation
+	 * 
+	 * @param stream
+	 * 
+	 */
+	public ArrayList<MessageMiddleware> translateToCommonMiddlewareMessageList(String stream){
+		return decodeMiddlewareMessages(stream);
+	}
+	
+	/**
 	 * 
 	 * @param commonMessage
 	 * 
@@ -37,16 +41,32 @@ public class MessageTranslatorMiddleware extends MessageTranslatorMiddlewareBase
 		return encodeMiddlewareMessage(commonMessage);
 	}
 	
+
 	/**
 	 * 
 	 * @param payload
+	 * @param topic
 	 * @return
 	 */
-	public MessageUbw32 decodeUbw32EndpointMessage(String payload, String topic){
-		MessageUbw32 messageUbw32 = new MessageUbw32(payload, topic);
+	public MessageUbw32Digital decodeUbw32EndpointMessage(String payload, String topic){
+		MessageUbw32Digital messageUbw32 = new MessageUbw32Digital(payload, topic);
 		
 		return messageUbw32;
 	}
 	
+	/**
+	 * 
+	 * @param payload
+	 * @param topic
+	 * @return
+	 */
+//	public MessageUbw32Analog decodeUbw32EndpointMessage(String payload, String topic){
+//		MessageUbw32Analog messageUbw32 = new MessageUbw32Analog(payload, topic);
+//		
+//		return messageUbw32;
+//	}
+	
+	
+
 	
 }

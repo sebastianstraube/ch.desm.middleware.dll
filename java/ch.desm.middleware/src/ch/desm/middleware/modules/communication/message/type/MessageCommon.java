@@ -18,7 +18,7 @@ public class MessageCommon extends MessageBase {
 	protected String parameter;
 	protected String instance;
 
-	public MessageCommon(MessageUbw32 message) {
+	public MessageCommon(MessageUbw32Digital message) {
 		super(message.getPayload(), message.getTopic());
 	}
 	

@@ -1,21 +1,31 @@
 package ch.desm.middleware.modules.component.cabine;
 
 import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32;
+import ch.desm.middleware.modules.component.cabine.maps.Re420MapAnalog;
+import ch.desm.middleware.modules.component.cabine.maps.Re420MapDigital;
 
 public class Re420EndpointUbw32 extends EndpointUbw32 {
-	
-	protected Re420EndpointUbw32Data configuration;
+
+	public static final String PINBITMASK_CONFIGURATION_DIGITAL = "17943,65339,16,49152,768,12596,960";
+
+	protected Re420MapDigital re420MapDigital;
+	protected Re420MapAnalog re420MapAnalog;
 	
 	public Re420EndpointUbw32(EnumSerialPorts enumSerialPort) {		
-		super(enumSerialPort, Re420EndpointUbw32Data.PINBITMASK_CONFIGURATION_DIGITAL, Re420EndpointUbw32Data.PINBITMASK_INPUT_ANALOG);
+		super(enumSerialPort, PINBITMASK_CONFIGURATION_DIGITAL, Re420MapAnalog.PINBITMASK_INPUT_ANALOG);
 		
-		configuration = new Re420EndpointUbw32Data();
+		re420MapDigital = new Re420MapDigital();
+		re420MapAnalog = new Re420MapAnalog();
 	}
 	
-	public Re420EndpointUbw32Data getConfiguration(){
-		return this.configuration;
+	public Re420MapAnalog getMapAnalog(){
+		return re420MapAnalog;
 	}
-		
+	
+	public Re420MapDigital getMapDigital(){
+		return re420MapDigital;
+	}
+	
 	/**
 	 * test endpoint message handling
 	 * @param message

@@ -4,19 +4,14 @@ import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232.EnumSerialPorts;
 import ch.desm.middleware.modules.component.cabine.Re420BaseImpl;
 import ch.desm.middleware.modules.component.cabine.Re420EndpointUbw32;
-import ch.desm.middleware.modules.component.interlocking.OMLBaseImpl;
-import ch.desm.middleware.modules.component.interlocking.OMLEndpointUbw32;
-import ch.desm.middleware.modules.component.simulation.LocsimBaseImpl;
-import ch.desm.middleware.modules.component.simulation.LocsimEndpointDll;
-import ch.desm.middleware.modules.component.simulation.LocsimEndpointRs232;
-import ch.desm.middleware.modules.component.simulation.LocsimEndpointRs232Parser;
-import ch.desm.middleware.modules.component.test.TestBaseImpl;
-import ch.desm.middleware.modules.component.test.TestEndpointUbw32;
+import ch.desm.middleware.modules.component.simulation.locsim.LocsimBaseImpl;
+import ch.desm.middleware.modules.component.simulation.locsim.LocsimEndpointDll;
+import ch.desm.middleware.modules.component.simulation.locsim.LocsimEndpointRs232;
 
 public class Main {
 
 	public static void main(String[] args) {
-		//testCaseLocsimEndpointDllRs232Ubw();
+		testCaseLocsimEndpointRs232_to_Cabine();
 		
 		//LocsimEndpointRs232Parser.runTests();
 		
@@ -25,7 +20,10 @@ public class Main {
 		// testPWM(args);
 	}
 	
-	public static void testCaseLocsimEndpointDllRs232Ubw() {
+	/**
+	 * 
+	 */
+	public static void testCaseLocsimEndpointDllRs232() {
 		System.out.println(System.getProperty("java.library.path"));
 		
 		Broker broker = new Broker();
@@ -45,29 +43,28 @@ public class Main {
 		LocsimBaseImpl locsimImpl = new LocsimBaseImpl(broker, endpointRs232, endpointDll);
 	}
 	
-	public static void testCaseEndpointToEndpointBlinkE0() {
+	/**
+	 * 
+	 */
+	public static void testCaseLocsimEndpointRs232_to_Cabine() {
+		
 		Broker broker = new Broker();
 
-		TestEndpointUbw32 testEndpoint = new TestEndpointUbw32(
-				EnumSerialPorts.COM22);
-		TestBaseImpl testImpl = new TestBaseImpl(broker, testEndpoint);
-
+		//Test Cabine
 		Re420EndpointUbw32 re420EndpointUbw32 = new Re420EndpointUbw32(
-				EnumSerialPorts.COM8);
+				EnumSerialPorts.COM13);
 		Re420BaseImpl re420Impl = new Re420BaseImpl(broker, re420EndpointUbw32);
-
 		
-		 while (true) {
-		 testImpl.emulateBrokerMessage("1.90.02;o;0;lampe;signalf;notrot;on;#");
+		//Test Interlocking
+//		OMLEndpointUbw32 omlEndpoint = new OMLEndpointUbw32(EnumSerialPorts.COM12);
+//		OMLBaseImpl OmlImpl = new OMLBaseImpl(broker, omlEndpoint);
 		
-		 // testEndpoint.sendCommandPinOutput("E", "0", "1");
-		 re420EndpointUbw32
-		 .emulateEndpointMessage("I,00192,00000,00000,24560,00111,00009,00014");
-		
-		 }
-
+		//Test Simulation
+		LocsimEndpointDll endpointDll = new LocsimEndpointDll("dispatcher.json");
+		LocsimEndpointRs232 endpointRs232 = new LocsimEndpointRs232(EnumSerialPorts.COM5);
+		LocsimBaseImpl locsimImpl = new LocsimBaseImpl(broker, endpointRs232, endpointDll);
 	}
-
+	
 	public static void testCaseDll() {
 		System.out.println("java.library.path");
 		

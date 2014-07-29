@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ch.desm.middleware.modules.communication.message.type.MessageBase;
 import ch.desm.middleware.modules.communication.message.type.MessageMiddleware;
+import ch.desm.middleware.modules.communication.message.type.MessageUbw32Digital;
 
 abstract class MessageTranslatorMiddlewareBase {
 
@@ -22,8 +23,8 @@ abstract class MessageTranslatorMiddlewareBase {
 	private static final int PARAMETER = 6;
 	private static final int TOPIC = 7;
 
-	protected ArrayList<MessageMiddleware> decodeMiddlewareMessages(String message) {
-		String[] messageArray = message.split(MESSAGE_CUT);
+	protected ArrayList<MessageMiddleware> decodeMiddlewareMessages(String stream) {
+		String[] messageArray = stream.split(MESSAGE_CUT);
 		ArrayList<MessageMiddleware> messageList = new ArrayList<MessageMiddleware>();
 
 		for (int i = 0; i < messageArray.length; i++) {
@@ -40,7 +41,7 @@ abstract class MessageTranslatorMiddlewareBase {
 	 * @param message
 	 * @return {@link MessageBase}
 	 */
-	private MessageMiddleware decodeMiddlewareMessage(String message) {
+	protected MessageMiddleware decodeMiddlewareMessage(String message) {
 		MessageMiddleware messageCommon = null;
 		try {
 			if (message == null || message.isEmpty()) {
@@ -83,5 +84,37 @@ abstract class MessageTranslatorMiddlewareBase {
 		endpointMessage += MESSAGE_CUT;
 
 		return endpointMessage;
+	}
+	
+	/**
+	 * 
+	 * @param wildcard
+	 * @param replace
+	 * @param message
+	 * @return
+	 */
+	protected String replaceMiddlewareMessageParameter(String wildcard, String replace, String message) {
+		return message.replaceAll(wildcard, replace);
+	}
+	
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
+	private String getParameterValue(String value) {
+		String returnValue = "";
+
+		switch (value) {
+		case MessageUbw32Digital.MESSAGE_PARAMETER_OFF: {
+			returnValue = "1";
+			break;
+		}
+		case MessageUbw32Digital.MESSAGE_PARAMETER_ON: {
+			returnValue = "0";
+			break;
+		}
+		}
+		return returnValue;
 	}
 }

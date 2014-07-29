@@ -3,15 +3,15 @@ package ch.desm.middleware.modules.communication.endpoint.dll;
 import java.util.ArrayList;
 
 import ch.desm.Dll;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObectIsolierstoss;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectBalise;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectBase;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectLoop;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectSignal;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectTrack;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectTrackConnection;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectTrainPosition;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectWeiche;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObectDllIsolierstoss;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllBalise;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllBase;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllLoop;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllSignal;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllTrack;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllTrackConnection;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllTrainPosition;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllWeiche;
 import ch.desm.middleware.modules.core.daemon.DaemonThread;
 
 public class EndpointDllPolling extends DaemonThread {
@@ -57,59 +57,59 @@ public class EndpointDllPolling extends DaemonThread {
 			ArrayList<Integer> params = event.params;
 
 			switch (event.type) {
-			case EndpointDllObjectBase.ENUM_CMD_ISOLIERSTOSS:
+			case EndpointObjectDllBase.ENUM_CMD_ISOLIERSTOSS:
 				int isolierstossId = params.get(0);
-				EndpointDllObectIsolierstoss isolierstoss = dll
+				EndpointObectDllIsolierstoss isolierstoss = dll
 						.getIsolierstoss(isolierstossId);
 
 				endpoint.receiveEndpointObject(isolierstoss);
 				break;
-			case EndpointDllObjectBase.ENUM_CMD_WEICHE:
+			case EndpointObjectDllBase.ENUM_CMD_WEICHE:
 				int weicheId = params.get(0);
-				EndpointDllObjectWeiche weiche = dll.getWeiche(weicheId);
+				EndpointObjectDllWeiche weiche = dll.getWeiche(weicheId);
 
 				endpoint.receiveEndpointObject(weiche);
 				break;
-			case EndpointDllObjectBase.ENUM_CMD_TRAINPOSITION:
+			case EndpointObjectDllBase.ENUM_CMD_TRAINPOSITION:
 				int trainTyp = params.get(0);
-				EndpointDllObjectTrainPosition trainPosition = dll
+				EndpointObjectDllTrainPosition trainPosition = dll
 						.getTrainPosition(trainTyp);
 
 				endpoint.receiveEndpointObject(trainPosition);
 				break;
-			case EndpointDllObjectBase.ENUM_CMD_SIGNAL:
+			case EndpointObjectDllBase.ENUM_CMD_SIGNAL:
 				int signalId = params.get(0);
-				EndpointDllObjectSignal signal = dll.getSignal(signalId);
+				EndpointObjectDllSignal signal = dll.getSignal(signalId);
 
 				endpoint.receiveEndpointObject(signal);
 				break;
-			case EndpointDllObjectBase.ENUM_CMD_KILOMETER_DIRECTION:
+			case EndpointObjectDllBase.ENUM_CMD_KILOMETER_DIRECTION:
 				int kilometerDirection = dll.getKilometerDirection();
 
 				endpoint.receiveEndpointObject(kilometerDirection);
 				break;
-			case EndpointDllObjectBase.ENUM_CMD_BALISE:
+			case EndpointObjectDllBase.ENUM_CMD_BALISE:
 				int baliseIdBalise = params.get(0);
-				EndpointDllObjectBalise balise = dll.getBalise(baliseIdBalise);
+				EndpointObjectDllBalise balise = dll.getBalise(baliseIdBalise);
 
 				endpoint.receiveEndpointObject(balise);
 				break;
-			case EndpointDllObjectBase.ENUM_CMD_LOOP:
+			case EndpointObjectDllBase.ENUM_CMD_LOOP:
 				int baliseIDLoop = params.get(0);
-				EndpointDllObjectLoop loop = dll.getLoop(baliseIDLoop);
+				EndpointObjectDllLoop loop = dll.getLoop(baliseIDLoop);
 
 				endpoint.receiveEndpointObject(loop);
 				break;
-			case EndpointDllObjectBase.ENUM_CMD_TRACK:
+			case EndpointObjectDllBase.ENUM_CMD_TRACK:
 				int gleisId = params.get(0);
-				EndpointDllObjectTrack track = dll.getTrack(gleisId);
+				EndpointObjectDllTrack track = dll.getTrack(gleisId);
 
 				endpoint.receiveEndpointObject(track);
 				break;
-			case EndpointDllObjectBase.ENUM_CMD_TRACK_CONNECTION:
+			case EndpointObjectDllBase.ENUM_CMD_TRACK_CONNECTION:
 				int gleis1Id = params.get(0);
 				int gleis2Id = params.get(1);
-				EndpointDllObjectTrackConnection trackConnection = dll
+				EndpointObjectDllTrackConnection trackConnection = dll
 						.getTrackConnection(gleis1Id, gleis2Id);
 
 				endpoint.receiveEndpointObject(trackConnection);

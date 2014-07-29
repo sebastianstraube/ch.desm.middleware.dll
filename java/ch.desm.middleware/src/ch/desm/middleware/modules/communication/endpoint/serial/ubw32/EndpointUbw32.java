@@ -49,36 +49,36 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	public static final String RETURN_INPUT_ANALOG = "IA";
 	public static final String MESSAGE_TERMINATOR = "\n";
 	public static final int POLLING_WAIT_TIME = 512;
-	
+
 	protected String configurationDigital;
 	private String pinbitMaskInputAnalog;
 	private EndpointUbw32Polling polling;
-	boolean ignoreUbw32ControlMessages;
+	private boolean ignoreUbw32ControlMessages;
+	private String inputState;
 
 	/**
 	 * 
 	 * @param enumSerialPort
 	 */
 	public EndpointUbw32(EnumSerialPorts enumSerialPort,
-			String configurationDigital,
-			String pinbitMaskInputAnalog) {
+			String configurationDigital, String pinbitMaskInputAnalog) {
 		super(enumSerialPort, new EndpointRs232ConfigBuilder()
-			.setBaudRate(EndpointRs232Config.BAUDRATE_9600)
-			.setDataBits(EndpointRs232Config.DATABITS_8)
-			.setStopBits(EndpointRs232Config.STOPBITS_1)
-			.setParity(EndpointRs232Config.PARITY_NONE)
-			.setEventMask(EndpointRs232Config.MASK_RXCHAR)
-			.setFlowControl(EndpointRs232Config.FLOWCONTROL_NONE)
-			.build());
+				.setBaudRate(EndpointRs232Config.BAUDRATE_9600)
+				.setDataBits(EndpointRs232Config.DATABITS_8)
+				.setStopBits(EndpointRs232Config.STOPBITS_1)
+				.setParity(EndpointRs232Config.PARITY_NONE)
+				.setEventMask(EndpointRs232Config.MASK_RXCHAR)
+				.setFlowControl(EndpointRs232Config.FLOWCONTROL_NONE).build());
 		this.ignoreUbw32ControlMessages = false;
+		this.inputState = "";
 		this.pinbitMaskInputAnalog = pinbitMaskInputAnalog;
 		this.configurationDigital = configurationDigital;
 		this.polling = new EndpointUbw32Polling(this, POLLING_WAIT_TIME);
-		
+
 		this.initialize();
 	}
-	
-	public String getPinBitMaskInputAnalog(){
+
+	public String getPinBitMaskInputAnalog() {
 		return this.pinbitMaskInputAnalog;
 	}
 
@@ -88,31 +88,31 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	private void initialize() {
 		this.sendCommandConfigureUbw32(); // disable OK return packet
 		this.sendCommandVersion();
-		
-		if(isConfigurationDigitalAvailable())this.sendCommandConfigure(configurationDigital);
-		if(isPinBitMaskAnalogAvailable())this.sendCommandConfigureAnalogInputs(pinbitMaskInputAnalog);
-		
+
+		if (isConfigurationDigitalAvailable())
+			this.sendCommandConfigure(configurationDigital);
+		if (isPinBitMaskAnalogAvailable())
+			this.sendCommandConfigureAnalogInputs(pinbitMaskInputAnalog);
+
 		this.polling.start();
 	}
 
-	
-	
-		public boolean isConfigurationDigitalAvailable(){
-			if(configurationDigital != null && !configurationDigital.isEmpty()){
+	public boolean isConfigurationDigitalAvailable() {
+		if (configurationDigital != null && !configurationDigital.isEmpty()) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
-	public boolean isPinBitMaskAnalogAvailable(){
-		if(pinbitMaskInputAnalog != null && !pinbitMaskInputAnalog.isEmpty() && !pinbitMaskInputAnalog.equals("0")){
+
+	public boolean isPinBitMaskAnalogAvailable() {
+		if (pinbitMaskInputAnalog != null && !pinbitMaskInputAnalog.isEmpty()
+				&& !pinbitMaskInputAnalog.equals("0")) {
 			return true;
 		}
 		return false;
 	}
-	
-	
+
 	@Override
 	/**
 	 * this listener receives a command from UBW32
@@ -120,31 +120,39 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	 * @param SerialPortEvent event
 	 */
 	public synchronized void serialEvent(SerialPortEvent event) {
-		String inputState = super.getSerialPortMessage(event);
+		String oldState = inputState;		
+		inputState = super.getSerialPortMessage(event);
+		
+		if (!oldState.equals(inputState)) {
+			if (!inputState.isEmpty()) {
+				if (!ignoreUbw32ControlMessages) {
 
-		if (!inputState.isEmpty()) {
-			if (!ignoreUbw32ControlMessages) {
+					if (inputState.contains("!")) {
 
-				if (inputState.contains("!")) {
+						System.out
+								.println("receive ubw32 error message on port:"
+										+ serialPort.getPortName()
+										+ " with message:" + inputState);
 
-					System.out.println("receive ubw32 error message on port:"
-							+ serialPort.getPortName() + " with message:"
-							+ inputState);
+					} else if ((inputState.contains("OK"))) {
+						System.out.println("receive ubw32 return message:"
+								+ serialPort.getPortName() + " with message:"
+								+ inputState);
+					}
 
-				} else if ((inputState.contains("OK"))) {
-					System.out.println("receive ubw32 return message:"
-							+ serialPort.getPortName() + " with message:"
-							+ inputState);
+					else {
+
+						super.onIncomingEndpointMessage(inputState);
+					}
+				} else {
+					System.out.println("ignored ubw32 control message:\""
+							+ inputState + "\"");
 				}
-
-				else{
-					super.onIncomingEndpointMessage(inputState);
-				}
-			} else {
-				System.out.println("ignored ubw32 control message:\""
-						+ inputState + "\"");
 			}
+		}else{
+			System.err.println("found old state:" + oldState);
 		}
+
 	}
 
 	@Override
@@ -153,7 +161,7 @@ public abstract class EndpointUbw32 extends EndpointRs232 {
 	 */
 	protected void sendStream(String command) {
 		try {
-			
+
 			Thread.sleep(50);
 			command += EndpointUbw32.MESSAGE_TERMINATOR;
 			super.sendStream(command);

@@ -5,7 +5,7 @@ public class MessageMiddleware extends MessageCommon {
 	
 	protected String outputInput;
 
-	public MessageMiddleware(MessageUbw32 message) {
+	public MessageMiddleware(MessageUbw32Digital message) {
 		super(message);
 	}
 

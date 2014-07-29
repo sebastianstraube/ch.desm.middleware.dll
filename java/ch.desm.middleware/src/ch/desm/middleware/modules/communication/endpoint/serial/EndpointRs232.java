@@ -85,8 +85,8 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	 * @throws SerialPortException
 	 */
 	protected synchronized void sendStream(String stream) throws SerialPortException {
-		if (serialPort.writeString(stream)) {
-			System.out.println(serialPort.getPortName() + " send stream: " + stream);
+		if (stream != null && !stream.isEmpty() && serialPort.writeString(stream)) {
+//			System.out.println(serialPort.getPortName() + " send stream: " + stream);
 		}
 	}
 

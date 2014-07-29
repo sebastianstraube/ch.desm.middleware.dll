@@ -13,18 +13,19 @@ import ch.desm.middleware.modules.communication.message.translator.MessageTransl
 import ch.desm.middleware.modules.communication.message.type.MessageBase;
 import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.communication.message.type.MessageMiddleware;
-import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
+import ch.desm.middleware.modules.communication.message.type.MessageUbw32Analog;
+import ch.desm.middleware.modules.communication.message.type.MessageUbw32Digital;
 
 public class OMLBaseImpl extends OMLBase implements
 		EndpointUbw32ListenerInterface {
 
-	private OMLMiddlewareMessages messages;
+	private OMLMessages omlMessages;
 
 	public OMLBaseImpl(Broker broker, EndpointCommon communicationEndpointUbw32) {
 		super(broker, communicationEndpointUbw32);
 		// TODO Auto-generated constructor stub
 
-		this.messages = new OMLMiddlewareMessages();
+		this.omlMessages = new OMLMessages();
 	}
 
 	protected void onIncomingBrokerMessage(String message) {
@@ -33,7 +34,7 @@ public class OMLBaseImpl extends OMLBase implements
 
 		MessageTranslatorMiddleware translator = new MessageTranslatorMiddleware();
 		ArrayList<MessageMiddleware> messageCommon = translator
-				.translateToCommonMessageObjectList(message);
+				.translateToCommonMiddlewareMessageList(message);
 
 		MessageRouter router = new MessageRouter();
 		router.processBrokerMessage(this, messageCommon);
@@ -49,13 +50,15 @@ public class OMLBaseImpl extends OMLBase implements
 				+ ") received message: " + message);
 
 		MessageTranslatorMiddleware translator = new MessageTranslatorMiddleware();
-		MessageUbw32 ubw32Message = translator.decodeUbw32EndpointMessage(
-				message, MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
+		MessageUbw32Digital ubw32Message = translator
+				.decodeUbw32EndpointMessage(message,
+						MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
 
 		String messages = processInputs(ubw32Message);
 
 		MessageRouter router = new MessageRouter();
-		router.processEndpointMessage(this, messages, MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
+		router.processEndpointMessage(this, messages,
+				MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
 	}
 
 	/**
@@ -63,58 +66,63 @@ public class OMLBaseImpl extends OMLBase implements
 	 * 
 	 * @param message
 	 */
-	public String processInputs(MessageUbw32 message) {
+	public String processInputs(MessageUbw32Digital message) {
 
 		String middlewareMessagesInput = "";
 
 		// Digital messages
-		if (message.isDigital) {
-			for (Entry<String, EnumEndpointUbw32RegisterDigital> entry : this
-					.getEndpoint().getConfiguration().getMapInputDigital()
-					.entrySet()) {
 
-				String stream = messages.messages.get(entry.getKey());
-				if (message.getInputDigitalValue(entry.getValue())) {
-					stream = stream.replaceAll(
-							MessageCommon.PARAMETER_PLACEHOLDER, "on");
-				} else {
-					stream = stream.replaceAll(
-							MessageCommon.PARAMETER_PLACEHOLDER, "off");
-				}
+		for (Entry<String, EnumEndpointUbw32RegisterDigital> entry : this
+				.getEndpoint().getConfiguration().getMapInputDigital()
+				.entrySet()) {
 
-				middlewareMessagesInput = middlewareMessagesInput
-						.concat(stream);
+			String stream = omlMessages.messages.get(entry.getKey());
+			if (message.getInputValue(entry.getValue())) {
+				stream = stream.replaceAll(MessageCommon.PARAMETER_PLACEHOLDER,
+						"on");
+			} else {
+				stream = stream.replaceAll(MessageCommon.PARAMETER_PLACEHOLDER,
+						"off");
 			}
 
-			// Analog messages
-		} else {
-
-			for (Entry<String, EnumEndpointUbw32RegisterAnalog> entry : this
-					.getEndpoint().getConfiguration().getMapInputAnalog()
-					.entrySet()) {
-
-				String stream = messages.messages.get(entry.getKey());
-				int analogValue = Integer.parseInt(message
-						.getInputAnalogValue(entry.getValue()));
-
-				// lookup global id from analog value
-				String globalId = this.getEndpoint().getConfiguration()
-						.getGlobalIdFSS(entry.getValue(), analogValue);
-
-				// if FSS id is equal map entry,
-				// then set message stream parameter on else off
-				if (entry.getValue().equals(globalId)) {
-					stream.replaceAll(
-							MessageCommon.PARAMETER_PLACEHOLDER, "on");
-				} else {
-					stream.replaceAll(
-							MessageCommon.PARAMETER_PLACEHOLDER, "off");
-				}
-
-				middlewareMessagesInput = middlewareMessagesInput
-						.concat(stream);
-			}
+			middlewareMessagesInput = middlewareMessagesInput.concat(stream);
 		}
+
+		return middlewareMessagesInput;
+	}
+
+	/**
+	 * TODO multiple analog message
+	 * 
+	 * @param message
+	 */
+	public String processInputs(MessageUbw32Analog message) {
+
+		String middlewareMessagesInput = "";
+
+		for (Entry<String, EnumEndpointUbw32RegisterAnalog> entry : this
+				.getEndpoint().getConfiguration().getMapInputAnalog()
+				.entrySet()) {
+
+			String stream = omlMessages.messages.get(entry.getKey());
+			int analogValue = Integer.parseInt(message.getInputValue(entry
+					.getValue()));
+
+			// lookup global id from analog value
+			String globalId = this.getEndpoint().getConfiguration()
+					.getGlobalIdFSS(entry.getValue(), analogValue);
+
+			// if FSS id is equal map entry,
+			// then set message stream parameter on else off
+			if (entry.getValue().equals(globalId)) {
+				stream.replaceAll(MessageCommon.PARAMETER_PLACEHOLDER, "on");
+			} else {
+				stream.replaceAll(MessageCommon.PARAMETER_PLACEHOLDER, "off");
+			}
+
+			middlewareMessagesInput = middlewareMessagesInput.concat(stream);
+		}
+
 		return middlewareMessagesInput;
 	}
 
@@ -153,7 +161,8 @@ public class OMLBaseImpl extends OMLBase implements
 	@Override
 	protected void intializeSignedTopic() {
 		signedTopic.add(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM);
-		signedTopic.add(MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
+		signedTopic
+				.add(MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
 		signedTopic.add(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_DLL);
 		signedTopic.add(MessageBase.MESSAGE_TOPIC_TEST);
 	}

@@ -12,18 +12,20 @@ import ch.desm.middleware.modules.communication.message.translator.MessageTransl
 import ch.desm.middleware.modules.communication.message.type.MessageBase;
 import ch.desm.middleware.modules.communication.message.type.MessageCommon;
 import ch.desm.middleware.modules.communication.message.type.MessageMiddleware;
-import ch.desm.middleware.modules.communication.message.type.MessageUbw32;
+import ch.desm.middleware.modules.communication.message.type.MessageUbw32Analog;
+import ch.desm.middleware.modules.communication.message.type.MessageUbw32Digital;
+import ch.desm.middleware.modules.component.cabine.maps.Re420MapMiddleware;
 
 public class Re420BaseImpl extends Re420Base implements
 		EndpointUbw32ListenerInterface {
 
-	private Re420MiddlewareMessages messages;
+	private Re420MapMiddleware messages;
 
 	public Re420BaseImpl(Broker broker, Re420EndpointUbw32 communicationEndpoint) {
 		super(broker, communicationEndpoint);
 		// TODO Auto-generated constructor stub
 
-		this.messages = new Re420MiddlewareMessages();
+		this.messages = new Re420MapMiddleware();
 	}
 
 	/**
@@ -37,7 +39,7 @@ public class Re420BaseImpl extends Re420Base implements
 		MessageTranslatorMiddleware translator = new MessageTranslatorMiddleware();
 
 		ArrayList<MessageMiddleware> messageCommon = translator
-				.translateToCommonMessageObjectList(message);
+				.translateToCommonMiddlewareMessageList(message);
 
 		// TODO route and transmit to endpoint
 		MessageRouter router = new MessageRouter();
@@ -54,94 +56,84 @@ public class Re420BaseImpl extends Re420Base implements
 				+ ") received message: " + message);
 
 		MessageTranslatorMiddleware translator = new MessageTranslatorMiddleware();
-		MessageUbw32 ubw32Message = translator.decodeUbw32EndpointMessage(
-				message, MessageCommon.MESSAGE_TOPIC_CABINE_RE420);
+		
+		MessageUbw32Digital ubw32Message = translator
+				.decodeUbw32EndpointMessage(message,
+						MessageCommon.MESSAGE_TOPIC_CABINE_RE420);
 
 		String messages = convertToMiddlewareMessage(ubw32Message);
 
 		MessageRouter router = new MessageRouter();
-		router.processEndpointMessage(this, messages, MessageBase.MESSAGE_TOPIC_CABINE_RE420);
+		router.processEndpointMessage(this, messages,
+				MessageBase.MESSAGE_TOPIC_CABINE_RE420);
 	}
 
 	/**
 	 * 
 	 * @param message
 	 */
-	public String convertToMiddlewareMessage(MessageUbw32 message) {
+	public String convertToMiddlewareMessage(MessageUbw32Digital message) {
 
 		String middlewareMessagesInput = "";
 
-		// Digital messages
-		if (message.isDigital) {
-			for (Entry<String, EnumEndpointUbw32RegisterDigital> entry : this
-					.getEndpoint().getConfiguration().getMapInputDigital()
-					.entrySet()) {
+		for (Entry<String, EnumEndpointUbw32RegisterDigital> entry : this
+				.getEndpoint().re420MapDigital.map.entrySet()) {
 
-				String stream = messages.getMessages().get(entry.getKey());
-				if (stream == null) {
-					try {
-						throw new Exception(
-								"mapping error found no global id in middleware message with key: "
-										+ entry.getKey() + " and value: "
-										+ entry.getValue() + " in message: " + message);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+			String stream = messages.getMessages().get(entry.getKey());
+			if (stream == null) {
+				try {
+					throw new Exception(
+							"mapping error found no global id in middleware message with key: "
+									+ entry.getKey() + " and value: "
+									+ entry.getValue() + " in message: "
+									+ message);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-
-				if (message.getInputDigitalValue(entry.getValue())) {
-					stream = stream.replaceAll(
-							MessageCommon.PARAMETER_PLACEHOLDER, "on");
-				} else {
-					stream = stream.replaceAll(
-							MessageCommon.PARAMETER_PLACEHOLDER, "off");
-				}
-
-				middlewareMessagesInput = middlewareMessagesInput
-						.concat(stream);
 			}
 
-			// Analog messages
-		} else {
-
-			for (Entry<String, EnumEndpointUbw32RegisterAnalog> entry : this
-					.getEndpoint().getConfiguration().getMapInputAnalog()
-					.entrySet()) {
-
-				String stream = messages.getMessages().get(entry.getKey());
-				if (stream == null) {
-					try {
-						throw new Exception(
-								"the configuration mapping found a problematic global id:"
-										+ entry.getKey() + " with value: "
-										+ entry.getValue() + "in message: " + message);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				
-				int analogValue = Integer.parseInt(message
-						.getInputAnalogValue(entry.getValue()));
-
-				// lookup global id from analog value
-				String globalId = this.getEndpoint().getConfiguration()
-						.getGlobalIdFSS(entry.getValue(), analogValue);
-
-				// if id is equal map entry,
-				// then set message stream parameter on else off
-				if (entry.getValue().equals(globalId)) {
-					stream.replaceAll(MessageCommon.PARAMETER_PLACEHOLDER, "on");
-				} else {
-					stream.replaceAll(MessageCommon.PARAMETER_PLACEHOLDER,
-							"off");
-				}
-
-				middlewareMessagesInput = middlewareMessagesInput
-						.concat(stream);
+			if (message.getInputValue(entry.getValue())) {
+				stream = stream.replaceAll(MessageCommon.PARAMETER_PLACEHOLDER,
+						"on");
+			} else {
+				stream = stream.replaceAll(MessageCommon.PARAMETER_PLACEHOLDER,
+						"off");
 			}
+
+			middlewareMessagesInput = middlewareMessagesInput.concat(stream);
 		}
+
+		return middlewareMessagesInput;
+	}
+
+	public String convertToMiddlewareMessage(MessageUbw32Analog message) {
+
+		String middlewareMessagesInput = "";
+
+		for (Entry<String, EnumEndpointUbw32RegisterAnalog> entry : this
+				.getEndpoint().re420MapAnalog.map.entrySet()) {
+
+			String stream = messages.getMessages().get(entry.getKey());
+			if (stream == null) {
+				try {
+					throw new Exception(
+							"the configuration mapping found a problematic global id:"
+									+ entry.getKey() + " with value: "
+									+ entry.getValue() + "in message: "
+									+ message);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			int analogValue = Integer.parseInt(message.getInputValue(entry
+					.getValue()));
+
+			// TODO process Analog inputs
+		}
+
 		return middlewareMessagesInput;
 	}
 
@@ -174,7 +166,7 @@ public class Re420BaseImpl extends Re420Base implements
 	public boolean hasTopicSigned(String topic) {
 		return signedTopic.contains(topic);
 	}
-	
+
 	/**
 	 * 
 	 */

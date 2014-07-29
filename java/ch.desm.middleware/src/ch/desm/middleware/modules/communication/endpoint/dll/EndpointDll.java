@@ -2,10 +2,10 @@ package ch.desm.middleware.modules.communication.endpoint.dll;
 
 import ch.desm.Dll;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectSignal;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectTrainPosition;
-import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointDllObjectWeiche;
-import ch.desm.middleware.modules.communication.message.translator.MessageTranslatorDll;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllSignal;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllTrainPosition;
+import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllWeiche;
+import ch.desm.middleware.modules.component.simulation.locsim.messages.LocsimMessageTranslatorDll;
 
 public abstract class EndpointDll extends EndpointCommon implements
 		EndpointDllListenerInterface {
@@ -13,11 +13,8 @@ public abstract class EndpointDll extends EndpointCommon implements
 	public static final int POLLING_WAIT_TIME = 2048;
 	private Dll dll;
 	private EndpointDllPolling eventPollingDaemonDll;
-	
-	protected MessageTranslatorDll messageTranslatorDllObjects;
 
 	public EndpointDll(String configPath) {
-		this.messageTranslatorDllObjects = new MessageTranslatorDll();
 		
 		dll = new Dll();
 		dll.onStartProgramm(configPath);
@@ -37,17 +34,17 @@ public abstract class EndpointDll extends EndpointCommon implements
 		
 		String message = "";
 		
-		if(obj instanceof EndpointDllObjectSignal){
-			message = messageTranslatorDllObjects.translateObjectToMiddlewareMessage((EndpointDllObjectSignal)obj);
+		if(obj instanceof EndpointObjectDllSignal){
+			message = new LocsimMessageTranslatorDll().translateToMiddlewareMessage((EndpointObjectDllSignal)obj);
 		
-		}else if(obj instanceof EndpointDllObjectTrainPosition){
-			message = messageTranslatorDllObjects.translateObjectToMiddlewareMessage((EndpointDllObjectTrainPosition)obj);
+		}else if(obj instanceof EndpointObjectDllTrainPosition){
+			message = new LocsimMessageTranslatorDll().translateToMiddlewareMessage((EndpointObjectDllTrainPosition)obj);
 		
-		}else if(obj instanceof EndpointDllObjectWeiche){
-			message = messageTranslatorDllObjects.translateObjectToMiddlewareMessage((EndpointDllObjectWeiche)obj);
+		}else if(obj instanceof EndpointObjectDllWeiche){
+			message = new LocsimMessageTranslatorDll().translateToMiddlewareMessage((EndpointObjectDllWeiche)obj);
 		}else{
 			
-			System.out.println("Translation does not support yet endpoint object: " + obj.getClass());
+			System.err.println("Translation does not support yet endpoint object: " + obj.getClass());
 		}
 		
 		if(!message.isEmpty()){
