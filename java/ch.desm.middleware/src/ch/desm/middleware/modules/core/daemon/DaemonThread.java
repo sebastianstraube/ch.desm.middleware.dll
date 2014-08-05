@@ -1,5 +1,6 @@
 package ch.desm.middleware.modules.core.daemon;
 
+
 /**
  * Abstract Thread Daemon
  * 
@@ -12,5 +13,4 @@ public abstract class DaemonThread extends Thread {
 		this.setName(name);
 		setDaemon(true);
 	}
-
 }

@@ -42,6 +42,4 @@ public class LocsimEndpointRs232 extends EndpointRs232 {
 			e.printStackTrace();
 		}
 	}
-
-	
 }

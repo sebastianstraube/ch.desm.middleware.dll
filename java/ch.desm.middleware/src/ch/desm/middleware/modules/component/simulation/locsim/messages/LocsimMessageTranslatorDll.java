@@ -4,7 +4,7 @@ import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObj
 import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllTrainPosition;
 import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllWeiche;
 import ch.desm.middleware.modules.communication.message.translator.MessageTranslatorDll;
-import ch.desm.middleware.modules.component.interlocking.elements.OMLMessageSignalStellung;
+import ch.desm.middleware.modules.component.interlocking.obermattlangnau.maps.OMLMapSignalStellung;
 
 public class LocsimMessageTranslatorDll extends MessageTranslatorDll {
 
@@ -34,7 +34,7 @@ public class LocsimMessageTranslatorDll extends MessageTranslatorDll {
 		String s = LocsimMessageDll.DLL_MESSAGE_SIGNAL;
 		s += obj.signalId;
 		s += ";";
-		s += new OMLMessageSignalStellung().getSignalStellung(obj.stellung);
+		s += new OMLMapSignalStellung().getSignalStellung(obj.stellung);
 		s += ";";
 
 		return s;

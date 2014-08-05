@@ -1,6 +1,6 @@
 package ch.desm.middleware.modules.component.simulation.locsim.messages;
 
-import ch.desm.middleware.modules.communication.message.type.MessageBase;
+import ch.desm.middleware.modules.communication.message.MessageBase;
 
 public class LocsimMessageDll extends MessageBase {
 

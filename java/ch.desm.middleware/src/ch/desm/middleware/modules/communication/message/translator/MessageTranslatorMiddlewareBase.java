@@ -2,9 +2,8 @@ package ch.desm.middleware.modules.communication.message.translator;
 
 import java.util.ArrayList;
 
-import ch.desm.middleware.modules.communication.message.type.MessageBase;
-import ch.desm.middleware.modules.communication.message.type.MessageMiddleware;
-import ch.desm.middleware.modules.communication.message.type.MessageUbw32Digital;
+import ch.desm.middleware.modules.communication.message.MessageBase;
+import ch.desm.middleware.modules.communication.message.MessageMiddleware;
 
 abstract class MessageTranslatorMiddlewareBase {
 
@@ -48,9 +47,12 @@ abstract class MessageTranslatorMiddlewareBase {
 				throw new Exception("there is no message to translate");
 			} else {
 				String[] parts = message.split(ELEMENT_CUT);
+				
 				messageCommon = new MessageMiddleware(parts[TOPIC], parts[ID], parts[EXTERN_INTERN],
 						parts[ELEMENT], parts[FUNCTION], parts[INSTANCE],
 						parts[PARAMETER], message, parts[OUTPUT_INPUT]);
+				
+				
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -95,26 +97,5 @@ abstract class MessageTranslatorMiddlewareBase {
 	 */
 	protected String replaceMiddlewareMessageParameter(String wildcard, String replace, String message) {
 		return message.replaceAll(wildcard, replace);
-	}
-	
-	/**
-	 * 
-	 * @param value
-	 * @return
-	 */
-	private String getParameterValue(String value) {
-		String returnValue = "";
-
-		switch (value) {
-		case MessageUbw32Digital.MESSAGE_PARAMETER_OFF: {
-			returnValue = "1";
-			break;
-		}
-		case MessageUbw32Digital.MESSAGE_PARAMETER_ON: {
-			returnValue = "0";
-			break;
-		}
-		}
-		return returnValue;
 	}
 }

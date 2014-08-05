@@ -4,11 +4,16 @@ import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
+
+import org.apache.log4j.Logger;
+
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 
 public abstract class EndpointRs232 extends EndpointCommon implements
 		SerialPortEventListener {
 
+	private static Logger log = Logger.getLogger(EndpointRs232.class);
+	
 	protected SerialPort serialPort;
 	
 	public static enum EnumSerialPorts {
@@ -17,9 +22,8 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 
 	public EndpointRs232(EnumSerialPorts enumSerialPort, EndpointRs232Config config) {
 		this.serialPort = new SerialPort(enumSerialPort.name());
+		
 		this.initializeSerialPort(serialPort, config);
-		// TODO: mxh: why call this getter here? does it have side effects?
-		this.getSerialPortName();
 	}
 
 	/**
@@ -45,7 +49,7 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	 * 
 	 */
 	private void initializeSerialPort(SerialPort port, EndpointRs232Config config) {
-		System.out.print("intialize serial port:" + port.getPortName());
+		log.trace("intialize serial port:" + port.getPortName());
 
 		try {
 			port.openPort();
@@ -54,7 +58,9 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 			port.setFlowControlMode(config.getFlowControl());
 			port.setEventsMask(config.getEventMask());
 			port.addEventListener(this);
-			System.out.println("... ready.");
+
+			log.trace("...ready.");
+			
 		} catch (SerialPortException e) {
 			e.printStackTrace();
 		}
@@ -64,11 +70,12 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	 * 
 	 */
 	public void disconnectSerialPorts() {
-		System.out.print("disconnecting all opened serial ports...");
-
+		
+		log.trace("disconnecting all opened serial ports :" );
 		try {
 			if (serialPort.isOpened()) {
-				System.out.print(serialPort.getPortName() + " ");
+				log.trace("disconnecting all opened serial ports :" + serialPort.getPortName());
+				
 				serialPort.purgePort(SerialPort.PURGE_RXABORT);
 				serialPort.purgePort(SerialPort.PURGE_TXABORT);
 				serialPort.closePort();
@@ -84,9 +91,13 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	 * @param stream
 	 * @throws SerialPortException
 	 */
-	protected synchronized void sendStream(String stream) throws SerialPortException {
+	protected void sendStream(String stream) throws SerialPortException {
+		
 		if (stream != null && !stream.isEmpty() && serialPort.writeString(stream)) {
-//			System.out.println(serialPort.getPortName() + " send stream: " + stream);
+			
+			log.trace(serialPort.getPortName() + " send stream: " + stream);
+		}else{
+			log.error(serialPort.getPortName() + " stream not send: " + stream);
 		}
 	}
 
@@ -98,8 +109,8 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	 */
 	public synchronized void serialEvent(SerialPortEvent event) {
 		String message = this.getSerialPortMessage(event);
-		System.out.println("received serial port message on port: "
-				+ this.serialPort.getPortName() + " with message: " + message);
+		
+		log.trace("received serial port message on port: " + this.serialPort.getPortName() + " with message: " + message);
 		
 		super.onIncomingEndpointMessage(message);
 	}
@@ -114,11 +125,9 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 					byte buffer[] = serialPort.readBytes();
 
 					for (int i = 0; i < buffer.length; i++) {
-						if (((char) buffer[i]) != '\n'
-								&& ((char) buffer[i]) != '\r') {
-							message += (char) buffer[i];
-						}
+						message += (char) buffer[i];
 					}
+					
 				} catch (SerialPortException ex) {
 					ex.printStackTrace();
 				}
@@ -129,15 +138,15 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 		// event.getEventValue() returns 1 if the line is ON and 0 if it is OFF.
 		else if (event.isCTS()) {
 			if (event.getEventValue() == 1) {
-				System.out.println(this.serialPort.getClass() + ": CTS - ON");
+				log.trace(this.serialPort.getClass() + ": CTS - ON");
 			} else {
-				System.out.println(this.serialPort.getClass() + ":CTS - OFF");
+				log.trace(this.serialPort.getClass() + ":CTS - OFF");
 			}
 		} else if (event.isDSR()) {
 			if (event.getEventValue() == 1) {
-				System.out.println(this.serialPort.getClass() + ":DSR - ON");
+				log.trace(this.serialPort.getClass() + ":DSR - ON");
 			} else {
-				System.out.println(this.serialPort.getClass() + ":DSR - OFF");
+				log.trace(this.serialPort.getClass() + ":DSR - OFF");
 			}
 		}
 

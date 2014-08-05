@@ -2,40 +2,51 @@ package ch.desm.middleware.modules.component.simulation.locsim;
 
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
+
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.dll.EndpointDllListenerInterface;
+import ch.desm.middleware.modules.communication.message.MessageBase;
+import ch.desm.middleware.modules.communication.message.MessageCommon;
+import ch.desm.middleware.modules.communication.message.MessageMiddleware;
+import ch.desm.middleware.modules.communication.message.processor.MessageProcessorBase;
 import ch.desm.middleware.modules.communication.message.router.MessageRouter;
 import ch.desm.middleware.modules.communication.message.translator.MessageTranslatorMiddleware;
-import ch.desm.middleware.modules.communication.message.type.MessageBase;
-import ch.desm.middleware.modules.communication.message.type.MessageCommon;
-import ch.desm.middleware.modules.communication.message.type.MessageMiddleware;
 import ch.desm.middleware.modules.component.simulation.locsim.messages.LocsimMessageDll;
-import ch.desm.middleware.modules.component.simulation.locsim.messages.LocsimMessageTranslatorRs232;
 
 public class LocsimBaseImpl extends LocsimBase implements
 		EndpointDllListenerInterface {
+
+	private static Logger log = Logger.getLogger(LocsimBaseImpl.class);
+
+	public LocsimMessageProcessorRs232 translatorRs232;
+	public MessageRouter router;
+	public MessageProcessorBase converter;
+	MessageTranslatorMiddleware translator;
 	
-	LocsimMessageTranslatorRs232 translatorRs232;
-	MessageRouter router;
-	
+	boolean initialisiert;
+
 	public LocsimBaseImpl(Broker broker, LocsimEndpointRs232 endpointRs232,
 			LocsimEndpointDll endpointDll) {
 		super(broker, endpointRs232, endpointDll);
-		
-		translatorRs232 = new LocsimMessageTranslatorRs232();
+
+		translatorRs232 = new LocsimMessageProcessorRs232();
 		router = new MessageRouter();
+		translator = new MessageTranslatorMiddleware();
 	}
 
 	@Override
 	public void onIncomingEndpointMessage(String message) {
-		System.out.print("endpoint (" + this.getClass()
-				+ ") received message: ");
 
-		if (isLocsimDllMessage(message)) {
-			processIncomingDataDll(message);
+		if(!message.isEmpty()){
+			if (isLocsimDllMessage(message)) {
+				log.trace("endpoint (" + this.getClass() + ") received message DLL: " + message);
+				processIncomingDataDll(message);
 
-		} else {
-			processIncomingDataRs232(message);
+			} else {
+				log.trace("endpoint (" + this.getClass() + ") received message RS232: " + message);
+				processIncomingDataRs232(message);
+			}
 		}
 	}
 
@@ -44,10 +55,8 @@ public class LocsimBaseImpl extends LocsimBase implements
 	 */
 	@Override
 	protected void onIncomingBrokerMessage(String message) {
-		System.out.println("endpoint (" + this.getClass()
-				+ ") received broker message: " + message);
-
-		MessageTranslatorMiddleware translator = new MessageTranslatorMiddleware();
+		
+		log.trace("broker (" + this.getClass() + ") received message: " + message);
 
 		ArrayList<MessageMiddleware> messageList = translator
 				.translateToCommonMiddlewareMessageList(message);
@@ -73,28 +82,27 @@ public class LocsimBaseImpl extends LocsimBase implements
 							+ message);
 
 		} else if (messageDll.isSignalMessage()) {
-			//TODO implementation
-			// System.out.println("processEndpointDataDll: not yet supported message: "
-			// + message);
+			// TODO implementation
+			log.fatal("processEndpointDataDll: not yet supported message: "
+					+ message);
 		} else if (messageDll.isTrackMessage()) {
 			// TODO implementation
-			// System.out.println("processEndpointDataDll: not yet supported message: "
-			// + message);
+			log.fatal("processEndpointDataDll: not yet supported message: "
+					+ message);
 
 		} else if (messageDll.isTrainpositionMessage()) {
 			// TODO implementation
-			// System.out.println("processEndpointDataDll: not yet supported message: "
-			// + message);
+			log.fatal("processEndpointDataDll: not yet supported message: "
+					+ message);
 
 		} else if (messageDll.isWeicheMessage()) {
 			// TODO implementation
-			// System.out.println("processEndpointDataDll: not yet supported message: "
-			// + message);
+			log.fatal("processEndpointDataDll: not yet supported message: "
+					+ message);
 
 		} else {
-			// System.err
-			// .println("processEndpointDataDll: not supported message: "
-			// + message);
+			log.fatal("processEndpointDataDll: not yet supported message: "
+					+ message);
 		}
 
 		MessageRouter router = new MessageRouter();
@@ -109,34 +117,39 @@ public class LocsimBaseImpl extends LocsimBase implements
 	 */
 	private void processIncomingDataRs232(String data) {
 		endpointRs232.parser.addData(data);
-		
+
 		String message;
 		while ((message = endpointRs232.parser.pop()) != null) {
 
-			//process the initaition of locsim
-			if (endpointRs232.isLocsimInitializationMessage(message)) {
-				if (!endpointRs232.isLocsimInitialized) {
-					
-//					TODO refactoring
-//					need to send all cabine states to locsim
-//					cabine send the state every 250ms
-//					implementation not yet needed
-//					to improve perfomance introduce middleware message
-					
-					//send status message to locsim
-					endpointRs232.sendMessage("INI2");
-					
-					endpointRs232.isLocsimReadyToInitialize = true;
-				}
+			log.trace("receive endpoint("+ endpointRs232.getSerialPortName()+") locsim message: " + message);
+			if (message.startsWith("INI")) {
 
+				//TODO implementation different states of locsim (INI8)
+				if (!initialisiert && message.equalsIgnoreCase("INI1")) {
+					message = "locsim.initialization.ready.ini1;os;0;message;initialisiation;ini1;on;locsim-rs232;#";
+					router.processEndpointMessage(this, message,
+							MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
+					initialisiert = true;
+					
+					this.endpointRs232.sendMessage("INI2");
+				}
+				
+				else if (message.equalsIgnoreCase("INI7")) {
+					message = "locsim.initialization.ready.ini7;os;0;message;initialisiation;ini7;on;locsim-rs232;#";
+					router.processEndpointMessage(this, message,
+							MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
+				}
+				
+				else{
+					log.trace("not implemented or skipped initialisation message: " + message);
+				}				
 			} else {
 
-				// TODO process locsim data
-				message = translatorRs232.translateToCommonMiddlewareMessage(data);
-				
-				MessageRouter router = new MessageRouter();
+				message = translatorRs232
+						.translateToCommonMiddlewareMessage(message, MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
+
 				router.processEndpointMessage(this, message,
-				MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
+						MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
 			}
 		}
 	}
@@ -155,6 +168,15 @@ public class LocsimBaseImpl extends LocsimBase implements
 		return false;
 	}
 	
+	public boolean isLocsimSoftwareMessage(String outputInput) {
+
+		if (outputInput.equalsIgnoreCase("os")) {
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * 
 	 */
@@ -168,16 +190,8 @@ public class LocsimBaseImpl extends LocsimBase implements
 	 */
 	@Override
 	protected void intializeSignedTopic() {
-		signedTopic.add(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM);
-		signedTopic
-				.add(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232_CONFIG);
-		signedTopic.add(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_DLL);
-		signedTopic.add(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
-		signedTopic
-				.add(MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
+		signedTopic.add(MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
 		signedTopic.add(MessageBase.MESSAGE_TOPIC_CABINE_RE420);
-		signedTopic.add(MessageBase.MESSAGE_TOPIC_TEST);
 	}
-	
-	
+
 }

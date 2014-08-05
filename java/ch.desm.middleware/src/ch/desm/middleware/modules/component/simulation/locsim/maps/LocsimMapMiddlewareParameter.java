@@ -2,10 +2,10 @@ package ch.desm.middleware.modules.component.simulation.locsim.maps;
 
 import java.util.Map;
 
-import ch.desm.middleware.modules.communication.message.store.MessageMapBase;
+import ch.desm.middleware.modules.component.ComponentMapBase;
 
 
-public class LocsimMapMiddlewareParameter extends MessageMapBase {
+public class LocsimMapMiddlewareParameter extends ComponentMapBase {
 	
 	@Override
 	public Map<String, String> getMap() {

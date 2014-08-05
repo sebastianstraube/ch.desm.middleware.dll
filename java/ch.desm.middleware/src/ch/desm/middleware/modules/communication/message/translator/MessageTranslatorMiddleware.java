@@ -2,9 +2,11 @@ package ch.desm.middleware.modules.communication.message.translator;
 
 import java.util.ArrayList;
 
-import ch.desm.middleware.modules.communication.message.type.MessageMiddleware;
-import ch.desm.middleware.modules.communication.message.type.MessageUbw32Analog;
-import ch.desm.middleware.modules.communication.message.type.MessageUbw32Digital;
+import ch.desm.middleware.modules.communication.message.MessageMiddleware;
+import ch.desm.middleware.modules.communication.message.MessageUbw32Analog;
+import ch.desm.middleware.modules.communication.message.MessageUbw32Base;
+import ch.desm.middleware.modules.communication.message.MessageUbw32DigitalRegisterComplete;
+import ch.desm.middleware.modules.communication.message.MessageUbw32DigitalRegisterSingle;
 
 /**
  * TODO implementation
@@ -13,15 +15,6 @@ import ch.desm.middleware.modules.communication.message.type.MessageUbw32Digital
  *
  */
 public class MessageTranslatorMiddleware extends MessageTranslatorMiddlewareBase {
-	
-	/**
-	 * 
-	 * @param message
-	 * 
-	 */
-	public MessageMiddleware translateToCommonMiddlewareMessage(String message){
-		return decodeMiddlewareMessage(message);
-	}
 	
 	/**
 	 * 
@@ -48,25 +41,40 @@ public class MessageTranslatorMiddleware extends MessageTranslatorMiddlewareBase
 	 * @param topic
 	 * @return
 	 */
-	public MessageUbw32Digital decodeUbw32EndpointMessage(String payload, String topic){
-		MessageUbw32Digital messageUbw32 = new MessageUbw32Digital(payload, topic);
+	public MessageUbw32Base decodeUbw32EndpointMessage(String payload, String topic){
+		MessageUbw32Base messageUbw32Base = null;
 		
-		return messageUbw32;
+//		VUBW32 Version 1.6.3
+		if(payload.startsWith("V")){
+			//nothing to do
+		}
+		
+		//IA,3,0,1IA,177,179
+		else if(payload.startsWith("IA")){			
+			messageUbw32Base = new MessageUbw32Analog(payload, topic);
+		}
+		
+//		PI,F,5PI,0
+//		PI,A,2PI,0
+		else if(payload.startsWith("PI")){			
+			messageUbw32Base = new MessageUbw32DigitalRegisterSingle(payload, topic);
+		}
+		
+//		PO, C, 3, 1
+		else if(payload.startsWith("PO")){
+			//nothing to do
+		}
+		
+//		C,17943,65339,16,49152,768,12596,960
+		else if (payload.startsWith("C")) {
+			//nothing to do
+		}
+		
+		else if (payload.startsWith("I")) {
+			messageUbw32Base = new MessageUbw32DigitalRegisterComplete(payload, topic);
+		}
+		
+		return messageUbw32Base;
 	}
-	
-	/**
-	 * 
-	 * @param payload
-	 * @param topic
-	 * @return
-	 */
-//	public MessageUbw32Analog decodeUbw32EndpointMessage(String payload, String topic){
-//		MessageUbw32Analog messageUbw32 = new MessageUbw32Analog(payload, topic);
-//		
-//		return messageUbw32;
-//	}
-	
-	
-
 	
 }

@@ -9,8 +9,12 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.apache.log4j.Logger;
+
 public abstract class SocketServer {
 
+	private static Logger log = Logger.getLogger(SocketServer.class);
+	
 	ServerSocket server;
 	Socket client;
 	
@@ -34,7 +38,7 @@ public abstract class SocketServer {
 			
 			String inputLine = "";
 			while((inputLine = in.readLine()) != null){
-				System.out.println(inputLine);
+				log.trace("SocketServer inputStream:" + inputLine);
 			}
 			
 		} catch (IOException e) {

@@ -1,5 +1,7 @@
 package ch.desm.middleware.modules.communication.endpoint.dll;
 
+import org.apache.log4j.Logger;
+
 import ch.desm.Dll;
 import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
 import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllSignal;
@@ -10,6 +12,8 @@ import ch.desm.middleware.modules.component.simulation.locsim.messages.LocsimMes
 public abstract class EndpointDll extends EndpointCommon implements
 		EndpointDllListenerInterface {
 
+	private static Logger log = Logger.getLogger(EndpointDll.class);
+	
 	public static final int POLLING_WAIT_TIME = 2048;
 	private Dll dll;
 	private EndpointDllPolling eventPollingDaemonDll;
@@ -30,7 +34,7 @@ public abstract class EndpointDll extends EndpointCommon implements
 
 	public void receiveEndpointObject(Object obj){
 		
-		System.out.println("receive in endpoint " + this.getClass() + " an object " + obj.getClass());
+		log.trace("receive in endpoint " + this.getClass() + " an object " + obj.getClass());
 		
 		String message = "";
 		
@@ -44,7 +48,7 @@ public abstract class EndpointDll extends EndpointCommon implements
 			message = new LocsimMessageTranslatorDll().translateToMiddlewareMessage((EndpointObjectDllWeiche)obj);
 		}else{
 			
-			System.err.println("Translation does not support yet endpoint object: " + obj.getClass());
+			log.error("Translation does not support yet endpoint object: " + obj.getClass());
 		}
 		
 		if(!message.isEmpty()){

@@ -8,5 +8,4 @@ public class LocsimEndpointDll extends EndpointDll {
 		super(configPath);
 
 	}
-
 }

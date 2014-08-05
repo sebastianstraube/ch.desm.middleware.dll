@@ -25,8 +25,7 @@ abstract class LocsimBase extends ComponentBase {
 	protected void registerEndpointListener(
 			EndpointBase listener) {
 		try {
-			endpointRs232.addEndpointListener(this);
-			endpointDll.addEndpointListener(this);
+			listener.addEndpointListener(this);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -28,6 +28,5 @@ public abstract class EndpointCommon extends EndpointBase {
 			throw new Exception(
 					"Only endpoints with message handling supported.");
 		}
-
-	}
+	}	
 }

@@ -1,6 +1,6 @@
 package ch.desm.middleware.modules.core.util;
 
-import ch.desm.middleware.modules.communication.message.type.MessageCommon;
+import ch.desm.middleware.modules.communication.message.MessageCommon;
 
 public class UtilityMessage {
 

@@ -31,6 +31,9 @@ public class LocsimEndpointRs232Parser {
 	}
 	
 	public void addData(String data) {
+		
+		data = data.replaceAll("\r", "");
+		data = data.replaceAll("\n", "");
 		this.buffer = this.buffer + data;
 		parseBuffer();
 	}
@@ -65,7 +68,7 @@ public class LocsimEndpointRs232Parser {
 			
 			// buffer does not look like it contains valid data.
 			// lets remove the first byte and retry parsing
-			//System.err.println("skipping invalid byte: " + buffer.charAt(0));
+			//log.error("skipping invalid byte: " + buffer.charAt(0));
 			buffer = buffer.substring(1);
 		}
 	}

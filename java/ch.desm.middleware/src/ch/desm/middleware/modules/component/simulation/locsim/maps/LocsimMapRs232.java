@@ -3,10 +3,10 @@ package ch.desm.middleware.modules.component.simulation.locsim.maps;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import ch.desm.middleware.modules.communication.message.store.MessageMapBase;
+import ch.desm.middleware.modules.component.ComponentMapBase;
 
 
-public class LocsimMapRs232 extends MessageMapBase {
+public class LocsimMapRs232 extends ComponentMapBase {
 	
 	@Override
 	public Map<String, String> getMap() {
@@ -26,51 +26,34 @@ public class LocsimMapRs232 extends MessageMapBase {
 	
 	@Override
 	protected void initialize(){
-		map.put("V40","S241");
-//		map.put("","locsim.auslöseschalter");
-//		map.put("","locsim.hauptleitungsdruck");
-//		map.put("","locsim.rangierbremse");
-//		map.put("","locsim.hldruck");
-//		map.put("","locsim.bremszylinderdruck");
-//		map.put("","locsim.fahrleitungsspannung");
-		map.put("U16","S172.1");
-		map.put("U17","S172.2");
-		map.put("U08","locsim.fahrschalter.bremsen.plus");
-		map.put("U07","locsim.fahrschalter.bremsen.punkt");
-		map.put("U06","locsim.fahrschalter.bremsen.minus");
-		map.put("U05","locsim.fahrschalter.0.null");
-		map.put("U04","locsim.fahrschalter.fahren.minus");
-		map.put("U03","locsim.fahrschalter.fahren.punkt");
-		map.put("U02","locsim.fahrschalter.fahren.m");
-		map.put("U01","locsim.fahrschalter.fahren.plus");
-		map.put("U00","locsim.fahrschalter.fahren.plusplus");
-		map.put("U09","S140a");
-		map.put("U10","S140b");
-		map.put("U18","S132");
-		map.put("U34","S316.4");
-		map.put("U35","S316.1");
-		map.put("U36","S316.5");
-		map.put("U37","S316.2");
-		map.put("U38","S316.6");
-		map.put("U39","S316.3");
-		map.put("U44","S324");
-		map.put("U43","S324.2");
-		map.put("U28","S242.02");
-		map.put("U23","S182.3");
-		map.put("U25","S182.4");
-		map.put("U24","S182");
-//		map.put("","locsim.wagentürenzustandinfo");
-//		map.put("","S311");
-		map.put("U15","S169");
-		map.put("U30","S189.1");
-		map.put("U31","S189.2");
-		map.put("U32","S242.01");
-		map.put("U22","S281");
-		map.put("U00","locsim.schlüsselschalterabfertigungsbefehl");
-		map.put("U20","S126");
-		map.put("U19","S129");
-		map.put("U27","S235");
+		
+		map.put("OS_INI1","locsim.initialization.ready.ini1"); //Locsim Schnittstellen Initialisation
+		map.put("OS_INI2","locsim.initialization.ready.ini2");
+		map.put("OS_INI7","locsim.initialization.ready.ini7");
+		
+		map.put("V00","ao269"); //HLDruck
+		map.put("V01","ao173"); //BremszylinderDruck
 
+		map.put("U18","s132"); //HauptschalterSchalter
+		map.put("U20","s126"); //SchalterSteuerstrom
+		map.put("U19","s129"); //SchalterStromabnehmer
+		map.put("U27","s235"); //Totmannpedal
+
+		map.put("U09","s140a"); //FahrtrichtungSchalter vorwärts
+		map.put("U10","s140b"); //FahrtrichtungSchalter rückwärts
+
+		map.put("U08","fahrschalter.bremsen.plus"); //Fahrschalter bremsen
+		map.put("U07","fahrschalter.bremsen.punkt"); //Fahrschalter bremsen
+		map.put("U06","fahrschalter.bremsen.minus"); //Fahrschalter bremsen
+		map.put("U05","fahrschalter.neutral"); //Fahrschalter neutral
+		map.put("U04","fahrschalter.fahren.minus"); //Fahrschalter fahren
+		map.put("U03","fahrschalter.fahren.punkt"); //Fahrschalter fahren
+		map.put("U02","fahrschalter.fahren.m"); //Fahrschalter fahren
+		map.put("U01","fahrschalter.fahren.plus"); //Fahrschalter fahren
+		map.put("U00","fahrschalter.fahren.plusplus"); //Fahrschalter fahren
+
+
+		
 	}
 }
 
