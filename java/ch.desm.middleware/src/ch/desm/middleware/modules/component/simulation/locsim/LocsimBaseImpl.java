@@ -192,6 +192,7 @@ public class LocsimBaseImpl extends LocsimBase implements
 	protected void intializeSignedTopic() {
 		signedTopic.add(MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
 		signedTopic.add(MessageBase.MESSAGE_TOPIC_CABINE_RE420);
+		signedTopic.add(MessageBase.MESSAGE_TOPIC_CABINE_RE420_FABISCH);
 	}
 
 }

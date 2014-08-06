@@ -29,7 +29,7 @@ public class Main {
 		
 //		testCabine();
 		
-//		testCaseLocsimEndpointRs232_to_CabineUbw32();
+		testCaseLocsimEndpointRs232_to_CabineUbw32();
 		
 //		LocsimEndpointRs232Parser.runTests();
 		
@@ -47,12 +47,6 @@ public class Main {
 	public static void testPetriNet(){
 		EndpointInterlockingLogic endpoint = new EndpointInterlockingLogic();
 		
-		try {
-			Thread.sleep(100000000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		while(true);
 	}
 	
@@ -100,7 +94,7 @@ public class Main {
 
 		//Test Cabine
 		Re420EndpointUbw32 re420Endpoint = new Re420EndpointUbw32(EnumSerialPorts.COM13);
-		Re420EndpointFabisch re420EndpointFabisch = new Re420EndpointFabisch(EnumSerialPorts.COM12);
+		Re420EndpointFabisch re420EndpointFabisch = new Re420EndpointFabisch(EnumSerialPorts.COM7);
 		Re420BaseImpl re420Impl = new Re420BaseImpl(broker, re420Endpoint, re420EndpointFabisch);
 		
 		//Test Interlocking
@@ -135,7 +129,9 @@ public class Main {
 	
 	public static void testEndpointFabisch(){
 		
-		EndpointFabisch endpointFabisch = new EndpointFabisch(EnumSerialPorts.COM5);
+		EndpointFabisch endpointFabisch = new EndpointFabisch(EnumSerialPorts.COM7);
+		
+		while(true);
 		
 	}
 	
@@ -143,6 +139,7 @@ public class Main {
 		
 		EndpointInterlockingLogic endpoint = new EndpointInterlockingLogic();
 		
+		while(true);
 		
 	}
 	

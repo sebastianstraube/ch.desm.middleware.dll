@@ -28,6 +28,17 @@ public class Re420MapMiddleware extends ComponentMapBase {
 		map.put("ao269", "ao269;i;0;drucksensor;druck;hauptleitung;?;kabinere420;#");
 		map.put("ao173", "ao173;i;0;drucksensor;druck;bremszylinder;?;kabinere420;#");
 		
+
+		map.put("s182.3", "s182.3;i;0;taste;türfreigabe;links;?;kabinere420;#");
+		map.put("s182.4", "s182.4;i;0;taste;türfreigabe;rechts;?;kabinere420;#");
+		map.put("s182", "s182;i;0;taste;türverriegelung;0;?;kabinere420;#");
+		
+		//output
+		map.put("l182.3", "l182.3;o;0;lampe;meldelampe;tür_l;?;kabinere420;#");
+		map.put("l185", "l185;o;0;lampe;meldelampe;tür_offen;?;kabinere420;#");
+		map.put("l182.4", "l182.4;o;0;lampe;meldelampe;tür_r;?;kabinere420;#");
+
+
 		
 	}
 }

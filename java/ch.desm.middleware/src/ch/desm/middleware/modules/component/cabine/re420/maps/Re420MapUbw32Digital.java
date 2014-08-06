@@ -42,6 +42,11 @@ public class Re420MapUbw32Digital extends ComponentMapBase {
 		map.put("s150f", "F12"); //Fahrschalter 150f
 		map.put("s150g", "B14"); //Fahrschalter 150g
 		map.put("s150l", "B15"); //Fahrschalter 150l
+		
+		//output
+		map.put("s182.3", "B5"); //Türfreigabe links
+		map.put("s182.4", "A10"); //Türfreigabe rechts
+		map.put("s182", "B4"); //Türverriegelung
 	}
 
 }

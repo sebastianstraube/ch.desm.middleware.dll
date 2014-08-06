@@ -175,7 +175,7 @@ public class EndpointUbw32 extends EndpointUbw32Base {
 						
 						if (cache.isStateChanged(singleMessage, this.serialPort)) {
 							
-							log.trace("received message on ubw(" + serialPort.getPortName()
+							log.info("received message on ubw(" + serialPort.getPortName()
 									+ "), cache enabled: " + cache.isCacheEnabled() + ", message: " + singleMessage.replaceAll("\n", ""));
 							
 							super.onIncomingEndpointMessage(singleMessage);

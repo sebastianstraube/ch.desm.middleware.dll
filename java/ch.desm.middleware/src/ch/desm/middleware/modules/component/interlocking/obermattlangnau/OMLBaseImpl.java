@@ -88,6 +88,7 @@ public class OMLBaseImpl extends OMLBase implements
 	 */
 	@Override
 	protected void intializeSignedTopic() {
+		signedTopic.add(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_DLL);
 	}
 
 }

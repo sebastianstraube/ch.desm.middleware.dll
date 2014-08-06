@@ -38,6 +38,28 @@ public class LocsimMapMiddleware extends ComponentMapBase {
 		map.put("fahrschalter.fahren.plus", "fahrschalter.fahren.plus;i;0;fahrschalter;fahren;plus;?;kabinere420;#");
 		map.put("fahrschalter.fahren.plusplus", "fahrschalter.fahren.plusplus;i;0;fahrschalter;fahren;plusplus;?;kabinere420;#");
 
+		//output
+//		map.put("s242.02", "s242.02;i;0;taste;zugsicherung;manöver;?;kabinere420;#");
+//		map.put("w238_t", "w238_t;o;0;warntongeber;signum;tief;?;kabinere420;#");
+//		map.put("w238_h", "w238_h;o;0;warntongeber;signum;hoch;?;kabinere420;#");
+//		map.put("l242b", "l242b;o;0;lampe;zugsicherung;warnung;?;kabinere420;#");
+//		map.put("l242a", "l242a;o;0;lampe;zugsicherung;halt;?;kabinere420;#");
+//
+//
+//		map.put("a74", "a74;o;0;analog-instrument;spannung;fahrdraht;?;kabinere420;#");
+//		map.put("a79", "a79;o;0;analog-instrument;strom;i_max;?;kabinere420;#");
+//		map.put("a79.1", "a79.1;o;0;analog-instrument;strom;i_delta;?;kabinere420;#");
+//		map.put("l281", "l281;o;0;lampe;meldelampe;schleudern;?;kabinere420;#");
+//		map.put("l281.1", "l281.1;o;0;taste;schleuderbremse;kabine;?;kabinere420;#");
+//		map.put("l83", "l83;o;0;lampe;meldelampe;zssheizlampe;?;kabinere420;#");
+//		map.put("l175", "l175;o;0;lampe;meldelampe;stoeventi;?;kabinere420;#");
+//		map.put("l163", "l163;o;0;lampe;meldelampe;stufensch;?;kabinere420;#");
+//		map.put("l181", "l181;o;0;lampe;meldelampe;abf;?;kabinere420;#");
+		map.put("l182.3", "l182.3;o;0;lampe;meldelampe;tür_l;?;kabinere420;#");
+		map.put("l185", "l185;o;0;lampe;meldelampe;tür_offen;?;kabinere420;#");
+		map.put("l182.4", "l182.4;o;0;lampe;meldelampe;tür_r;?;kabinere420;#");
+		map.put("l242.2", "l242.2;o;0;lampe;meldelampe;m-taste;?;kabinere420;#");
+
 
 	}
 }

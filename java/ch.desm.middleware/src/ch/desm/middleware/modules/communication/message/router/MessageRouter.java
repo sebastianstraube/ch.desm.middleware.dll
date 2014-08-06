@@ -159,7 +159,7 @@ public class MessageRouter {
 
 				// no fahrschalter command
 			} else {
-
+				
 				LocsimMapRs232 locsimMap = new LocsimMapRs232();
 				String channelData = locsimMap.getKey(message.getGlobalId());
 
@@ -170,32 +170,19 @@ public class MessageRouter {
 				// conversion Hauptleitung, Bremszylinder pressure
 				if (channelData.equals("V00") || channelData.equals("V01")) {
 					
+					parameter = conversionFahrschalter(parameter);
 					
+				} else if (channelData.equals("V02")) {
 					
-					double x = Double.valueOf(parameter);
-					x = (x-180)/100;
-					//(x^2)/8
+					parameter = conversionFahrschalter(parameter);
 					
-					double locsimValue = Math.sqrt(Math.pow(x, 3)); //((Math.pow(x, 3)) / 100);
-					locsimValue *= 100;
-					if (locsimValue < 0) {
-						locsimValue = 0;
-					} else if (locsimValue > 255) {
-						locsimValue = 255;
-					}
-
-					String locsimParameter = Integer.toHexString((int)locsimValue);
-
-					while (locsimParameter.length() < 4) {
-						locsimParameter = locsimParameter + "0";
-					}
-
-					System.out.println("x: " +x + ", locsimValue: " + locsimValue + ", locsimParameter: " + locsimParameter);
+				} else if (channelData.equals("V03")) {
+				
+				}
+				
+				else{
 					
-					parameter = locsimParameter;
-
-				} else {
-					parameter = getParameterValue(message.getParameter());
+					parameter = getParameterValue(parameter);
 				}
 
 				if (channelData.isEmpty()) {
@@ -212,7 +199,47 @@ public class MessageRouter {
 		}
 
 	}
+	
+	private String conversionFahrschalter(String parameter){
+		double x = Double.valueOf(parameter);
+		x = (x-180)/100;
+		//(x^2)/8
+		
+		double locsimValue = Math.sqrt(Math.pow(x, 3)); //((Math.pow(x, 3)) / 100);
+		locsimValue *= 100;
+		if (locsimValue < 0) {
+			locsimValue = 0;
+		} else if (locsimValue > 255) {
+			locsimValue = 255;
+		}
 
+		String locsimParameter = Integer.toHexString((int)locsimValue);
+
+		while (locsimParameter.length() < 4) {
+			locsimParameter = locsimParameter + "0";
+		}
+
+		log.trace("x: " +x + ", locsimValue: " + locsimValue + ", locsimParameter: " + locsimParameter);
+		
+		return locsimParameter;
+	}
+	
+	public String getParameterValueLocsim(String value){
+		
+		String returnValue = "";
+		
+		if (value
+				.equals(MessageUbw32DigitalRegisterComplete.MESSAGE_PARAMETER_OFF)) {
+			returnValue = "01";
+		} else if (value
+				.equals(MessageUbw32DigitalRegisterComplete.MESSAGE_PARAMETER_ON)) {
+			returnValue = "02";
+		}
+		return returnValue.toUpperCase();
+	}
+	
+	
+	
 	boolean init1 = false;
 
 	/**
@@ -224,8 +251,24 @@ public class MessageRouter {
 	private void processBrokerMessage(Re420BaseImpl impl,
 			MessageMiddleware message) {
 
+		
+		//is fabisch endpoint digital message
+		if(impl.getEndpointFabisch().getMapDigital().isKeyAvailable(message.getGlobalId())){
+			
+			String kanalAndData = impl.getEndpointFabisch().getMapDigital().getValue(message.getGlobalId());
+			String data = message.getParameter();
+			
+			impl.getEndpointFabisch().sendStream(kanalAndData);
+			
+		//is fabisch endpoint analog message			
+		}else if(impl.getEndpointFabisch().getMapAnalog().isKeyAvailable(message.getGlobalId())){
+			String kanal = impl.getEndpointFabisch().getMapAnalog().getValue(message.getGlobalId());
+			String data = message.getParameter();
+			
+			impl.getEndpointFabisch().sendStream(kanal + data);
+		} 
 		// is software message
-		if (message.getOutputInput().equalsIgnoreCase(
+		else if (message.getOutputInput().equalsIgnoreCase(
 				MessageUbw32Base.MESSAGE_CHAR_ONLYSOFTWARE)) {
 
 			if (message.getGlobalId().equalsIgnoreCase(

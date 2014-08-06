@@ -52,6 +52,30 @@ public class LocsimMapRs232 extends ComponentMapBase {
 		map.put("U01","fahrschalter.fahren.plus"); //Fahrschalter fahren
 		map.put("U00","fahrschalter.fahren.plusplus"); //Fahrschalter fahren
 
+		
+		//output
+//		map.put("U28","S242.02");
+////		map.put("","W238_t");
+////		map.put("","W238_h");
+////		map.put("","L242b");
+////		map.put("","L242a");
+//		map.put("U11","cabine.zusi.quittung.gelb");
+//		map.put("U12","cabine.zusi.quittung.rot");
+//		map.put("V01","A74");
+//		map.put("V02","A79");
+//		map.put("V03","A79.1");
+//		map.put("U00","L281");
+////		map.put("","L281.1");
+//		map.put("U01","L83");
+//		map.put("U02","L175");
+//		map.put("U03","L163");
+//		map.put("U04","L181");
+		map.put("U05","L182.3");
+		map.put("U06","L185");
+		map.put("U07","L182.4");
+		map.put("U08","L242.2");
+
+
 
 		
 	}

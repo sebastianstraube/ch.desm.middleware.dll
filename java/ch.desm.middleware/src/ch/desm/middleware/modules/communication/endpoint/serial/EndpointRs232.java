@@ -1,5 +1,7 @@
 package ch.desm.middleware.modules.communication.endpoint.serial;
 
+import java.util.Arrays;
+
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -95,9 +97,34 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 		
 		if (stream != null && !stream.isEmpty() && serialPort.writeString(stream)) {
 			
-			log.trace(serialPort.getPortName() + " send stream: " + stream);
+			log.trace(serialPort.getPortName() + " send stream: [" + stream + "]");
 		}else{
 			log.error(serialPort.getPortName() + " stream not send: " + stream);
+		}
+	}
+	
+	/**
+	 * sending a stream to serial port
+	 * 
+	 * @param stream
+	 * @throws SerialPortException
+	 */
+	protected void sendStreamInt(byte[] a) throws SerialPortException {
+		
+		if (serialPort.writeBytes(a)) {
+			
+			String s ="";
+			for(int i=0; i<a.length;i++){
+				s += a[i];
+				
+				if(i != a.length-1){
+					s += ", ";
+				}
+			}
+			
+			log.trace(serialPort.getPortName() + " send stream: [" + s + "]");
+		}else{
+			log.error(serialPort.getPortName() + " stream not send: " + a);
 		}
 	}
 
@@ -110,7 +137,7 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	public synchronized void serialEvent(SerialPortEvent event) {
 		String message = this.getSerialPortMessage(event);
 		
-		log.trace("received serial port message on port: " + this.serialPort.getPortName() + " with message: " + message);
+		log.debug("received serial port message on port: " + this.serialPort.getPortName() + " with message: " + message);
 		
 		super.onIncomingEndpointMessage(message);
 	}

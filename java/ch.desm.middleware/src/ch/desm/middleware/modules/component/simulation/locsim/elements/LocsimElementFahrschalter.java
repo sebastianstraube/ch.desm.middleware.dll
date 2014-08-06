@@ -19,7 +19,7 @@ public class LocsimElementFahrschalter extends ComponentMapBase {
 		map.put("U08","fahrschalter.bremsen.plus"); //Fahrschalter bremsen
 		map.put("U07","fahrschalter.bremsen.punkt"); //Fahrschalter bremsen
 		map.put("U06","fahrschalter.bremsen.minus"); //Fahrschalter bremsen
-		map.put("U05","fahrschalter.0.null"); //Fahrschalter 0
+		map.put("U05","fahrschalter.neutral"); //Fahrschalter 0
 		map.put("U04","fahrschalter.fahren.minus"); //Fahrschalter fahren
 		map.put("U03","fahrschalter.fahren.punkt"); //Fahrschalter fahren
 		map.put("U02","fahrschalter.fahren.m"); //Fahrschalter fahren

@@ -24,7 +24,12 @@ public class Re420MapFabischAnalog extends ComponentMapBase {
 	}
 	
 	public void initialize(){
-		map.put("ao269", "B1"); //Drucksensor Hauptleitung
-		map.put("ao173", "B0"); //Drucksensor Bremszylinder
+//		map.put("a74","1ce8");//kV-Anzeige
+//		map.put("a79","1edc");//A-Anzeige Motorenstrom
+//		map.put("a79.1","1ee6");//A-Anzeige Differenzstrom
+//		map.put("d94vi.1","24e0");//Vist-LZB.1
+
+
+
 	}
 }
