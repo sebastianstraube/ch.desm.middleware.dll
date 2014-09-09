@@ -2,7 +2,7 @@ package ch.desm.middleware.modules.communication.endpoint.serial.ubw32;
 
 import org.apache.log4j.Logger;
 
-import ch.desm.middleware.modules.communication.endpoint.dll.EndpointDllPolling;
+import ch.desm.middleware.modules.communication.endpoint.dll.EndpointDllThread;
 import ch.desm.middleware.modules.core.daemon.DaemonThread;
 
 /**
@@ -10,14 +10,14 @@ import ch.desm.middleware.modules.core.daemon.DaemonThread;
  * @author Sebastian
  *
  */
-class EndpointUbw32Polling extends DaemonThread {
+class EndpointUbw32Thread extends DaemonThread {
 	
-	private static Logger log = Logger.getLogger(EndpointDllPolling.class);
+	private static Logger log = Logger.getLogger(EndpointDllThread.class);
 	
-	private EndpointUbw32 endpoint;
+	private EndpointUbw32Impl endpoint;
 	private int waitTimeMs;
 	
-	EndpointUbw32Polling(EndpointUbw32 endpoint, int waitTimeMs) {
+	EndpointUbw32Thread(EndpointUbw32Impl endpoint, int waitTimeMs) {
 		super("EndpointUbw32Polling (" + endpoint.getSerialPortName()+")");
 		
 		this.endpoint = endpoint;
@@ -36,10 +36,10 @@ class EndpointUbw32Polling extends DaemonThread {
 
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 

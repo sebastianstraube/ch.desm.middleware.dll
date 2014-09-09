@@ -4,9 +4,7 @@ public abstract class EndpointCommon extends EndpointBase {
 
 	public void onIncomingEndpointMessage(String message) {
 		for (EndpointCommonListenerInterface listener : this.listeners) {
-
-			((EndpointCommonListenerInterface) listener)
-					.onIncomingEndpointMessage(message);
+			listener.onIncomingEndpointMessage(message);
 		}
 	}
 
@@ -19,14 +17,10 @@ public abstract class EndpointCommon extends EndpointBase {
 	}
 
 	@Override
-	public void addEndpointListener(EndpointCommonListenerInterface listener)
-			throws Exception {
-
-		if (listener instanceof EndpointCommonListenerInterface) {
-			this.listeners.add(listener);
-		} else {
-			throw new Exception(
-					"Only endpoints with message handling supported.");
+	public void addEndpointListener(EndpointCommonListenerInterface listener) throws Exception {
+		if (!(listener instanceof EndpointCommonListenerInterface)) {
+			throw new Exception("Only endpoints with message handling supported.");
 		}
-	}	
+        this.listeners.add(listener);
+	}
 }

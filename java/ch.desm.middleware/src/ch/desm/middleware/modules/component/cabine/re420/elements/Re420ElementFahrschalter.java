@@ -1,13 +1,12 @@
 package ch.desm.middleware.modules.component.cabine.re420.elements;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import ch.desm.middleware.modules.component.ComponentMapBase;
+import ch.desm.middleware.modules.component.cabine.re420.maps.Re420MapFahrschalter;
 
-public class Re420ElementFahrschalter extends ComponentMapBase {
+public class Re420ElementFahrschalter {
 
 	private static Logger log = Logger.getLogger(Re420ElementFahrschalter.class);
 	
@@ -19,16 +18,20 @@ public class Re420ElementFahrschalter extends ComponentMapBase {
 	private Boolean s150g;
 	private Boolean s150l;
 
-	ArrayList<String> disabledList;
 	/**
 	 * TODO refactoring
 	 */
 	public ArrayList<String> keyListFahrschalter;
+	private Re420MapFahrschalter map;
 	
 	public Re420ElementFahrschalter(){
 		super();
-		disabledList = new ArrayList<String>();
+		map = new Re420MapFahrschalter();
 		initializeFahrschalter();
+	}
+	
+	public Re420MapFahrschalter getMap(){
+		return map;
 	}
 	
 	private boolean isInitialized(){
@@ -179,11 +182,6 @@ public class Re420ElementFahrschalter extends ComponentMapBase {
 		
 		return isChanged;
 	}
-
-	@Override
-	public Map<String, String> getMap() {
-		return map;
-	}
 	
 	private void initializeFahrschalter(){
 		keyListFahrschalter = new ArrayList<String>();
@@ -194,19 +192,6 @@ public class Re420ElementFahrschalter extends ComponentMapBase {
 		keyListFahrschalter.add("s150f");
 		keyListFahrschalter.add("s150g");
 		keyListFahrschalter.add("s150l");
-	}
-	
-	@Override
-	protected void initialize() {		
-		map.put("fahrschalter.bremsen.plus", "fahrschalter.bremsen.plus;i;0;fahrschalter;bremse;plus;?;kabinere420;#");
-		map.put("fahrschalter.bremsen.punkt", "fahrschalter.bremsen.punkt;i;0;fahrschalter;bremse;punkt;?;kabinere420;#");
-		map.put("fahrschalter.bremsen.minus", "fahrschalter.bremsen.minus;i;0;fahrschalter;bremse;minus;?;kabinere420;#");
-		map.put("fahrschalter.neutral", "fahrschalter.neutral;i;0;fahrschalter;neutral;;?;kabinere420;#");
-		map.put("fahrschalter.fahren.minus", "fahrschalter.fahren.minus;i;0;fahrschalter;fahren;minus;?;kabinere420;#");
-		map.put("fahrschalter.fahren.punkt", "fahrschalter.fahren.punkt;i;0;fahrschalter;fahren;punkt;?;kabinere420;#");
-		map.put("fahrschalter.fahren.m", "fahrschalter.fahren.m;i;0;fahrschalter;fahren;m;?;kabinere420;#");
-		map.put("fahrschalter.fahren.plus", "fahrschalter.fahren.plus;i;0;fahrschalter;fahren;plus;?;kabinere420;#");
-		map.put("fahrschalter.fahren.plusplus", "fahrschalter.fahren.plusplus;i;0;fahrschalter;fahren;plusplus;?;kabinere420;#");
 	}
 
 }

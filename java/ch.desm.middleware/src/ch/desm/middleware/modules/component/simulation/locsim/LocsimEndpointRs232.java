@@ -1,11 +1,16 @@
 package ch.desm.middleware.modules.component.simulation.locsim;
 
 import jssc.SerialPortException;
+
+import org.apache.log4j.Logger;
+
 import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232;
 import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232Config;
 import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232ConfigBuilder;
 
 public class LocsimEndpointRs232 extends EndpointRs232 {
+	
+	private static Logger log = Logger.getLogger(LocsimEndpointRs232.class);
 	
 	public static final String LOCSIM_INIT_MESSAGE = "INI1";
 	public static final String LOCSIM_RS232_IDENTIFIER_CONFIG = "locsim.rs232.config";
@@ -39,7 +44,7 @@ public class LocsimEndpointRs232 extends EndpointRs232 {
 			super.sendStream(command);
 		} catch (SerialPortException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 }

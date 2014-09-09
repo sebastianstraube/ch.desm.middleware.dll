@@ -2,7 +2,7 @@ package ch.desm.middleware.modules.communication.endpoint.serial.fabisch;
 
 import org.apache.log4j.Logger;
 
-import ch.desm.middleware.modules.communication.endpoint.dll.EndpointDllPolling;
+import ch.desm.middleware.modules.communication.endpoint.dll.EndpointDllThread;
 import ch.desm.middleware.modules.core.daemon.DaemonThread;
 
 /**
@@ -10,18 +10,17 @@ import ch.desm.middleware.modules.core.daemon.DaemonThread;
  * @author Sebastian
  *
  */
-class EndpointFabischPolling extends DaemonThread {
+class EndpointFabischThread extends DaemonThread {
 	
-	private static Logger log = Logger.getLogger(EndpointDllPolling.class);
+	public static final int THREAD_SLEEP = 256;
 	
+	private static Logger log = Logger.getLogger(EndpointDllThread.class);
 	private EndpointFabisch endpoint;
-	private int waitTimeMs;
 	
-	EndpointFabischPolling(EndpointFabisch endpoint, int waitTimeMs) {
+	EndpointFabischThread(EndpointFabisch endpoint) {
 		super("EndpointFabischPolling (" + endpoint.getSerialPortName()+")");
 		
 		this.endpoint = endpoint;
-		this.waitTimeMs = waitTimeMs;
 	}	
 	
 	@Override
@@ -29,17 +28,17 @@ class EndpointFabischPolling extends DaemonThread {
 		try {
 
 			while (!isInterrupted()) {
-				Thread.sleep(waitTimeMs);
-				log.trace("Polling Thread active: " + this.getName() + " wait time: " + waitTimeMs);
+				Thread.sleep(THREAD_SLEEP);
+				log.trace("Polling Thread active: " + this.getName() + " wait time: " + THREAD_SLEEP);
 				endpoint.pollingCommand();
 			}
 
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 

@@ -16,20 +16,19 @@ import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObj
 import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllWeiche;
 import ch.desm.middleware.modules.core.daemon.DaemonThread;
 
-public class EndpointDllPolling extends DaemonThread {
+public class EndpointDllThread extends DaemonThread {
 	
-	private static Logger log = Logger.getLogger(EndpointDllPolling.class);
+	private static Logger log = Logger.getLogger(EndpointDllThread.class);
 	
-	private int waitTimeMs;
+	private static final int POLLING_WAIT_TIME = 2048;
 	private Dll dll;
-	private EndpointDll endpoint;
+	private EndpointDllImpl endpoint;
 
-	public EndpointDllPolling(String name, int waitTimeMs, Dll locsimDll,
-			EndpointDll endpoint) {
+	public EndpointDllThread(String name, Dll locsimDll,
+			EndpointDllImpl endpoint) {
 		super(name);
 		this.dll = locsimDll;
 		this.endpoint = endpoint;
-		this.waitTimeMs = waitTimeMs;
 	}
 
 	@Override
@@ -37,17 +36,17 @@ public class EndpointDllPolling extends DaemonThread {
 		try {
 
 			while (!isInterrupted()) {
-				log.trace("Polling Thread active: " + this.getName() + " wait time: " + waitTimeMs);
+				log.trace("Polling Thread active: " + this.getName() + " wait time: " + POLLING_WAIT_TIME);
 				pollingDllEvents();
-				Thread.sleep(waitTimeMs);
+				Thread.sleep(POLLING_WAIT_TIME);
 			}
 
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 

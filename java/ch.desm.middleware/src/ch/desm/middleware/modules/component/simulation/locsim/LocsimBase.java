@@ -1,7 +1,6 @@
 package ch.desm.middleware.modules.component.simulation.locsim;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
-import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.component.ComponentBase;
 
 abstract class LocsimBase extends ComponentBase {
@@ -21,16 +20,6 @@ abstract class LocsimBase extends ComponentBase {
 		this.registerEndpointListener(endpointDll);
 	}	
 	
-	@Override
-	protected void registerEndpointListener(
-			EndpointBase listener) {
-		try {
-			listener.addEndpointListener(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public LocsimEndpointRs232 getEndpointRs232(){
 		return this.endpointRs232;
 	}
@@ -39,12 +28,4 @@ abstract class LocsimBase extends ComponentBase {
 		return this.endpointDll;
 	}
 	
-	@Override
-	/**
-	 * test endpoint message handling
-	 * @param message
-	 */
-	public void emulateBrokerMessage(String message) {
-		onIncomingBrokerMessage(message);
-	}
 }

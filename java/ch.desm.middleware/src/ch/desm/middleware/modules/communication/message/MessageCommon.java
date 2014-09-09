@@ -3,9 +3,7 @@ package ch.desm.middleware.modules.communication.message;
 
 
 public class MessageCommon extends MessageBase {
-	
-	public final static String PARAMETER_PLACEHOLDER = "\\?";
-	
+		
 	protected String globalId;
 	
 	/**

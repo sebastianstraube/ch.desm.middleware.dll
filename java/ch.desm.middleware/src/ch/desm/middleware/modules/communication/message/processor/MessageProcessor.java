@@ -1,4 +1,4 @@
-package ch.desm.middleware.modules.communication.message.router;
+package ch.desm.middleware.modules.communication.message.processor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,10 +10,11 @@ import ch.desm.middleware.modules.communication.message.MessageMiddleware;
 import ch.desm.middleware.modules.communication.message.MessageUbw32Base;
 import ch.desm.middleware.modules.communication.message.MessageUbw32DigitalRegisterComplete;
 import ch.desm.middleware.modules.component.ComponentBase;
-import ch.desm.middleware.modules.component.cabine.re420.Re420BaseImpl;
-import ch.desm.middleware.modules.component.interlocking.obermattlangnau.OMLBaseImpl;
-import ch.desm.middleware.modules.component.simulation.locsim.LocsimBaseImpl;
-import ch.desm.middleware.modules.component.simulation.locsim.LocsimConfig;
+import ch.desm.middleware.modules.component.cabine.re420.Re420;
+import ch.desm.middleware.modules.component.cabine.re420.maps.Re420MapFabischValue;
+import ch.desm.middleware.modules.component.interlocking.obermattlangnau.OML;
+import ch.desm.middleware.modules.component.petrinet.obermattlangnau.OMLPetriNet;
+import ch.desm.middleware.modules.component.simulation.locsim.Locsim;
 import ch.desm.middleware.modules.component.simulation.locsim.elements.LocsimElementFahrschalter;
 import ch.desm.middleware.modules.component.simulation.locsim.maps.LocsimMapRs232;
 
@@ -22,13 +23,15 @@ import ch.desm.middleware.modules.component.simulation.locsim.maps.LocsimMapRs23
  * @author Sebastian
  * 
  */
-public class MessageRouter {
+public class MessageProcessor extends MessageProcessorBase {
 
-	private static Logger log = Logger.getLogger(MessageRouter.class);
+	private static Logger log = Logger.getLogger(MessageProcessor.class);
 	private LocsimElementFahrschalter fahrschalter;
+	private Re420MapFabischValue mapValues;
 
-	public MessageRouter() {
+	public MessageProcessor() {
 		fahrschalter = new LocsimElementFahrschalter();
+		mapValues = new Re420MapFabischValue();
 	}
 
 	/**
@@ -48,7 +51,7 @@ public class MessageRouter {
 	 * @param impl
 	 * @param messages
 	 */
-	public void processBrokerMessage(LocsimBaseImpl impl,
+	public void processBrokerMessage(Locsim impl,
 			ArrayList<MessageMiddleware> messages) {
 
 		for (MessageMiddleware message : messages) {
@@ -61,7 +64,7 @@ public class MessageRouter {
 	 * @param impl
 	 * @param messages
 	 */
-	public void processBrokerMessage(Re420BaseImpl impl,
+	public void processBrokerMessage(OMLPetriNet impl,
 			ArrayList<MessageMiddleware> messages) {
 
 		for (MessageMiddleware message : messages) {
@@ -74,7 +77,7 @@ public class MessageRouter {
 	 * @param impl
 	 * @param messages
 	 */
-	public void processBrokerMessage(OMLBaseImpl impl,
+	public void processBrokerMessage(Re420 impl,
 			ArrayList<MessageMiddleware> messages) {
 
 		for (MessageMiddleware message : messages) {
@@ -83,12 +86,32 @@ public class MessageRouter {
 	}
 
 	/**
-	 * TODO implementation
 	 * 
+	 * @param impl
+	 * @param messages
+	 */
+	public void processBrokerMessage(OML impl,
+			ArrayList<MessageMiddleware> messages) {
+
+		for (MessageMiddleware message : messages) {
+			this.processBrokerMessage(impl, message);
+		}
+	}
+
+	/**
 	 * @param impl
 	 * @param message
 	 */
-	private void processBrokerMessage(LocsimBaseImpl impl,
+	private void processBrokerMessage(OMLPetriNet impl,
+			MessageMiddleware message) {
+		impl.processBrokerMessage(message);
+	}
+
+	/**
+	 * @param impl
+	 * @param message
+	 */
+	private void processBrokerMessage(Locsim impl,
 			MessageMiddleware message) {
 
 		if (impl.isLocsimDllMessage(message.getGlobalId())) {
@@ -151,7 +174,7 @@ public class MessageRouter {
 				}
 				String channelType = channelData.substring(0, 1);
 				String channel = channelData.substring(1, 3);
-				String parameter = getParameterValue(message.getParameter());
+				String parameter = getParameterValueLocsim(message.getParameter());
 				String locsimCommand = "X" + channelType + channel + parameter
 						+ "Y";
 
@@ -159,53 +182,63 @@ public class MessageRouter {
 
 				// no fahrschalter command
 			} else {
-				
+
 				LocsimMapRs232 locsimMap = new LocsimMapRs232();
 				String channelData = locsimMap.getKey(message.getGlobalId());
 
-				String parameter = message.getParameter();
-				String channelType = channelData.substring(0, 1);
-				String channel = channelData.substring(1, 3);
-
-				// conversion Hauptleitung, Bremszylinder pressure
-				if (channelData.equals("V00") || channelData.equals("V01")) {
-					
-					parameter = conversionFahrschalter(parameter);
-					
-				} else if (channelData.equals("V02")) {
-					
-					parameter = conversionFahrschalter(parameter);
-					
-				} else if (channelData.equals("V03")) {
-				
-				}
-				
-				else{
-					
-					parameter = getParameterValue(parameter);
-				}
-
 				if (channelData.isEmpty()) {
-					log.warn("no locsim mapping with message: " + message);
+					try {
+						throw new Exception("processBrokerMessage: " + message
+								+ ", has no mapping");
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						log.error(e);
+					}
+				} else {
+
+					String parameter = message.getParameter();
+					String channelType = channelData.substring(0, 1);
+					String channel = channelData.substring(1, 3);
+
+					// conversion Hauptleitung, Bremszylinder pressure
+					if (channelData.equals("V00") || channelData.equals("V01")) {
+
+						parameter = conversionFahrschalter(parameter);
+
+					} else if (channelData.equals("V02")) {
+
+						parameter = conversionFahrschalter(parameter);
+
+					} else if (channelData.equals("V03")) {
+
+					}
+
+					else {
+
+						parameter = getParameterValueLocsim(parameter);
+					}
+
+					if (channelData.isEmpty()) {
+						log.warn("no locsim mapping with message: " + message);
+					}
+
+					String locsimCommand = "X" + channelType + channel
+							+ parameter + "Y";
+
+					impl.getEndpointRs232().sendMessage(locsimCommand);
+
 				}
-
-				String locsimCommand = "X" + channelType + channel + parameter
-						+ "Y";
-
-				impl.getEndpointRs232().sendMessage(locsimCommand);
-
 			}
-
 		}
-
 	}
-	
-	private String conversionFahrschalter(String parameter){
+
+	private String conversionFahrschalter(String parameter) {
 		double x = Double.valueOf(parameter);
-		x = (x-180)/100;
-		//(x^2)/8
-		
-		double locsimValue = Math.sqrt(Math.pow(x, 3)); //((Math.pow(x, 3)) / 100);
+		x = (x - 180) / 100;
+		// (x^2)/8
+
+		double locsimValue = Math.sqrt(Math.pow(x, 3)); // ((Math.pow(x, 3)) /
+														// 100);
 		locsimValue *= 100;
 		if (locsimValue < 0) {
 			locsimValue = 0;
@@ -213,60 +246,50 @@ public class MessageRouter {
 			locsimValue = 255;
 		}
 
-		String locsimParameter = Integer.toHexString((int)locsimValue);
+		String locsimParameter = Integer.toHexString((int) locsimValue);
 
 		while (locsimParameter.length() < 4) {
 			locsimParameter = locsimParameter + "0";
 		}
 
-		log.trace("x: " +x + ", locsimValue: " + locsimValue + ", locsimParameter: " + locsimParameter);
-		
+		log.trace("x: " + x + ", locsimValue: " + locsimValue
+				+ ", locsimParameter: " + locsimParameter);
+
 		return locsimParameter;
 	}
-	
-	public String getParameterValueLocsim(String value){
-		
-		String returnValue = "";
-		
-		if (value
-				.equals(MessageUbw32DigitalRegisterComplete.MESSAGE_PARAMETER_OFF)) {
-			returnValue = "01";
-		} else if (value
-				.equals(MessageUbw32DigitalRegisterComplete.MESSAGE_PARAMETER_ON)) {
-			returnValue = "02";
-		}
-		return returnValue.toUpperCase();
-	}
-	
-	
-	
+
 	boolean init1 = false;
 
 	/**
-	 * TODO refactoring
-	 * 
 	 * @param impl
 	 * @param message
 	 */
-	private void processBrokerMessage(Re420BaseImpl impl,
+	private void processBrokerMessage(Re420 impl,
 			MessageMiddleware message) {
 
-		
-		//is fabisch endpoint digital message
-		if(impl.getEndpointFabisch().getMapDigital().isKeyAvailable(message.getGlobalId())){
+		// is fabisch endpoint digital message
+		if (impl.getEndpointFabisch().getMapDigital()
+				.isKeyAvailable(message.getGlobalId())) {
+
+			String channel = impl.getEndpointFabisch().getMapDigital()
+					.getValue(message.getGlobalId());
+			String data = message.getParameter();
+
+			data = convertParameter(channel, data);
 			
-			String kanalAndData = impl.getEndpointFabisch().getMapDigital().getValue(message.getGlobalId());
+			impl.getEndpointFabisch().sendStream(channel + data);
+
+			// is fabisch endpoint analog message
+		} else if (impl.getEndpointFabisch().getMapAnalog()
+				.isKeyAvailable(message.getGlobalId())) {
+			String channel = impl.getEndpointFabisch().getMapAnalog()
+					.getValue(message.getGlobalId());
 			String data = message.getParameter();
 			
-			impl.getEndpointFabisch().sendStream(kanalAndData);
+			//TODO convert from locsim values to fabisch values
 			
-		//is fabisch endpoint analog message			
-		}else if(impl.getEndpointFabisch().getMapAnalog().isKeyAvailable(message.getGlobalId())){
-			String kanal = impl.getEndpointFabisch().getMapAnalog().getValue(message.getGlobalId());
-			String data = message.getParameter();
-			
-			impl.getEndpointFabisch().sendStream(kanal + data);
-		} 
+			impl.getEndpointFabisch().sendStream(channel + data);
+		}
 		// is software message
 		else if (message.getOutputInput().equalsIgnoreCase(
 				MessageUbw32Base.MESSAGE_CHAR_ONLYSOFTWARE)) {
@@ -292,7 +315,7 @@ public class MessageRouter {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(e);
 				}
 				impl.getEndpointUbw32().setCacheEnabled(true);
 			}
@@ -305,7 +328,7 @@ public class MessageRouter {
 			// is hardware message
 		} else {
 
-			String value = getParameterValue(message.getParameter());
+			String value = getParameterValueRe420(message.getParameter());
 			boolean isInput = message.getOutputInput().equals(
 					MessageUbw32Base.MESSAGE_CHAR_INPUT);
 
@@ -313,25 +336,26 @@ public class MessageRouter {
 			if (impl.getEndpointUbw32().getMapDigital()
 					.isKeyAvailable(message.getGlobalId())) {
 
-				String endpointRegister = impl.getEndpointUbw32().getMapDigital()
-						.getMap().get(message.getGlobalId());
+				String endpointRegister = impl.getEndpointUbw32()
+						.getMapDigital().getMap().get(message.getGlobalId());
 				String registerName = String
 						.valueOf(endpointRegister.charAt(0));
 				String pin = String.valueOf(endpointRegister.charAt(1));
 
 				if (isInput) {
-					impl.getEndpointUbw32().getPinInputDigital(registerName, pin);
+					impl.getEndpointUbw32().getPinInputDigital(registerName,
+							pin);
 				} else {
-					impl.getEndpointUbw32().setPinOutputDigital(registerName, pin,
-							value);
+					impl.getEndpointUbw32().setPinOutputDigital(registerName,
+							pin, value);
 				}
 
 				// is analog message
 			} else if (impl.getEndpointUbw32().getMapAnalog()
 					.isKeyAvailable(message.getGlobalId())) {
 
-				String endpointRegister = impl.getEndpointUbw32().getMapAnalog()
-						.getMap().get(message.getGlobalId());
+				String endpointRegister = impl.getEndpointUbw32()
+						.getMapAnalog().getMap().get(message.getGlobalId());
 
 				if (isInput) {
 					impl.getEndpointUbw32().getPinInputAnalog(endpointRegister);
@@ -342,9 +366,6 @@ public class MessageRouter {
 						+ message);
 			}
 		}
-
-		// TODO fabisch broker messages
-
 	}
 
 	/**
@@ -353,7 +374,7 @@ public class MessageRouter {
 	 * @param impl
 	 * @param message
 	 */
-	private void processBrokerMessage(OMLBaseImpl impl,
+	private void processBrokerMessage(OML impl,
 			MessageMiddleware message) {
 
 	}
@@ -363,7 +384,7 @@ public class MessageRouter {
 	 * @param value
 	 * @return
 	 */
-	private String getParameterValue(String value) {
+	private String getParameterValueLocsim(String value) {
 		String returnValue = "";
 
 		if (value
@@ -373,8 +394,7 @@ public class MessageRouter {
 				.equals(MessageUbw32DigitalRegisterComplete.MESSAGE_PARAMETER_ON)) {
 			returnValue = "0001";
 		} else {
-			returnValue = String.valueOf(Integer.toHexString(Integer
-					.valueOf(value)));
+			returnValue = value;
 			if (returnValue.length() < 4) {
 				while (returnValue.length() < 4) {
 					returnValue = "0" + returnValue;
@@ -382,5 +402,44 @@ public class MessageRouter {
 			}
 		}
 		return returnValue.toUpperCase();
+	}
+	
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
+	private String getParameterValueRe420(String value) {
+		String returnValue = String.valueOf(Integer.parseInt(value, 16));
+
+		return returnValue.toUpperCase();
+	}
+
+	private String convertParameter(String channelKey, String parameter) {
+
+		if (mapValues.getMap().containsKey(channelKey)) {
+
+			for (Entry<String, String> element : mapValues.getMap().entrySet()) {
+				if (element.getKey().equals(channelKey)) {
+					// has values
+					if (!element.getValue().isEmpty()) {
+
+						// has switch elements
+						if (element.getValue().contains("#")) {
+							if (parameter.equals("on")) {
+								// set off value as new parameter
+								parameter = element.getValue().split("#")[0];
+							} else if (parameter.equals("off")) {
+								// set on value as new parameter
+								parameter = element.getValue().split("#")[1];
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return parameter;
+
 	}
 }

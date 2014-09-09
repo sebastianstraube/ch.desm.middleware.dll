@@ -1,16 +1,15 @@
 package ch.desm.middleware.modules.component.cabine.re420.maps;
 
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
 import ch.desm.middleware.modules.component.ComponentMapBase;
-import ch.desm.middleware.modules.component.simulation.locsim.LocsimBaseImpl;
+import ch.desm.middleware.modules.component.simulation.locsim.Locsim;
 
 public class Re420MapBinding extends ComponentMapBase  {
 
-	private static Logger log = Logger.getLogger(LocsimBaseImpl.class);
+	private static Logger log = Logger.getLogger(Locsim.class);
 	
 	@Override
 	public Map<String, String> getMap() {
@@ -25,6 +24,9 @@ public class Re420MapBinding extends ComponentMapBase  {
 		return map.containsValue(id);
 	}
 	
+	/**
+	 * binding is needed to set a function directly in the component
+	 */
 	@Override
 	protected void initialize() {
 		

@@ -1,5 +1,7 @@
 package ch.desm.middleware.modules.component;
 
+import org.apache.log4j.Logger;
+
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.broker.BrokerClient;
 import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
@@ -13,22 +15,22 @@ import ch.desm.middleware.modules.communication.endpoint.EndpointCommonListenerI
 public abstract class ComponentBase extends BrokerClient
 	implements EndpointCommonListenerInterface {
 	
-	abstract protected void registerEndpointListener(EndpointBase listener);
-	abstract public void emulateBrokerMessage(String message);
-
+	private static Logger log = Logger.getLogger(ComponentBase.class);
 	
-	private static double id = 0;
+	protected void registerEndpointListener(EndpointBase listener) {
+        try {
+            listener.addEndpointListener(this);
+        } catch (Exception e) {
+            log.error(e);
+        }
+    }
 
-	private void initialize(){
-		id++;
-	}
+    public void emulateBrokerMessage(String message) {
+        onIncomingBrokerMessage(message);
+    }
 	
 	public ComponentBase(Broker broker) {
 		super(broker);
-		this.initialize();
 	}
 	
-	public double getId() {
-		return id;
-	}
 }

@@ -8,20 +8,20 @@ public class Broker {
 	/**
 	 * 
 	 */
-    private static Set<BrokerClient> clients;
+    private Set<BrokerClient> clients;
 
     /**
      * 
      */
     public Broker() {
-    	Broker.clients = new HashSet<BrokerClient>();
+    	clients = new HashSet<BrokerClient>();
     }
 
     /**
      * @param client
      */
     public void connect(BrokerClient client) {
-    	Broker.clients.add(client);
+    	clients.add(client);
     }
 
     /**
@@ -30,7 +30,7 @@ public class Broker {
      * @param message
      */
     protected void publish(BrokerClient sendingClient, String message, String topic) {
-        for(BrokerClient client : Broker.clients) {
+        for(BrokerClient client : clients) {
             
         	if(client.hasTopicSigned(topic)) {
             	client.receive(message);

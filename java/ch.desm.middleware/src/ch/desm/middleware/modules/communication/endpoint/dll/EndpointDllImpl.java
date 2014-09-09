@@ -9,21 +9,20 @@ import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObj
 import ch.desm.middleware.modules.communication.endpoint.dll.objects.EndpointObjectDllWeiche;
 import ch.desm.middleware.modules.component.simulation.locsim.messages.LocsimMessageTranslatorDll;
 
-public abstract class EndpointDll extends EndpointCommon implements
+public abstract class EndpointDllImpl extends EndpointCommon implements
 		EndpointDllListenerInterface {
 
-	private static Logger log = Logger.getLogger(EndpointDll.class);
+	private static Logger log = Logger.getLogger(EndpointDllImpl.class);
 	
-	public static final int POLLING_WAIT_TIME = 2048;
 	private Dll dll;
-	private EndpointDllPolling eventPollingDaemonDll;
+	private EndpointDllThread eventPollingDaemonDll;
 
-	public EndpointDll(String configPath) {
+	public EndpointDllImpl(String configPath) {
 		
 		dll = new Dll();
 		dll.onStartProgramm(configPath);
-		this.eventPollingDaemonDll = new EndpointDllPolling(
-				"EndpointDesmDllPolling", POLLING_WAIT_TIME, dll, this);
+		this.eventPollingDaemonDll = new EndpointDllThread(
+				"EndpointDesmDllPolling", dll, this);
 		
 		eventPollingDaemonDll.start();
 	}

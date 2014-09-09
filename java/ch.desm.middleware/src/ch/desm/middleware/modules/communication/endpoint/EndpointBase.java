@@ -8,13 +8,13 @@ import ch.desm.middleware.modules.communication.message.translator.MessageTransl
 /**
  * 
  * @author Sebastian
- *
+ * 
  */
 public abstract class EndpointBase {
 
 	protected Set<EndpointCommonListenerInterface> listeners;
 	protected MessageTranslatorMiddleware messageTranslator;
-	
+
 	/**
 	 * 
 	 */

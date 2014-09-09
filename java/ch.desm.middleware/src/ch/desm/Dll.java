@@ -20,7 +20,8 @@ public class Dll {
 
 	//TODO LoadLibrary
 	static {
-		System.load("C:\\Users\\Jürg\\Desktop\\ch.desm.middleware\\lib\\DesmMiddlewarePlugin.dll");
+		System.out.println(System.getProperty("java.library.path"));
+		System.loadLibrary("DesmMiddlewarePlugin");
 	}
 
 	public native String infoName();

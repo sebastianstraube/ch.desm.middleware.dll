@@ -1,7 +1,5 @@
 package ch.desm.middleware.modules.communication.endpoint.serial;
 
-import java.util.Arrays;
-
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -19,7 +17,7 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	protected SerialPort serialPort;
 	
 	public static enum EnumSerialPorts {
-		COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9, COM10, COM11, COM12, COM13, COM14, COM15, COM16, COM17, COM18, COM19, COM20, COM21, COM22
+		COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9, COM10, COM11, COM12, COM13, COM14, COM15, COM16, COM17, COM18, COM19, COM20, COM21, COM22, COM23, COM24, COM25, COM26, COM27, COM28, COM29, COM30, COM31, COM32, COM33
 	}
 
 	public EndpointRs232(EnumSerialPorts enumSerialPort, EndpointRs232Config config) {
@@ -36,7 +34,7 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 			serialPort.writeString("Write Test to Serialport ..."
 					+ serialPort.getPortName() + "\r\n");
 		} catch (SerialPortException e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 
@@ -64,7 +62,7 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 			log.trace("...ready.");
 			
 		} catch (SerialPortException e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 
@@ -83,7 +81,7 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 				serialPort.closePort();
 			}
 		} catch (SerialPortException e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 
@@ -109,22 +107,29 @@ public abstract class EndpointRs232 extends EndpointCommon implements
 	 * @param stream
 	 * @throws SerialPortException
 	 */
-	protected void sendStreamInt(byte[] a) throws SerialPortException {
+	protected void sendStream(byte[] stream) throws SerialPortException {
 		
-		if (serialPort.writeBytes(a)) {
+		if (stream!=null && serialPort.writeBytes(stream)) {
 			
-			String s ="";
-			for(int i=0; i<a.length;i++){
-				s += a[i];
-				
-				if(i != a.length-1){
-					s += ", ";
-				}
-			}
-			
-			log.trace(serialPort.getPortName() + " send stream: [" + s + "]");
+			log.trace(serialPort.getPortName() + " send stream:" + stream.toString());
 		}else{
-			log.error(serialPort.getPortName() + " stream not send: " + a);
+			log.error(serialPort.getPortName() + " stream not send: " + stream.toString());
+		}
+	}
+	
+	/**
+	 * sending a stream to serial port
+	 * 
+	 * @param stream
+	 * @throws SerialPortException
+	 */
+	protected void sendStream(int[] stream) throws SerialPortException {
+		
+		if (stream!=null && serialPort.writeIntArray(stream)) {
+			
+			log.trace(serialPort.getPortName() + " send stream:" + stream.toString());
+		}else{
+			log.error(serialPort.getPortName() + " stream not send: " + stream.toString());
 		}
 	}
 

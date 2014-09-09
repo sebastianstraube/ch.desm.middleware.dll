@@ -30,5 +30,6 @@ public class Re420MapUbw32Analog extends ComponentMapBase {
 	public void initialize(){
 		map.put("ao269", "B1"); //Drucksensor Hauptleitung
 		map.put("ao173", "B0"); //Drucksensor Bremszylinder
+
 	}
 }

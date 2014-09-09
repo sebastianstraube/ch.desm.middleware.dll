@@ -19,7 +19,8 @@ public class EndpointFabisch extends EndpointRs232 {
 
 	private static Logger log = Logger.getLogger(EndpointFabisch.class);
 	
-	EndpointFabischPolling polling;
+	private EndpointFabischThread polling;
+	
 	/**
 	 * 
 	 * @param enumSerialPort
@@ -33,7 +34,7 @@ public class EndpointFabisch extends EndpointRs232 {
 				.setEventMask(EndpointRs232Config.MASK_RXCHAR)
 				.setFlowControl(EndpointRs232Config.FLOWCONTROL_NONE).build());
 
-		this.polling = new EndpointFabischPolling(this, 256);
+		this.polling = new EndpointFabischThread(this);
 		this.initialize();
 	}
 
@@ -55,12 +56,12 @@ public class EndpointFabisch extends EndpointRs232 {
 		this.sendStream("F61A00"); // minuten
 		this.sendStream("F61B00"); // sekunden
 				
-//		//Countdown start
-////	this.sendStream("F62205");
-//				
+		//Countdown start
+//	this.sendStream("F62205");
+				
 //		//modus Simulation
 //		this.sendStream("F62D01");
-//		
+		
 //		//türen links on
 //		this.sendStream("479102");
 //		
@@ -79,15 +80,14 @@ public class EndpointFabisch extends EndpointRs232 {
 //		//lampe abfertigungsbefehl aus
 //		this.sendStream("46B401");
 //		
-//		
-//		//lampe abfertigungsbefehl ein
+//		//summer hochton
 //		this.sendStream("5D5C02");
 //		
-//		//lampe abfertigungsbefehl ein
-//		this.sendStream("5D5C03");
+		//summer tiefton
+		this.sendStream("5D5C03");
 //	
-//		//lampe abfertigungsbefehl ein
-//		this.sendStream("5D5C01");
+		//summer aus
+		this.sendStream("5D5C01");
 
 	}
 
@@ -118,59 +118,64 @@ public class EndpointFabisch extends EndpointRs232 {
 			}
 		}
 		
-		log.info("endpoint (" +this.getClass()+ ") received message : [" + message + "], bytes: ["+s+"]");
+		log.trace("endpoint (" +this.getClass()+ ") received message : [" + message + "], bytes: ["+s+"]");
 		
-		message += "fabisch#";
+		message += "#fabisch#";
 	}
 
 	
 	/**
 	 * TODO refactoring sleep
 	 */
-	protected void sendStream(int h0, int h1, int h2) {
+	public void sendStream(byte val0, byte val1, byte val2) {
 		try {
 			
-			try {
-				Thread.sleep(12);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			int[] intArray = {h0, h1, h2, 0, 0};
+			Thread.sleep(12);
+			byte[] byteArray = {val0, val1, val2, 0, 0};
 			
-			log.trace("send stream: " + h0 + ", " + h1 + ", " + h2  + ", 0, 0");
-			
-			byte[] h = new byte[intArray.length];
-			for(int i=0; i<intArray.length; i++){
-				int nr = Integer.parseInt(Integer.toString(intArray[i]), 10);
-				h[i] = (byte) nr;
-			}
-			
-			super.sendStreamInt(h);
+			super.sendStream(byteArray);
 
 		} catch (SerialPortException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			log.error(e);
 		}
 	}
-		
-	/**
-	 * 
-	 */
-	private void sendStream(String byte0, String byte1, String byte2) {
+	
+	public void sendStream(int val0, int val1, int val2) {
+		try {
+			
+			//convert to byte value when size exceed 127
+			if(val2 > 127){
+				val2 -= 128;
+			}
+			
+			int[] array = {val0, val1, val2, 0, 0};
+			
+			super.sendStream(array);
 
-		int b0 = Integer.parseInt(byte0,16);
-		int b1 = Integer.parseInt(byte1,16);
-		int b2 = Integer.parseInt(byte2,16);
+		} catch (SerialPortException e) {
+			// TODO Auto-generated catch block
+			log.error(e);
+		}
+	}
+	
+	public void sendStream(String hex0, String hex1, String hex2) {
 		
-		this.sendStream(b0, b1, b2);
+		int int0 = Integer.parseInt(hex0,16);
+		int int1 = Integer.parseInt(hex1,16);
+		int int2 = Integer.parseInt(hex2,16);
+		
+		this.sendStream(int0, int1, int2);
 	}
 	
 	/**
 	 * 
 	 */
-	public void sendStream(String s) {
-
-		sendStream(s.substring(0, 2), s.substring(2, 4), s.substring(4, 6));
+	public void sendStream(String hexString) {
+		
+		sendStream(hexString.substring(0, 2), hexString.substring(2, 4), hexString.substring(4, 6));
 	}
 }

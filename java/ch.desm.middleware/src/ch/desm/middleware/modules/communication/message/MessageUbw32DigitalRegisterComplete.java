@@ -207,14 +207,9 @@ public class MessageUbw32DigitalRegisterComplete extends MessageUbw32Base {
             isInputOn = getInput(portD.getPinBitMask(), pin);
         } else if (register.equals("E0")) {
             isInputOn = getInput(portE.getPinBitMask(), pin);
-        }
-        
-//        remove blinking green LED on E1
-        else if (register.equals("E1")) {
+        } else if (register.equals("E1")) {
             isInputOn = getInput(portE.getPinBitMask(), pin);
-        }
-        
-        else if (register.equals("E2")) {
+        } else if (register.equals("E2")) {
             isInputOn = getInput(portE.getPinBitMask(), pin);
         } else if (register.equals("E3")) {
             isInputOn = getInput(portE.getPinBitMask(), pin);

@@ -45,15 +45,6 @@ public class EndpointUbw32Cache {
 		// e.g. IA,16,873,651,17,32,19,14,15,14,17,15,14,15,15,13
 		// AN0,AN1,AN3,AN0,AN1,AN3,AN0,AN1,AN3,AN0,AN1,AN3,AN0,AN1,AN3
 		if (message.startsWith("IA")) {
-
-			if(message.startsWith("IA,3")){
-
-//				String[] parts = message.split(",");
-//				System.out.println(parts[5]);// +", " + "Hauptleitung: " + parts[5] + ", message: " + message);
-//				
-				
-			}
-
 			
 			portAN0 = new EndpointUbw32RegisterAnalog("1");
 			portAN1 = new EndpointUbw32RegisterAnalog("2");
@@ -154,7 +145,7 @@ public class EndpointUbw32Cache {
 		}
 
 		if (isChanged) {
-			log.trace("state changed on ubw("
+			log.debug("state changed on ubw("
 					+ serialPort.getPortName() + "): " + message);
 		}
 		
@@ -206,7 +197,6 @@ public class EndpointUbw32Cache {
 		return portMask;
 	}
 	
-	// Port B
 	private EndpointUbw32RegisterAnalog portAN0;
 	private EndpointUbw32RegisterAnalog portAN1;
 	private EndpointUbw32RegisterAnalog portAN2;

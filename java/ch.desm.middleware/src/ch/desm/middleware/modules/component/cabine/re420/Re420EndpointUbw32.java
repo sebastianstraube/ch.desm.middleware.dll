@@ -1,10 +1,10 @@
 package ch.desm.middleware.modules.component.cabine.re420;
 
-import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32;
+import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32Impl;
 import ch.desm.middleware.modules.component.cabine.re420.maps.Re420MapUbw32Analog;
 import ch.desm.middleware.modules.component.cabine.re420.maps.Re420MapUbw32Digital;
 
-public class Re420EndpointUbw32 extends EndpointUbw32 {
+public class Re420EndpointUbw32 extends EndpointUbw32Impl {
 
 	protected Re420MapUbw32Digital re420MapDigital;
 	protected Re420MapUbw32Analog re420MapAnalog;

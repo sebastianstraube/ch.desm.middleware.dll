@@ -5,12 +5,16 @@ import org.apache.log4j.Logger;
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232.EnumSerialPorts;
 import ch.desm.middleware.modules.communication.endpoint.serial.fabisch.EndpointFabisch;
-import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32;
-import ch.desm.middleware.modules.communication.endpoint.virtual.EndpointInterlockingLogic;
-import ch.desm.middleware.modules.component.cabine.re420.Re420BaseImpl;
+import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32Impl;
+import ch.desm.middleware.modules.communication.endpoint.tcp.EndpointTcpClientImpl;
+import ch.desm.middleware.modules.component.cabine.re420.Re420;
 import ch.desm.middleware.modules.component.cabine.re420.Re420EndpointFabisch;
 import ch.desm.middleware.modules.component.cabine.re420.Re420EndpointUbw32;
-import ch.desm.middleware.modules.component.simulation.locsim.LocsimBaseImpl;
+import ch.desm.middleware.modules.component.interlocking.obermattlangnau.OML;
+import ch.desm.middleware.modules.component.interlocking.obermattlangnau.OMLEndpointUbw32;
+import ch.desm.middleware.modules.component.petrinet.obermattlangnau.OMLPetriNet;
+import ch.desm.middleware.modules.component.petrinet.obermattlangnau.OMLPetriNetEndpoint;
+import ch.desm.middleware.modules.component.simulation.locsim.Locsim;
 import ch.desm.middleware.modules.component.simulation.locsim.LocsimEndpointDll;
 import ch.desm.middleware.modules.component.simulation.locsim.LocsimEndpointRs232;
 
@@ -21,15 +25,16 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-//		testEndpointPetriNet
+		
+//		testEndpointTcpIp();
 		
 //		testEndpointFabisch();
 		
-//		testPetriNet();
+		testEndpointPetriNet();
 		
 //		testCabine();
 		
-		testCaseLocsimEndpointRs232_to_CabineUbw32();
+//		testCaseLocsimEndpointRs232_to_CabineUbw32(); //
 		
 //		LocsimEndpointRs232Parser.runTests();
 		
@@ -38,16 +43,27 @@ public class Main {
 //		testPWM(args);
 		
 //		testCaseUbw32();
+		
+//		testCaseOMLEndpointUbw32();
+		
+		hangoutThread();
 	}
 	
 	
 	/**
 	 * 
 	 */
-	public static void testPetriNet(){
-		EndpointInterlockingLogic endpoint = new EndpointInterlockingLogic();
+	public static void testEndpointTcpIp(){
 		
-		while(true);
+//		EndpointTcpServer_ s = new EndpointTcp(7100);
+		
+		EndpointTcpClientImpl c = new EndpointTcpClientImpl("EndpointTcpClient", "127.0.0.1", 7100);
+		
+//		c.sendStream("test stream!");
+		
+		
+		
+		
 	}
 	
 	/**
@@ -59,52 +75,71 @@ public class Main {
 		Broker broker = new Broker();
 
 		//Test Cabine
-//		Re420EndpointUbw32 re420EndpointUbw32 = new Re420EndpointUbw32(EnumSerialPorts.COM13);
+		Re420EndpointUbw32 re420EndpointUbw32 = new Re420EndpointUbw32(EnumSerialPorts.COM13);
 //		Re420BaseImpl re420Impl = new Re420BaseImpl(broker, re420EndpointUbw32);
 		
 		//Test Interlocking
-//		OMLEndpointUbw32 omlEndpoint = new OMLEndpointUbw32(EnumSerialPorts.COM12);
-//		OMLBaseImpl OmlImpl = new OMLBaseImpl(broker, omlEndpoint);
+		OMLEndpointUbw32 omlEndpoint = new OMLEndpointUbw32(EnumSerialPorts.COM12);
+		OML OmlImpl = new OML(broker, omlEndpoint);
 		
 		//Test Simulation
 		LocsimEndpointDll endpointDll = new LocsimEndpointDll("dispatcher.json");
 		LocsimEndpointRs232 endpointRs232 = new LocsimEndpointRs232(EnumSerialPorts.COM5);
-		LocsimBaseImpl locsimImpl = new LocsimBaseImpl(broker, endpointRs232, endpointDll);
+		Locsim locsimImpl = new Locsim(broker, endpointRs232, endpointDll);
+	}
+	
+	/**
+	 * 
+	 */
+	public static void testCaseOMLEndpointUbw32() {
+		log.trace(System.getProperty("java.library.path"));
+		
+		Broker broker = new Broker();
+		
+		//Test Interlocking
+		OMLEndpointUbw32 omlEndpoint = new OMLEndpointUbw32(EnumSerialPorts.COM21);
+		OML OmlImpl = new OML(broker, omlEndpoint);
+		
+		//Test Simulation
+		LocsimEndpointDll endpointDll = new LocsimEndpointDll("dispatcher.json");
+		LocsimEndpointRs232 endpointRs232 = new LocsimEndpointRs232(EnumSerialPorts.COM20);
+		Locsim locsimImpl = new Locsim(broker, endpointRs232, endpointDll);
 	}
 
 	public static void testCabine(){
 		
 		Broker broker = new Broker();
 
-		//Test Cabine
-		Re420EndpointUbw32 re420Endpoint = new Re420EndpointUbw32(EnumSerialPorts.COM13);
-		Re420EndpointFabisch re420EndpointFabisch = new Re420EndpointFabisch(EnumSerialPorts.COM12);
-		Re420BaseImpl re420Impl = new Re420BaseImpl(broker, re420Endpoint, re420EndpointFabisch);
+		Re420EndpointUbw32 re420Endpoint = new Re420EndpointUbw32(EnumSerialPorts.COM30);
+		Re420EndpointFabisch re420EndpointFabisch = new Re420EndpointFabisch(EnumSerialPorts.COM31);
+		Re420 re420Impl = new Re420(broker, re420Endpoint, re420EndpointFabisch);
+		
 		re420Impl.emulateBrokerMessage("locsim.initialization.ready.ini1;os;0;message;initialisiation;ini1;?;locsim-rs232;#");
 		
 		re420Endpoint.setCacheEnabled(true);
+		
+		//test analog output
+		re420Impl.emulateBrokerMessage("a74;o;0;analog-instrument;spannung;fahrdraht;FF;kabinere420;#");	
+		re420Impl.emulateBrokerMessage("a79;o;0;analog-instrument;strom;i_max;FF;kabinere420;#");
+		re420Impl.emulateBrokerMessage("a79.1;o;0;analog-instrument;strom;i_delta;FF;kabinere420;#");		
+		re420Impl.emulateBrokerMessage("d94vi;o;0;analog-instrument;geschwindigkeitsanzeige;ist;FF;kabinere420;#");
 	}
 	/**
 	 * 
 	 */
 	public static void testCaseLocsimEndpointRs232_to_CabineUbw32() {
-//		log.trace("java.library.path");
 		
 		Broker broker = new Broker();
 
 		//Test Cabine
-		Re420EndpointUbw32 re420Endpoint = new Re420EndpointUbw32(EnumSerialPorts.COM13);
-		Re420EndpointFabisch re420EndpointFabisch = new Re420EndpointFabisch(EnumSerialPorts.COM7);
-		Re420BaseImpl re420Impl = new Re420BaseImpl(broker, re420Endpoint, re420EndpointFabisch);
-		
-		//Test Interlocking
-//		OMLEndpointUbw32 omlEndpoint = new OMLEndpointUbw32(EnumSerialPorts.COM12);
-//		OMLBaseImpl OmlImpl = new OMLBaseImpl(broker, omlEndpoint);
+		Re420EndpointUbw32 re420Endpoint = new Re420EndpointUbw32(EnumSerialPorts.COM24);
+		Re420EndpointFabisch re420EndpointFabisch = new Re420EndpointFabisch(EnumSerialPorts.COM25);
+		Re420 re420Impl = new Re420(broker, re420Endpoint, re420EndpointFabisch);
 		
 		//Test Simulation
 		LocsimEndpointDll locsimEndpointDll = new LocsimEndpointDll("dispatcher.json");
-		LocsimEndpointRs232 locsimEndpointRs232 = new LocsimEndpointRs232(EnumSerialPorts.COM5);
-		LocsimBaseImpl locsimImpl = new LocsimBaseImpl(broker, locsimEndpointRs232, locsimEndpointDll);
+		LocsimEndpointRs232 locsimEndpointRs232 = new LocsimEndpointRs232(EnumSerialPorts.COM23);
+		Locsim locsimImpl = new Locsim(broker, locsimEndpointRs232, locsimEndpointDll);
 		
 		//Start Test sequence
 		
@@ -112,7 +147,7 @@ public class Main {
 //			Thread.sleep(1000);
 //		} catch (InterruptedException e) {
 //			// TODO Auto-generated catch block
-//			e.printStackTrace();
+//			log.error(e);
 //		}
 //		
 //		locsimEndpointRs232.emulateEndpointMessage("INI1");
@@ -121,28 +156,42 @@ public class Main {
 //			Thread.sleep(1000);
 //		} catch (InterruptedException e) {
 //			// TODO Auto-generated catch block
-//			e.printStackTrace();
+//			log.error(e);
 //		}
 //		
 //		locsimEndpointRs232.emulateEndpointMessage("INI7");
 	}
 	
+	/**
+	 * 
+	 */
 	public static void testEndpointFabisch(){
 		
-		EndpointFabisch endpointFabisch = new EndpointFabisch(EnumSerialPorts.COM7);
-		
-		while(true);
+		EndpointFabisch endpointFabisch = new EndpointFabisch(EnumSerialPorts.COM31);
 		
 	}
 	
+	/**
+	 * 
+	 */
 	public static void testEndpointPetriNet(){
-		
-		EndpointInterlockingLogic endpoint = new EndpointInterlockingLogic();
-		
-		while(true);
+        Broker broker = new Broker();
+
+        OMLPetriNetEndpoint endpoint = new OMLPetriNetEndpoint();
+        OMLPetriNet petriNetBase = new OMLPetriNet(broker, endpoint);
+        
+		//Test Interlocking
+		OMLEndpointUbw32 omlEndpoint = new OMLEndpointUbw32(EnumSerialPorts.COM33);
+		OML OmlImpl = new OML(broker, omlEndpoint);
+        
+		//test case
+//		petriNetBase.emulateBrokerMessage("1.90.04;o;0;lampe;signalf;rot;on;stellwerkobermattlangnau;#");
 		
 	}
 	
+	/**
+	 * 
+	 */
 	public static void testCaseDll() {
 //		log.trace("java.library.path");
 		
@@ -151,15 +200,19 @@ public class Main {
 		LocsimEndpointDll locsimEndpointDll = new LocsimEndpointDll("dispatcher.json");
 		LocsimEndpointRs232 locsimEndpointRs232 = new LocsimEndpointRs232(EnumSerialPorts.COM22);
 
-		LocsimBaseImpl locsim = new LocsimBaseImpl(broker, locsimEndpointRs232, locsimEndpointDll);
+		Locsim locsim = new Locsim(broker, locsimEndpointRs232, locsimEndpointDll);
 	}
 	
+	/**
+	 * 
+	 */
 	public static void testCaseUbw32(){
-		EndpointUbw32 endpoint = new EndpointUbw32(EnumSerialPorts.COM14, "17943,65339,16,49152,768,12596,960", "0");
+		EndpointUbw32Impl endpoint = new EndpointUbw32Impl(EnumSerialPorts.COM33, "192,0,8192,16372,0,1,2", "0");
 
 //		endpoint.sendCommandInputState();
-		endpoint.sendCommandPinInput("A", "1"); //Dienstbeleuchtung 1
+		endpoint.sendCommandPinOutput("G", "8", "1");
 		
+		endpoint.startPolling();
 	}
 
 	/**
@@ -173,7 +226,9 @@ public class Main {
 	 */
 	public static void testPWM(String[] args) {
 
-		String comPort = "1";
+		args = new String[]{"18"};
+		
+		String comPort = "18";
 		String channel = "1";
 		int dutyCycle = Integer.parseInt("1");
 		boolean autoCycle = false;
@@ -199,7 +254,7 @@ public class Main {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		}
 
 		if (args.length == 1) {
@@ -309,5 +364,23 @@ public class Main {
 			dutyCycle += stepInkrementation;
 		}
 
+	}
+	
+	
+	public static void hangoutThread(){
+		
+		while(true){
+			pauseThread(10000000);
+		}
+	}
+	
+	public static void pauseThread(long val){
+		
+		try {
+			Thread.sleep(val);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

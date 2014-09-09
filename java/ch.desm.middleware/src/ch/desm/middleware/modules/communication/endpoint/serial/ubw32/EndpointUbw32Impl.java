@@ -44,20 +44,20 @@ import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232Con
  *         All port names ("A", "B", "C") are case insensitive. You can use "B"
  *         or "b" for port names.
  */
-public class EndpointUbw32 extends EndpointUbw32Base {
+public class EndpointUbw32Impl extends EndpointUbw32Base {
 
-	private static Logger log = Logger.getLogger(EndpointUbw32.class);
+	private static Logger log = Logger.getLogger(EndpointUbw32Impl.class);
 
 	protected String configurationDigital;
 	private String pinbitMaskInputAnalog;
-	private EndpointUbw32Polling polling;
+	private EndpointUbw32Thread thread;
 	private EndpointUbw32Cache cache;
 
 	/**
 	 * 
 	 * @param enumSerialPort
 	 */
-	public EndpointUbw32(EnumSerialPorts enumSerialPort,
+	public EndpointUbw32Impl(EnumSerialPorts enumSerialPort,
 			String configurationDigital, String pinbitMaskInputAnalog) {
 		super(enumSerialPort, new EndpointRs232ConfigBuilder()
 				.setBaudRate(EndpointRs232Config.BAUDRATE_9600)
@@ -69,7 +69,7 @@ public class EndpointUbw32 extends EndpointUbw32Base {
 
 		this.pinbitMaskInputAnalog = pinbitMaskInputAnalog;
 		this.configurationDigital = configurationDigital;
-		this.polling = new EndpointUbw32Polling(this,
+		this.thread = new EndpointUbw32Thread(this,
 				EndpointUbw32Config.WAIT_TIME_POLLING);
 		this.cache = new EndpointUbw32Cache();
 
@@ -112,7 +112,7 @@ public class EndpointUbw32 extends EndpointUbw32Base {
 			Thread.sleep(EndpointUbw32Config.WAIT_TIME_POLLING);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		}
 		if (isConfigurationDigitalAvailable()) {
 			sendCommandInputState();
@@ -124,14 +124,14 @@ public class EndpointUbw32 extends EndpointUbw32Base {
 	}
 
 	public void startPolling() {
-		if (!polling.isAlive()) {
-			this.polling.start();
+		if (!thread.isAlive()) {
+			this.thread.start();
 		}
 	}
 
 	public void stopPolling() {
-		if (!polling.isInterrupted()) {
-			this.polling.interrupt();
+		if (!thread.isInterrupted()) {
+			this.thread.interrupt();
 		}
 	}
 
@@ -160,7 +160,7 @@ public class EndpointUbw32 extends EndpointUbw32Base {
 	public synchronized void serialEvent(SerialPortEvent event) {
 		String message = super.getSerialPortMessage(event);
 				
-		if (!message.isEmpty()) {
+		if (!message.trim().isEmpty()) {
 			if (!message.contains("!")) {
 
 				String[] messages = message.split("\r\r\n");
@@ -175,7 +175,7 @@ public class EndpointUbw32 extends EndpointUbw32Base {
 						
 						if (cache.isStateChanged(singleMessage, this.serialPort)) {
 							
-							log.info("received message on ubw(" + serialPort.getPortName()
+							log.trace("received message on ubw(" + serialPort.getPortName()
 									+ "), cache enabled: " + cache.isCacheEnabled() + ", message: " + singleMessage.replaceAll("\n", ""));
 							
 							super.onIncomingEndpointMessage(singleMessage);
@@ -216,10 +216,10 @@ public class EndpointUbw32 extends EndpointUbw32Base {
 
 		} catch (SerialPortException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 

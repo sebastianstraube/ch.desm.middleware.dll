@@ -1,7 +1,6 @@
 package ch.desm.middleware.modules.component.cabine.re420;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
-import ch.desm.middleware.modules.communication.endpoint.EndpointBase;
 import ch.desm.middleware.modules.component.ComponentBase;
 
 abstract class Re420Base extends ComponentBase {
@@ -20,16 +19,6 @@ abstract class Re420Base extends ComponentBase {
 		this.registerEndpointListener(endpointFabisch);
 	}
 	
-	@Override
-	protected void registerEndpointListener(
-			EndpointBase listener) {
-		try {
-			listener.addEndpointListener(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public Re420EndpointUbw32 getEndpointUbw32(){
 		return this.endpoint;
 	}
@@ -38,12 +27,4 @@ abstract class Re420Base extends ComponentBase {
 		return this.endpointFabisch;
 	}
 	
-	@Override
-	/**
-	 * test endpoint message handling
-	 * @param message
-	 */
-	public void emulateBrokerMessage(String message) {
-		onIncomingBrokerMessage(message);
-	}
 }

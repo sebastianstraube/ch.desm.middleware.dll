@@ -6,32 +6,31 @@ import org.apache.log4j.Logger;
 
 import ch.desm.middleware.modules.communication.broker.Broker;
 import ch.desm.middleware.modules.communication.endpoint.dll.EndpointDllListenerInterface;
+import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232ListenerInterface;
 import ch.desm.middleware.modules.communication.message.MessageBase;
 import ch.desm.middleware.modules.communication.message.MessageCommon;
 import ch.desm.middleware.modules.communication.message.MessageMiddleware;
-import ch.desm.middleware.modules.communication.message.processor.MessageProcessorBase;
-import ch.desm.middleware.modules.communication.message.router.MessageRouter;
+import ch.desm.middleware.modules.communication.message.processor.MessageProcessor;
 import ch.desm.middleware.modules.communication.message.translator.MessageTranslatorMiddleware;
 import ch.desm.middleware.modules.component.simulation.locsim.messages.LocsimMessageDll;
 
-public class LocsimBaseImpl extends LocsimBase implements
-		EndpointDllListenerInterface {
+public class Locsim extends LocsimBase implements
+		EndpointDllListenerInterface, EndpointRs232ListenerInterface {
 
-	private static Logger log = Logger.getLogger(LocsimBaseImpl.class);
+	private static Logger log = Logger.getLogger(Locsim.class);
 
 	public LocsimMessageProcessorRs232 translatorRs232;
-	public MessageRouter router;
-	public MessageProcessorBase converter;
-	MessageTranslatorMiddleware translator;
+	public MessageProcessor processor;
+	public MessageTranslatorMiddleware translator;
 	
 	boolean initialisiert;
 
-	public LocsimBaseImpl(Broker broker, LocsimEndpointRs232 endpointRs232,
+	public Locsim(Broker broker, LocsimEndpointRs232 endpointRs232,
 			LocsimEndpointDll endpointDll) {
 		super(broker, endpointRs232, endpointDll);
 
 		translatorRs232 = new LocsimMessageProcessorRs232();
-		router = new MessageRouter();
+		processor = new MessageProcessor();
 		translator = new MessageTranslatorMiddleware();
 	}
 
@@ -61,7 +60,7 @@ public class LocsimBaseImpl extends LocsimBase implements
 		ArrayList<MessageMiddleware> messageList = translator
 				.translateToCommonMiddlewareMessageList(message);
 
-		router.processBrokerMessage(this, messageList);
+		processor.processBrokerMessage(this, messageList);
 	}
 
 	/**
@@ -105,8 +104,7 @@ public class LocsimBaseImpl extends LocsimBase implements
 					+ message);
 		}
 
-		MessageRouter router = new MessageRouter();
-		router.processEndpointMessage(this, stream,
+		processor.processEndpointMessage(this, stream,
 				MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_DLL);
 	}
 
@@ -127,7 +125,7 @@ public class LocsimBaseImpl extends LocsimBase implements
 				//TODO implementation different states of locsim (INI8)
 				if (!initialisiert && message.equalsIgnoreCase("INI1")) {
 					message = "locsim.initialization.ready.ini1;os;0;message;initialisiation;ini1;on;locsim-rs232;#";
-					router.processEndpointMessage(this, message,
+					processor.processEndpointMessage(this, message,
 							MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
 					initialisiert = true;
 					
@@ -136,19 +134,19 @@ public class LocsimBaseImpl extends LocsimBase implements
 				
 				else if (message.equalsIgnoreCase("INI7")) {
 					message = "locsim.initialization.ready.ini7;os;0;message;initialisiation;ini7;on;locsim-rs232;#";
-					router.processEndpointMessage(this, message,
+					processor.processEndpointMessage(this, message,
 							MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
 				}
 				
 				else{
-					log.trace("not implemented or skipped initialisation message: " + message);
+					log.warn("not implemented or skipped initialisation message: " + message);
 				}				
 			} else {
 
 				message = translatorRs232
 						.translateToCommonMiddlewareMessage(message, MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
 
-				router.processEndpointMessage(this, message,
+				processor.processEndpointMessage(this, message,
 						MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
 			}
 		}
@@ -177,22 +175,11 @@ public class LocsimBaseImpl extends LocsimBase implements
 		return false;
 	}
 
-	/**
-	 * 
-	 */
-	@Override
-	public boolean hasTopicSigned(String topic) {
-		return signedTopic.contains(topic);
-	}
-
-	/**
-	 * 
-	 */
 	@Override
 	protected void intializeSignedTopic() {
-		signedTopic.add(MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
-		signedTopic.add(MessageBase.MESSAGE_TOPIC_CABINE_RE420);
-		signedTopic.add(MessageBase.MESSAGE_TOPIC_CABINE_RE420_FABISCH);
+        signForTopic(MessageBase.MESSAGE_TOPIC_CABINE_RE420);
+        signForTopic(MessageBase.MESSAGE_TOPIC_CABINE_RE420_FABISCH);
+        signForTopic(MessageBase.MESSAGE_TOPIC_PETRINET_OBERMATT_LANGNAU);
 	}
 
 }

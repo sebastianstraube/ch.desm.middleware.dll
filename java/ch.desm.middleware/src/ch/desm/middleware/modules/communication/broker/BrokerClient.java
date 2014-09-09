@@ -1,13 +1,13 @@
 package ch.desm.middleware.modules.communication.broker;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 
-public abstract class BrokerClient implements
-		BrokerClientInterface {
+public abstract class BrokerClient implements BrokerClientInterface {
 
-	protected static Broker broker;
-	protected ArrayList<String> signedTopic;
+	protected Broker broker;
+	private Set<String> signedTopics;
 	
 	/**
 	 * must be implemented with message handling functionality
@@ -15,13 +15,19 @@ public abstract class BrokerClient implements
 	 * @param message
 	 */
 	abstract protected void onIncomingBrokerMessage(String message);
-	abstract public boolean hasTopicSigned(String topic);
 	abstract protected void intializeSignedTopic();
-	
+
+    protected void signForTopic(String topic) {
+        signedTopics.add(topic);
+    }
+
+    public boolean hasTopicSigned(String topic) {
+        return signedTopics.contains(topic);
+    }
+
 	public BrokerClient(Broker broker) {		
-		BrokerClient.broker = broker;
-		signedTopic = new ArrayList<String>();
-		
+		this.broker = broker;
+		signedTopics = new HashSet<String>();
 		initialize();
 	}
 

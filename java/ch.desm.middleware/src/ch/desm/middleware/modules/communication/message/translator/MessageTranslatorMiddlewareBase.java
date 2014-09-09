@@ -2,11 +2,15 @@ package ch.desm.middleware.modules.communication.message.translator;
 
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
+
 import ch.desm.middleware.modules.communication.message.MessageBase;
 import ch.desm.middleware.modules.communication.message.MessageMiddleware;
 
 abstract class MessageTranslatorMiddlewareBase {
 
+	private static Logger log = Logger.getLogger(MessageTranslatorMiddlewareBase.class);
+	
 	private static final String ELEMENT_CUT = ";";
 	private static final String MESSAGE_CUT = "#";
 
@@ -56,7 +60,7 @@ abstract class MessageTranslatorMiddlewareBase {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		}
 		return messageCommon;
 	}

@@ -3,6 +3,8 @@ package ch.desm.middleware.modules.communication.message;
 
 public abstract class MessageBase{
 	
+	public final static String PARAMETER_PLACEHOLDER = "\\?";
+	
 	public static final String MESSAGE_PARAMETER_ON = "on";
 	public static final String MESSAGE_PARAMETER_OFF = "off";
 	
@@ -11,8 +13,9 @@ public abstract class MessageBase{
 	public static final String MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232 = "locsim-rs232";
 	public static final String MESSAGE_TOPIC_CABINE_RE420 = "kabinere420";
 	public static final String MESSAGE_TOPIC_CABINE_RE420_FABISCH = "kabinere420-fabisch";
-	public static final String MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU= "stellwerkobermattlangnau";
-	public static final String MESSAGE_TOPIC_TEST = "Ttst";
+	public static final String MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU = "stellwerkobermattlangnau";
+	public static final String MESSAGE_TOPIC_PETRINET_OBERMATT_LANGNAU = "petrinetoml";
+	public static final String MESSAGE_TOPIC_TEST = "Test";
 	
 	private String topic;
     private String messageId;
@@ -25,12 +28,6 @@ public abstract class MessageBase{
     	this.messageId = String.valueOf(System.currentTimeMillis());
     }
         
-    /**
-     * 
-     * @param idParameterType depends on message context, e.g. signal id
-     * @param messageType 
-     * 
-     */
     public MessageBase(String payload, String topic) {
     	this();
     	this.payload = payload;
