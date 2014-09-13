@@ -1,0 +1,7 @@
+package ch.desm.middleware.modules.component.interlocking.petrinet;
+
+import ch.desm.middleware.modules.communication.endpoint.EndpointCommonListenerInterface;
+
+public interface OMLPetriNetListenerInterface extends
+        EndpointCommonListenerInterface {
+}

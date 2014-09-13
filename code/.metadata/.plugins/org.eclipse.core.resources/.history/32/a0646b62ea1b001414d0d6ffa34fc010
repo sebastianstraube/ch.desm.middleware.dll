@@ -1,0 +1,10 @@
+package ch.desm.middleware.modules.communication.endpoint.virtual;
+
+import org.apache.log4j.Logger;
+
+import ch.desm.middleware.modules.component.simulation.locsim.LocsimBaseImpl;
+
+public class PetrinNetBase {
+
+	public static Logger log = Logger.getLogger(LocsimBaseImpl.class);
+}

@@ -1,0 +1,33 @@
+package ch.desm.middleware.modules.communication.endpoint.serial.ubw32;
+
+
+public class EndpointUbw32RegisterAnalog extends EndpointUbw32RegisterBase {
+
+	public static final int MAX_DISCRET_VALUE = 1023;
+	
+	private String pinBitMask;
+	private String value;
+	
+	public EndpointUbw32RegisterAnalog(){
+	}
+	
+	public EndpointUbw32RegisterAnalog(String pinBitMask){
+		this.pinBitMask = pinBitMask;
+	}
+		
+	public void setValue(String value){
+		this.value = value;
+	}
+	
+	public String getValue(){
+		return this.value;
+	}
+	
+	public void setPinBitMask(String pinBitMask){
+		this.pinBitMask = pinBitMask;
+	}
+	
+	public String getPinBitMask(){
+		return pinBitMask;
+	}
+}

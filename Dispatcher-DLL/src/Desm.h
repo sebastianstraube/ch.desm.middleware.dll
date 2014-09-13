@@ -18,7 +18,7 @@ namespace desm {
 
 	namespace info {
 		static const char* name = "DLL DESM-Middleware";
-		static const char* version = "0.17";
+		static const char* version = "0.18";
 		static const char* desc = "This DLL provides a server to client communication via tcp/ip protocol.";
 	};
 	

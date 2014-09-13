@@ -1,0 +1,266 @@
+package ch.desm.middleware.modules.communication.message;
+
+import java.util.ArrayList;
+
+import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32RegisterAnalog;
+import ch.desm.middleware.modules.component.cabine.re420.maps.Re420MapUbw32Analog;
+
+public class MessageUbw32Analog extends MessageUbw32Base {
+
+	private ArrayList<EndpointUbw32RegisterAnalog> list;
+
+	/**
+	 * TODO refactoring
+	 */
+	//Port B
+	private EndpointUbw32RegisterAnalog portAN0 = new EndpointUbw32RegisterAnalog();
+	private EndpointUbw32RegisterAnalog portAN1 = new EndpointUbw32RegisterAnalog();
+	private EndpointUbw32RegisterAnalog portAN2 = new EndpointUbw32RegisterAnalog();
+	private EndpointUbw32RegisterAnalog portAN3 = new EndpointUbw32RegisterAnalog();
+	private EndpointUbw32RegisterAnalog portAN4 = new EndpointUbw32RegisterAnalog();
+	private EndpointUbw32RegisterAnalog portAN5 = new EndpointUbw32RegisterAnalog();
+	private EndpointUbw32RegisterAnalog portAN6 = new EndpointUbw32RegisterAnalog();
+	private EndpointUbw32RegisterAnalog portAN7 = new EndpointUbw32RegisterAnalog();
+	private EndpointUbw32RegisterAnalog portAN8 = new EndpointUbw32RegisterAnalog();
+	private EndpointUbw32RegisterAnalog portAN9 = new EndpointUbw32RegisterAnalog();
+	private EndpointUbw32RegisterAnalog portAN10 = new EndpointUbw32RegisterAnalog();
+	private EndpointUbw32RegisterAnalog portAN11 = new EndpointUbw32RegisterAnalog();
+	private EndpointUbw32RegisterAnalog portAN12 = new EndpointUbw32RegisterAnalog();
+	private EndpointUbw32RegisterAnalog portAN13 = new EndpointUbw32RegisterAnalog();
+	private EndpointUbw32RegisterAnalog portAN14 = new EndpointUbw32RegisterAnalog();
+	private EndpointUbw32RegisterAnalog portAN15 = new EndpointUbw32RegisterAnalog();
+	
+	//{AN0, AN1, AN2}, {AN0, AN1, AN2}
+	private ArrayList<String> AN0 = new ArrayList<>();
+	private ArrayList<String> AN1 = new ArrayList<>();
+	private ArrayList<String> AN2 = new ArrayList<>();
+	private ArrayList<String> AN3 = new ArrayList<>();
+	private ArrayList<String> AN4 = new ArrayList<>();
+	private ArrayList<String> AN5 = new ArrayList<>();
+	private ArrayList<String> AN6 = new ArrayList<>();
+	private ArrayList<String> AN7 = new ArrayList<>();
+	private ArrayList<String> AN8 = new ArrayList<>();
+	private ArrayList<String> AN9 = new ArrayList<>();
+	private ArrayList<String> AN10 = new ArrayList<>();
+	private ArrayList<String> AN11 = new ArrayList<>();
+	private ArrayList<String> AN12 = new ArrayList<>();
+	private ArrayList<String> AN13 = new ArrayList<>();
+	private ArrayList<String> AN14 = new ArrayList<>();
+	private ArrayList<String> AN15 = new ArrayList<>();
+	
+	public MessageUbw32Analog(String payload, String topic) {
+		super(payload, topic);
+
+		this.list = new ArrayList<EndpointUbw32RegisterAnalog>();
+
+		this.parsePayload(payload);
+		this.initialize();
+	}
+
+	
+	/**
+	 * TODO implementation
+	 * 
+	 *  
+	 * @param payload(IA,3,0,1IA,174,175)
+	 */
+	protected void parsePayload(String payload) {
+		
+		payload = payload.replaceAll("IA,3,0,1IA,", "");
+		String parts[] = payload.split(",");
+		
+		String bin = Integer.toBinaryString(Integer.valueOf(Re420MapUbw32Analog.PINBITMASK_INPUT_ANALOG));
+		int dez = Integer.valueOf(Re420MapUbw32Analog.PINBITMASK_INPUT_ANALOG);
+		
+		for(int i=0; i<bin.length(); i++){
+			
+			int pos = i%dez;
+						
+			switch(pos){
+				case(0):{
+					AN0.add(parts[i]);
+					portAN0.setValue(parts[i]);
+					break;
+				}
+				case(1):{
+					AN1.add(parts[i]);
+					portAN1.setValue(parts[i]);
+					break;
+				}
+				case(2):{
+					AN2.add(parts[i]);
+					portAN2.setValue(parts[i]);
+					break;
+				}
+				case(3):{
+					AN3.add(parts[i]);
+					portAN3.setValue(parts[i]);
+					break;
+				}
+				case(4):{
+					AN4.add(parts[i]);
+					portAN4.setValue(parts[i]);
+					break;
+				}
+				case(5):{
+					AN5.add(parts[i]);
+					portAN5.setValue(parts[i]);
+					break;
+				}
+				case(6):{
+					AN6.add(parts[i]);
+					portAN6.setValue(parts[i]);
+					break;
+				}
+				case(7):{
+					AN7.add(parts[i]);
+					portAN7.setValue(parts[i]);
+					break;
+				}
+				case(8):{
+					AN8.add(parts[i]);
+					portAN8.setValue(parts[i]);
+					break;
+				}
+				case(9):{
+					AN9.add(parts[i]);
+					portAN9.setValue(parts[i]);
+					break;
+				}
+				case(10):{
+					AN10.add(parts[i]);
+					portAN10.setValue(parts[i]);
+					break;
+				}
+				case(11):{
+					AN11.add(parts[i]);
+					portAN11.setValue(parts[i]);
+					break;
+				}
+				case(12):{
+					AN12.add(parts[i]);
+					portAN12.setValue(parts[i]);
+					break;
+				}
+				case(13):{
+					AN13.add(parts[i]);
+					portAN13.setValue(parts[i]);
+					break;
+				}
+				case(14):{
+					AN14.add(parts[i]);
+					portAN14.setValue(parts[i]);
+					break;
+				}
+				case(15):{
+					AN15.add(parts[i]);
+					portAN15.setValue(parts[i]);
+					break;
+				}
+			}	
+		}
+	}
+
+	/**
+	 * TODO implementation analog ports (refactoring)
+	 */
+	protected void initialize() {
+		list.add(portAN0);
+	}
+
+	public String getInputMask(String payload){
+		
+		
+		
+		return null;
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public String getInputValue(String register, String pin) {
+		String value = "";
+		
+		switch(register){
+			case("B0"):{
+				value = portAN0.getValue();
+				break;	
+			}
+			case("B1"):{
+				value = portAN1.getValue();
+				break;	
+			}
+			case("B2"):{
+				value = portAN2.getValue();
+				break;	
+			}
+			case("B3"):{
+				value = portAN3.getValue();
+				break;	
+			}
+			case("B4"):{
+				value = portAN4.getValue();
+				break;	
+			}
+			case("B5"):{
+				value = portAN5.getValue();
+				break;	
+			}
+			case("B6"):{
+				value = portAN6.getValue();
+				break;	
+			}
+			case("B7"):{
+				value = portAN7.getValue();
+				break;	
+			}
+			case("B8"):{
+				value = portAN8.getValue();
+				break;	
+			}
+			case("B9"):{
+				value = portAN9.getValue();
+				break;	
+			}
+			case("B10"):{
+				value = portAN10.getValue();
+				break;	
+			}
+			case("B11"):{
+				value = portAN11.getValue();
+				break;	
+			}
+			case("B12"):{
+				value = portAN12.getValue();
+				break;	
+			}
+			case("B13"):{
+				value = portAN13.getValue();
+				break;	
+			}
+			case("B14"):{
+				value = portAN14.getValue();
+				break;	
+			}
+			case("B15"):{
+				value = portAN15.getValue();
+				break;	
+			}
+		}
+		
+		return value;
+	}
+	
+	/**
+	 * TODO implementation
+	 */
+	public String toString() {
+		String s = super.toString();
+		
+		s += "analog message: ";
+		s += "PortAN0: " + portAN0;
+
+		return s;
+	}
+}

@@ -1,0 +1,31 @@
+package ch.desm.middleware.modules.communication.endpoint.virtual;
+
+import java.util.Hashtable;
+
+import ch.desm.middleware.modules.core.daemon.DaemonThread;
+
+class EndpointInterlockingLogicPolling extends DaemonThread {
+
+	InterlockingPetriNet net;
+	private Hashtable<String, Boolean> map;
+	
+	public EndpointInterlockingLogicPolling(String name, InterlockingPetriNet net) {
+		super(name);
+		this.map = new Hashtable<String, Boolean>();
+		this.net = net;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void run() {
+		while (!isInterrupted()) {
+			  Boolean value = net.fireOneTransition();
+			  String key = net.getFiredElement();
+			  map.put(key, value);
+			  System.out.println("key: " +key+ ", value: " + value);
+		}
+	}
+
+}

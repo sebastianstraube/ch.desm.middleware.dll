@@ -1,0 +1,39 @@
+package ch.desm.middleware.modules.component.cabine.re420.maps;
+
+import java.util.Map;
+
+import ch.desm.middleware.modules.component.ComponentMapBase;
+
+public class Re420MapMiddleware extends ComponentMapBase {
+
+	@Override
+	protected void initialize(){
+		map.put("locsim.initialization.ready.ini1", "locsim.initialization.ready.ini1;os;0;message;initialisiation;ini1;?;locsim-rs232;#");
+
+		map.put("s126", "s126;i;0;schalter;steuerstrom;0;?;kabinere420;#");
+		map.put("s129", "s129;i;0;schalter;stromabnehmer;0;?;kabinere420;#");
+		map.put("s132", "s132;i;0;schalter;haupt;0;?;kabinere420;#");
+		map.put("s235", "s235;i;0;schalter;sifa;pedal;?;kabinere420;#");
+		map.put("s140a", "s140a;i;0;schalter;wende;vorwärts;?;kabinere420;#");
+		map.put("s140b", "s140b;i;0;schalter;wende;rückwärts;?;kabinere420;#");
+
+		map.put("ao269", "ao269;i;0;drucksensor;druck;hauptleitung;?;kabinere420;#");
+		map.put("ao173", "ao173;i;0;drucksensor;druck;bremszylinder;?;kabinere420;#");
+
+		map.put("fahrschalter.bremsen.plus", "fahrschalter.bremsen.plus;i;0;fahrschalter;bremse;plus;?;kabinere420;#");
+		map.put("fahrschalter.bremsen.punkt", "fahrschalter.bremsen.punkt;i;0;fahrschalter;bremse;punkt;?;kabinere420;#");
+		map.put("fahrschalter.bremsen.minus", "fahrschalter.bremsen.minus;i;0;fahrschalter;bremse;minus;?;kabinere420;#");
+		map.put("fahrschalter.null", "fahrschalter.null;i;0;fahrschalter;neutral;null;?;kabinere420;#");
+		map.put("fahrschalter.fahren.minus", "fahrschalter.fahren.minus;i;0;fahrschalter;fahren;minus;?;kabinere420;#");
+		map.put("fahrschalter.fahren.punkt", "fahrschalter.fahren.punkt;i;0;fahrschalter;fahren;punkt;?;kabinere420;#");
+		map.put("fahrschalter.fahren.m", "fahrschalter.fahren.m;i;0;fahrschalter;fahren;m;?;kabinere420;#");
+		map.put("fahrschalter.fahren.plus", "fahrschalter.fahren.plus;i;0;fahrschalter;fahren;plus;?;kabinere420;#");
+		map.put("fahrschalter.fahren.plusplus", "fahrschalter.fahren.plusplus;i;0;fahrschalter;fahren;plusplus;?;kabinere420;#");
+
+	}
+
+	@Override
+	public Map<String, String> getMap() {
+		return map;
+	}
+}

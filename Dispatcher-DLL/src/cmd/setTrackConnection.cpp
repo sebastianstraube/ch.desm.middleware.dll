@@ -9,7 +9,15 @@
 #include "util/String.h"
 
 extern "C" {
+	
 	__declspec(dllexport) int stw_setTrackConnection(int gleisBasisId, int gleis1Id, int gleis2Id,
+		double von, double bis, char* name, int nameLen, int weiche1Id, int weiche2Id)
+	{
+		// NOTE: deprecated!
+		return desm::ERROR_OK;
+	}
+
+	__declspec(dllexport) int stw_setTrackConnection2(int gleisBasisId, int gleis1Id, int gleis2Id,
 		double von, double bis, char* name, int nameLen, int weiche1Id, int weiche2Id)
 	{
 		Json::Value v(Json::objectValue);

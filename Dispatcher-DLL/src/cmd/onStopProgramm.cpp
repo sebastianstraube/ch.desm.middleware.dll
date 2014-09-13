@@ -9,7 +9,7 @@
 extern "C" {
 	__declspec(dllexport) int stw_onStopProgramm()
 	{
-		desm::Middleware::deinit();
+		//desm::Middleware::deinit();
 		return desm::ERROR_OK;
 	}
 

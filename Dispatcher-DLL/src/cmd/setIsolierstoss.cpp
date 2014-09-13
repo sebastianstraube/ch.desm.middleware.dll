@@ -11,6 +11,12 @@
 extern "C" {
 	__declspec(dllexport) int stw_setIsolierstoss(int isolierstossId, int gleisId, double position)
 	{
+		// NOTE: deprecated!
+		return desm::ERROR_OK;
+	}
+
+	__declspec(dllexport) int stw_setIsolierstoss2(int isolierstossId, int gleisId, double position)
+	{
 		Json::Value v(Json::objectValue);
 		v["gleisId"] = Json::Value(gleisId);
 		v["position"] = Json::Value(position);

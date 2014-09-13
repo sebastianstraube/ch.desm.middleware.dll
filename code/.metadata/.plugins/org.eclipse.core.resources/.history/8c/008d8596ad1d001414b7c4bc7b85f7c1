@@ -1,0 +1,15 @@
+package ch.desm.middleware.modules.component.interlocking.obermattlangnau;
+
+import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32;
+import ch.desm.middleware.modules.component.interlocking.obermattlangnau.maps.OMLMapUbw32Analog;
+import ch.desm.middleware.modules.component.interlocking.obermattlangnau.maps.OMLMapUbw32Digital;
+
+public class OMLEndpointUbw32 extends EndpointUbw32 {
+
+	
+	public OMLEndpointUbw32(EnumSerialPorts enumSerialPort) {
+		super(enumSerialPort,
+				OMLMapUbw32Digital.PINBITMASK_CONFIGURATION_DIGITAL,
+				OMLMapUbw32Analog.PINBITMASK_INPUT_ANALOG);
+	}
+}

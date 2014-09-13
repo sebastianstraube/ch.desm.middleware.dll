@@ -1,0 +1,44 @@
+package ch.desm.middleware.modules.communication.message.type;
+
+
+
+public class MessageUbw32RegisterDigital extends MessageUbw32Base  {
+	
+	private String register;
+	private String pin;
+	private String isEnabled;
+	
+	public MessageUbw32RegisterDigital(String payload, String topic){
+		super(payload, topic);
+		
+		String parts[] = payload.split(",");
+		register = parts[1];
+		pin = parts[2].replace("PI", "");
+		isEnabled = parts[3];
+		
+	}
+	
+	public String getPort(){
+		return register+pin;
+	}
+	
+	public String getRegister(){
+		return register;
+	}
+	
+	public String getPin(){
+		return pin;
+	}
+	
+	public boolean isEnabled(){
+		return Boolean.getBoolean(isEnabled);
+	}
+
+	@Override
+	public boolean getInputValue(String register, String pin) {
+		if(register.equals(this.register) && pin.equals(this.pin)){
+			return isEnabled();
+		}
+		return false;
+	}
+}

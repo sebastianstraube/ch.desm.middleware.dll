@@ -1,0 +1,6 @@
+package ch.desm.middleware.modules.communication.endpoint.tcp;
+
+import ch.desm.middleware.modules.communication.endpoint.EndpointCommonListenerInterface;
+
+public interface EndpointTcpClientListenerInterface {
+}

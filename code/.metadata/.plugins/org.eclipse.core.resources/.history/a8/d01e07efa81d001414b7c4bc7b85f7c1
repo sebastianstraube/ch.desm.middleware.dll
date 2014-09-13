@@ -1,0 +1,54 @@
+package ch.desm.middleware.modules.component.interlocking.petrinet;
+
+import org.apache.log4j.Logger;
+
+import ch.desm.middleware.modules.communication.broker.Broker;
+import ch.desm.middleware.modules.communication.message.MessageBase;
+import ch.desm.middleware.modules.component.ComponentBase;
+
+/**
+ * Created by max on 06/08/14.
+ */
+public class OMLPetriNetBase extends ComponentBase {
+
+    protected static Logger logger = Logger.getLogger(OMLPetriNetBase.class);
+
+    OMLPetriNetEndpoint endpoint;
+    OMLPetriNetMap petriNetMap = new OMLPetriNetMap();
+
+    public OMLPetriNetBase(Broker broker, OMLPetriNetEndpoint endpoint) {
+        super(broker);
+        this.endpoint = endpoint;
+        this.registerEndpointListener(endpoint);
+    }
+
+    @Override
+    protected void onIncomingBrokerMessage(String message) {
+        try {
+            endpoint.setSensor(petriNetMap.mapBrokerToEndpointMessage(message));
+        } catch (Exception e) {
+            logger.warn(e.getMessage());
+        }
+    }
+
+    @Override
+    public void onIncomingEndpointMessage(String sensor) {
+        try {
+            String message = petriNetMap.mapEndpointToBrokerMessage(sensor);
+            publish(message, MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU_PETRINET);
+        } catch (Exception e) {
+            logger.warn(e.getMessage());
+        }
+    }
+    
+    @Override
+    protected void intializeSignedTopic() {
+        //signForTopic(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM);
+        signForTopic(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_DLL);
+        //signForTopic(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
+        //signForTopic(MessageBase.MESSAGE_TOPIC_CABINE_RE420);
+        //signForTopic(MessageBase.MESSAGE_TOPIC_CABINE_RE420_FABISCH);
+        //signForTopic(MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
+    }
+
+}

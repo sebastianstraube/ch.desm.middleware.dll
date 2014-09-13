@@ -1,0 +1,94 @@
+package ch.desm.middleware.modules.component.petrinet;
+
+import ch.desm.middleware.modules.communication.message.MessageCommon;
+import ch.desm.middleware.modules.communication.message.MessageMiddleware;
+import ch.desm.middleware.modules.communication.message.MessageUbw32Base;
+import ch.desm.middleware.modules.communication.message.router.MessageRouter;
+import ch.desm.middleware.modules.communication.message.translator.MessageTranslatorMiddleware;
+
+import org.apache.log4j.Logger;
+
+import ch.desm.middleware.modules.communication.broker.Broker;
+import ch.desm.middleware.modules.communication.message.MessageBase;
+import ch.desm.middleware.modules.component.ComponentBase;
+import ch.desm.middleware.modules.component.interlocking.obermattlangnau.maps.OMLMapMiddleware;
+
+import java.util.ArrayList;
+
+/**
+ * Created by max on 06/08/14.
+ */
+public class OMLPetriNetBase extends ComponentBase {
+
+    protected static Logger logger = Logger.getLogger(OMLPetriNetBase.class);
+
+    OMLPetriNetEndpoint endpoint;
+    OMLPetriNetMap petriNetMap = new OMLPetriNetMap();
+
+    MessageTranslatorMiddleware translator = new MessageTranslatorMiddleware();
+    MessageRouter router = new MessageRouter();
+
+    public OMLPetriNetBase(Broker broker, OMLPetriNetEndpoint endpoint) {
+        super(broker);
+        this.endpoint = endpoint;
+        this.registerEndpointListener(endpoint);
+    }
+
+    @Override
+    protected void onIncomingBrokerMessage(String message) {
+        logger.trace("broker (" + this.getClass() + ") received message: " + message);
+        ArrayList<MessageMiddleware> messageCommon = translator.translateToCommonMiddlewareMessageList(message);
+        router.processBrokerMessage(this, messageCommon);
+    }
+
+    public void processBrokerMessage(MessageMiddleware message) {
+        try {
+            String globalId = message.getGlobalId();
+            String sensorName = petriNetMap.mapBrokerToEndpointMessage(globalId);
+            int sensorValue = 1;
+            endpoint.setSensor(sensorName, sensorValue);
+        } catch (Exception e) {
+            logger.warn(e.getMessage());
+        }
+    }
+
+    @Override
+    public void onIncomingEndpointMessage(String firedTransition) {
+        try {
+        	
+        	OMLMapMiddleware map = new OMLMapMiddleware();
+            // TODO: translate firedTransition into some meaningful message!
+            String globalId = petriNetMap.mapEndpointToBrokerMessage(firedTransition);
+            String message = map.getValue(globalId); //"locsim.initialization.ready.ini1;os;0;message;initialisiation;ini1;?;locsim-rs232;#";
+            
+            //TODO refactoring
+            String parameter = "";
+            if(message.contains("#")){
+            	parameter = message.split("#")[1];
+            }
+            
+            if(parameter.equals("ein")){
+            	message.replaceAll("?", "on");
+            } else if(parameter.equals("aus")){
+            	message.replaceAll("?", "off");
+            }
+            
+            
+            String topic = MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU_PETRINET;
+            router.processEndpointMessage(this, message, topic);
+        } catch (Exception e) {
+            logger.warn(e.getMessage());
+        }
+    }
+    
+    @Override
+    protected void intializeSignedTopic() {
+        //signForTopic(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM);
+        signForTopic(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_DLL);
+        //signForTopic(MessageBase.MESSAGE_TOPIC_SIMULATION_LOCSIM_RS232);
+        //signForTopic(MessageBase.MESSAGE_TOPIC_CABINE_RE420);
+        //signForTopic(MessageBase.MESSAGE_TOPIC_CABINE_RE420_FABISCH);
+        //signForTopic(MessageBase.MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU);
+    }
+
+}

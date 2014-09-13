@@ -11,6 +11,12 @@
 extern "C" {
 	__declspec(dllexport) int stw_setKilometerDirection(int richtung)
 	{
+		// NOTE: deprecated!
+		return desm::ERROR_OK;
+	}
+
+	__declspec(dllexport) int stw_setKilometerDirection2(int richtung)
+	{
 		Json::Value v(Json::objectValue);
 		v["richtung"] = Json::Value(richtung);
 		

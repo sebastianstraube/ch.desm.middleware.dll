@@ -1,0 +1,28 @@
+package ch.desm.middleware.modules.component.interlocking.petrinet;
+
+import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
+import org.apache.log4j.Logger;
+
+public class OMLPetriNetEndpoint extends EndpointCommon {
+
+    protected static Logger logger = Logger.getLogger(OMLPetriNetAdapter.class);
+
+    OMLPetriNetThread petriNetThread;
+    OMLPetriNetMap petriNetMap;
+
+    OMLPetriNetEndpoint() {
+        petriNetMap = new OMLPetriNetMap();
+        petriNetThread = new OMLPetriNetThread("PetriNetThread", this);
+        petriNetThread.start();
+    }
+
+    protected void onTransitionFired(String message) {
+        String mappedMessage = petriNetMap.getKey(message);
+        if(mappedMessage.isEmpty()) {
+            logger.warn("unable to map petri net message \"" + message + "\"");
+            return;
+        }
+        onIncomingEndpointMessage(mappedMessage);
+    }
+
+}

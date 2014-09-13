@@ -1,0 +1,37 @@
+package ch.desm.middleware.modules.component.cabine.re420.maps;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32RegisterBase.EnumEndpointUbw32RegisterAnalog;
+import ch.desm.middleware.modules.component.ComponentMapBase;
+
+public class Re420MapUbw32Analog extends ComponentMapBase {
+
+	//B0 = AN0, B1 = AN1
+	//11bin = 3dez 
+	public static final String PINBITMASK_INPUT_ANALOG = "3";
+	
+	private Map<String, EnumEndpointUbw32RegisterAnalog> map;
+	
+	public Re420MapUbw32Analog(){
+		super();
+	}
+		
+	public boolean isKeyAvailable(String id){
+		return map.containsKey(id);
+	}
+	
+	public boolean isValueAvailable(String id){
+		return map.containsValue(id);
+	}
+	
+	public Map<String, EnumEndpointUbw32RegisterAnalog> getMap(){
+		return this.map;
+	}
+	
+	public void initialize(){
+		map.put("ao269", "ao269;i;0;drucksensor;druck;hauptleitung;?;kabinere420;#");
+		map.put("ao173", "ao173;i;0;drucksensor;druck;bremszylinder;?;kabinere420;#");
+	}
+}

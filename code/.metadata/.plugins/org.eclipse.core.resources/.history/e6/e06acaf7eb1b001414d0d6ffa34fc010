@@ -1,0 +1,16 @@
+package ch.desm.middleware.modules.communication.endpoint.virtual;
+
+import org.apache.log4j.Logger;
+
+class InterlockingPetrinNetBase {
+
+	public String firingElement;
+	
+	protected static Logger log = Logger.getLogger(InterlockingPetrinNet.class);
+	
+	public boolean canFire(String s) {
+		firingElement = s;
+		return true;
+	}
+	
+}

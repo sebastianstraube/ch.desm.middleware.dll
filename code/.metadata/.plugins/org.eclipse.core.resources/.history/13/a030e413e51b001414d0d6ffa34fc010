@@ -1,0 +1,20 @@
+package ch.desm.middleware.modules.communication.endpoint.virtual;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
+
+public class EndpointInterlockingLogic extends EndpointCommon {
+
+	Map<String, String> mapMessage;
+	
+	public EndpointInterlockingLogic(){
+		mapMessage = new HashMap<String, String>();
+	}
+	
+	
+	public synchronized void  addMessage(){
+		
+	}
+}

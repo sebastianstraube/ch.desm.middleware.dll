@@ -1,0 +1,8 @@
+ stw_onStopProgramm
+ stw_onStartProgramm (c:\locsim\dll\stellwerk\)
+ stw_infoVersion: 0.18 þþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþ 
+ stw_infoDescription: This DLL provides a server to client communication via tcp/ip protocol. þþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþ 
+ stw_onLoadStrecke
+ stw_setKilometerDirection:  1
+ stw_SetTrack:            1  0.000000000000000E+000   97942.0000000000       0.000000000000000E+000                           1
+ stw_SetTrack:            2   15738.9000000000        15988.1000000000        5.00000000000000                                1

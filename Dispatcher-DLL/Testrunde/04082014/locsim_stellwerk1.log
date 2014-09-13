@@ -1,0 +1,26 @@
+ stw_onStartProgramm (c:\locsim\dll\stellwerk\)
+ stw_infoVersion: 0.18 þþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþ 
+ stw_infoDescription: This DLL provides a server to client communication via tcp/ip protocol. þþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþþ 
+ stw_onLoadStrecke
+ stw_setKilometerDirection:  1
+ stw_setTrackConnection:            2           1           2   15638.9000000000        15738.9000000000                                1           1           0
+ stw_setTrackConnection:            2           2           1   15988.1000000000        16088.1000000000                                1           0           2
+ stw_setTrackConnection:            2           1           2   23021.7000000000        23118.7000000000                                1           3           0
+ stw_setTrackConnection:            2           2           1   27285.7000000000        27399.3000000000                                1           0           4
+ stw_setTrackConnection:            2           1           2   29753.8000000000        29888.5000000000                                1           5           0
+ stw_setTrackConnection:            2           2           1   30407.2000000000        30488.9000000000                                1           0           6
+ stw_setTrackConnection:            2           1           2   36604.3000000000        36704.3000000000                                1           7           0
+ stw_setTrackConnection:            2           2           1   37052.5000000000        37152.5000000000                                1           0           8
+ stw_setTrackConnection:            2           1           2   45775.8000000000        45870.0000000000                                1           9           0
+ stw_setTrackConnection:            2           2           1   46230.0000000000        46305.4000000000                                1           0          10
+ stw_setTrackConnection:            2           1           2   54819.7000000000        54919.7000000000                                1          11           0
+ stw_setTrackConnection:            2           2           1   55129.4000000000        55229.4000000000                                1           0          12
+ stw_setTrackConnection:            2           1           2   68977.3000000000        69075.5000000000                                1          13           0
+ stw_setTrackConnection:            2           2           1   69329.2000000000        69406.6000000000                                1           0          14
+ stw_setTrackConnection:            2           1           2   76953.6000000000        77053.6000000000                                1          15           0
+ stw_setTrackConnection:            2           2           1   77324.2000000000        77424.2000000000                                1           0          16
+ stw_setTrackConnection:            2           1           2   82479.2000000000        82579.2000000000                                1          17           0
+ stw_setTrackConnection:            2           2           1   83024.0000000000        83124.0000000000                                1           0          18
+ stw_setTrackConnection:            4           1           4   22981.8000000000        23096.3000000000                                1          19           0
+ stw_setTrackConnection:            4           4           2   23526.6000000000        23597.5000000000                                1           0          20
+ stw_setSignal:            1           1   1185.90000000000               23  0.300000011920929       -1.00000000000000      Zwerg 1                                                                                                                                                                                                            7           1

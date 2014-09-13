@@ -1,0 +1,32 @@
+package ch.desm.middleware.modules.communication.endpoint.virtual;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+
+import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
+
+public class EndpointInterlockingLogic extends EndpointCommon {
+
+	Map<String, String> map;
+	ArrayBlockingQueue<String> queue;
+	
+	public EndpointInterlockingLogic(){
+		map = new HashMap<String, String>();
+	}
+	
+	
+	public synchronized void addMessage(String key, String value){
+		map.put(key, value);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see ch.desm.middleware.modules.communication.endpoint.EndpointCommon#pollingCommand()
+	 */
+	@Override
+	public void pollingCommand(){
+		  String s = queue.take();
+		 //process your object		
+	}
+}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workingSetManager>
+<workingSet editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1407159578396_2" label="Middleware" name="Middleware">
+<item elementID="=ch.desm.middleware/src" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+</workingSet>
+<workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1406714333935_0" label="Window Working Set" name="Aggregate for window 1406714333935"/>
+<workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1406715283519_1" label="Window Working Set" name="Aggregate for window 1406715283518"/>
+</workingSetManager>

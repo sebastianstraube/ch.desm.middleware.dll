@@ -1,0 +1,101 @@
+1410162936107	Rename type 'Client'
+1410162940869	Rename type 'Server'
+1410163426072	Rename type 'EndpointFabischPolling'
+1410163432778	Rename type 'EndpointDllPolling'
+1410177614869	Rename type 'EndpointTcpThread'
+1410177624463	Copy compilation unit
+1410177705349	Rename package 'ch.desm.middleware.modules.communication.endpoint.tcpip'
+1410177790151	Move compilation unit
+1410177793739	Move compilation unit
+1410177798949	Delete element
+1410177844922	Delete element
+1410177849883	Rename type 'SocketClient'
+1410177861146	Delete element
+1410177864906	Rename type 'SocketServer'
+1410270620933	Rename type 'EndpointUbw32Polling'
+1410270625427	Rename field 'polling'
+1410270745796	Rename field 'client'
+1410270752272	Rename local variable 'client'
+1410270979038	Rename type 'EndpointTcpServer'
+1410270988616	Copy compilation unit
+1410270994398	Rename type 'CopyOfEndpointTcpServer'
+1410271053996	Copy compilation unit
+1410272251621	Rename type 'EndpointRs232'
+1410272271929	Rename type 'EndpointRs232Base'
+1410289728399	Rename method 'startPolling'
+1410289732397	Rename method 'stopPolling'
+1410292299898	Delete element
+1410292307723	Delete element
+1410292311426	Delete element
+1410293271835	Copy compilation unit
+1410293283416	Rename type 'EndpointDllListenerInterface'
+1410295364841	Copy compilation unit
+1410295373079	Rename type 'EndpointDllListenerInterface'
+1410295383114	Rename type 'EndpointTcpListenerInterface'
+1410295387972	Copy compilation unit
+1410295549195	Delete element
+1410295554669	Rename type 'EndpointTcpListenerInterface'
+1410295578534	Rename type 'EndpointUbw32'
+1410295585014	Rename type 'EndpointFabisch'
+1410295591881	Rename type 'EndpointDll'
+1410295602346	Rename type 'EndpointRs232'
+1410295616506	Rename type 'EndpointTcpClient'
+1410295631650	Rename type 'ZusiBaseImpl'
+1410295636286	Rename type 'LocsimBaseImpl'
+1410295641260	Rename type 'OMLBaseImpl'
+1410295718526	Rename type 'OMLPetriNetBase'
+1410298911963	Rename field 'client'
+1410298919411	Rename field 'addr'
+1410299078308	Delete element
+1410299351141	Rename field 'MESSAGE_TOPIC_INTERLOCKING_OBERMATT_LANGNAU_PETRINET'
+1410299401452	Rename type 'OMLPetriNetImpl'
+1410299406338	Rename type 'OMLImpl'
+1410299417642	Rename type 'Re420BaseImpl'
+1410299429375	Rename type 'EndpointRs232Impl'
+1410299433864	Rename type 'EndpointFabischImpl'
+1410299487664	Rename type 'LocsimImpl'
+1410299492856	Rename type 'ZusiImpl'
+1410347841380	Rename field 'WAIT_TIME_POLLING'
+1410347854162	Rename field 'WAIT_TIME_SENDING'
+1410613180959	Move package
+1410613200071	Move package
+1410613202276	Move package
+1410613222675	Move package
+1410613230678	Move package
+1410613233794	Move package
+1410613239275	Move package
+1410613243606	Move package
+1410613246990	Move package
+1410613250541	Move package
+1410613275509	Move package
+1410613283841	Move package
+1410613286490	Move package
+1410613288579	Move package
+1410613291127	Move package
+1410613295021	Move package
+1410613352661	Move package
+1410613357555	Move package
+1410613361178	Move package
+1410613363108	Move package
+1410613365001	Move package
+1410613371708	Move package
+1410613376005	Move package
+1410613386694	Move package
+1410613392331	Move package
+1410613404145	Move package
+1410613407420	Move package
+1410613421986	Move package
+1410613426803	Move package
+1410613432480	Move package
+1410613434102	Move package
+1410613438208	Move package
+1410613480858	Rename package 'ch.desm.middleware.modules'
+1410613544788	Delete element
+1410613547688	Delete element
+1410613712936	Move compilation unit
+1410614126550	Move compilation unit
+1410614912882	Move package
+1410614931187	Move package
+1410615015412	Move compilation unit
+1410615018547	Delete element
+1410615216787	Move package

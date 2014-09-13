@@ -1,0 +1,191 @@
+package ch.desm.middleware.modules.component.cabine.re420.elements;
+
+import java.util.ArrayList;
+
+import org.apache.log4j.Logger;
+
+public class Re420ElementFahrschalter {
+
+	private static Logger log = Logger.getLogger(Re420ElementFahrschalter.class);
+	
+	private Boolean s150a;
+	private Boolean s150b;
+	private Boolean s150d;
+	private Boolean s150e;
+	private Boolean s150f;
+	private Boolean s150g;
+	private Boolean s150l;
+
+	ArrayList<String> disabledList;
+	
+	public Re420ElementFahrschalter(){
+		disabledList = new ArrayList<String>();
+
+	}
+	
+	private boolean isInitialized(){
+		
+		if (s150a != null
+				&& s150b != null
+				&& s150d != null
+				&& s150e != null
+				&& s150f != null
+				&& s150g != null
+				&& s150l != null){
+			
+			return true;
+		}
+		
+		return false;
+	}
+	/**
+	 * 
+	 * @return the global id (key) from the buffered contacts
+	 */
+	public String getMessagePositionFahrschalter(String key, boolean isEnabled) {		
+		boolean isChanged = isChanged(key, isEnabled);
+		boolean isFarschalterInitialized = isInitialized();
+		
+		if(isFarschalterInitialized && isChanged){
+			
+			if (!s150a
+					&& !s150b
+					&& !s150d
+					&& !s150e
+					&& !s150f
+					&& !s150g
+					&& !s150l) {
+				key = "fahrschalter.bremsen.neutral";
+			}
+			else if (s150b
+					&& s150d
+					&& s150e
+					&& s150g
+					&& s150l) {
+				key = "fahrschalter.fahren.m";
+			}
+			else if (s150b
+					&& s150e
+					&& s150f
+					&& s150g
+					&& s150l) {
+				key = "fahrschalter.fahren.plusplus";
+			}
+			else if (s150a && s150e
+					&& s150g
+					&& s150l) {
+				key = "fahrschalter.bremsen.plus";
+			} 
+			else if (s150a
+					&& s150g) {
+				key = "fahrschalter.bremsen.punkt";
+			} 
+			else if (s150a
+					&& s150l) {
+				key = "fahrschalter.bremsen.minus";
+			}
+			
+			else if (s150b
+					&& s150l) {
+				key = "fahrschalter.fahren.minus";
+			} 
+			else if (s150b
+					&& s150g) {
+				key = "fahrschalter.fahren.punkt";
+			} 
+			
+			else if (s150b
+					&& s150e
+					&& s150g) {
+				key = "fahrschalter.fahren.plus";
+			}
+			
+		}else{
+			if(isChanged || !isFarschalterInitialized){
+				key = "";
+			}
+		}
+		
+		return key;
+	}
+
+	private boolean isChanged(String key, boolean value) {
+		boolean isChanged = false;
+		
+		switch (key) {
+			case ("s150a"): {
+				if(!s150a.equals(value)){
+					s150a = value;
+					isChanged = true;
+				}else{
+					isChanged = false;
+				}
+				
+				break;
+			}
+			case ("s150b"): {
+				if(!s150b.equals(value)){
+					s150b = value;
+					isChanged = true;
+				}else{
+					isChanged = false;
+				}
+				
+				break;
+			}
+			case ("s150d"): {
+				if(!s150d.equals(value)){
+					s150d = value;
+					isChanged = true;
+				}else{
+					isChanged = false;
+				}
+				
+				break;
+			}
+			case ("s150e"): {
+				if(!s150e.equals(value)){
+					s150e = value;
+					isChanged = true;
+				}else{
+					isChanged = false;
+				}
+				
+				break;
+			}
+			case ("s150f"): {
+				if(!s150f.equals(value)){
+					s150f = value;
+					isChanged = true;
+				}else{
+					isChanged = false;
+				}
+				
+				break;
+			}
+			case ("s150g"): {
+				if(!s150g.equals(value)){
+					s150g = value;
+					isChanged = true;
+				}else{
+					isChanged = false;
+				}
+				
+				break;
+			}
+			case ("s150l"): {
+				if(!s150l.equals(value)){
+					s150l = value;
+					isChanged = true;
+				}else{
+					isChanged = false;
+				}
+				
+				break;
+			}
+		}
+		
+		return isChanged;
+	}
+
+}

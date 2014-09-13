@@ -1,0 +1,22 @@
+package ch.desm.middleware.modules.component.cabine.re420.maps;
+
+import java.util.Map;
+
+import ch.desm.middleware.modules.component.ComponentMapBase;
+
+public class Re420MapBinding extends ComponentMapBase  {
+
+	@Override
+	public Map<String, String> getMap() {
+		return this.map;
+	}
+
+	@Override
+	protected void initialize() {
+		
+		map.put("s182.3", "l182.3"); //Türfreigabe links
+		map.put("s182.4", "l185"); //Türfreigabe rechts
+		map.put("s182", "l182.4"); //Türverriegelung
+	}
+
+}

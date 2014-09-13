@@ -1,0 +1,5 @@
+package ch.desm.middleware.modules.component.simulation.locsim.elements;
+
+public class Fahrschalter {
+
+}

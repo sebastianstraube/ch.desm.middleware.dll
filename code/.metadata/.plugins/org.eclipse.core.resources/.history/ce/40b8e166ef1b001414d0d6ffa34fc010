@@ -1,0 +1,24 @@
+package ch.desm.middleware.modules.communication.endpoint.virtual;
+
+import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
+import ch.desm.middleware.modules.core.daemon.DaemonThread;
+
+class EndpointInterlockingLogicPolling extends DaemonThread {
+
+	public EndpointInterlockingLogicPolling(String name, EndpointInterlockingLogic endpoint) {
+		super(name, endpoint);
+		// TODO Auto-generated constructor stub
+		this.start();
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void run() {
+		while (!isInterrupted()) {
+			endpoint.pollingCommand();
+		}
+	}
+
+}

@@ -11,6 +11,19 @@
 extern "C" {
 	__declspec(dllexport) int stw_getEvents(int* anzahlEvents, int** typeList, int*** paramList)
 	{
+		if(anzahlEvents) {
+			try {
+				*anzahlEvents = 0;
+			} catch(...) {
+				std::cerr << "Error while assigning anzahlEvents" << std::endl;
+			}
+		}
+		// NOTE: deprecated!
+		return desm::ERROR_OK;
+	}
+
+	__declspec(dllexport) int stw_getEvents2(int* anzahlEvents, int** typeList, int*** paramList)
+	{
 		if(!anzahlEvents || !typeList || !paramList) {
 			return desm::ERROR_API_MISUSE;
 		}
@@ -51,6 +64,8 @@ extern "C" {
 	{
 		std::vector<int> types;
 		std::vector<std::vector<int>> params;
+		// NOTE: use getEvents() again when finally fixed!
+		//desm::Middleware::get().getEvents(types, params);
 		desm::Middleware::get().getEvents(types, params);
 
 		if(types.size() != params.size()) {

@@ -1,0 +1,21 @@
+package ch.desm.middleware.modules.component.cabine.re420.maps;
+
+import java.util.Map;
+
+import ch.desm.middleware.modules.component.ComponentMapBase;
+
+public class Re420MapBinding extends ComponentMapBase  {
+
+	@Override
+	public Map getMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected void initialize() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

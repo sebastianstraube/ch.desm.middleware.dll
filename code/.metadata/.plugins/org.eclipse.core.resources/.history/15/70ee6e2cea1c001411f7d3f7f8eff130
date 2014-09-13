@@ -1,0 +1,16 @@
+package ch.desm.middleware.modules.communication.endpoint.serial.fabisch;
+
+import jssc.SerialPortEvent;
+import jssc.SerialPortException;
+
+import org.apache.log4j.Logger;
+
+import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232;
+import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232Config;
+import ch.desm.middleware.modules.communication.endpoint.serial.EndpointRs232ConfigBuilder;
+
+
+public class EndpointFabischConfig  {
+
+	
+}

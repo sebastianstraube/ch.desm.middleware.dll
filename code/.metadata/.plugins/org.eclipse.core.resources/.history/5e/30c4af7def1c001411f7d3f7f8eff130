@@ -1,0 +1,38 @@
+package ch.desm.middleware.modules.component.cabine.re420;
+
+import ch.desm.middleware.modules.communication.endpoint.serial.fabisch.EndpointFabisch;
+import ch.desm.middleware.modules.component.cabine.re420.maps.Re420MapFabischAnalog;
+import ch.desm.middleware.modules.component.cabine.re420.maps.Re420MapFabischDigital;
+import ch.desm.middleware.modules.component.cabine.re420.maps.Re420MapUbw32Analog;
+import ch.desm.middleware.modules.component.cabine.re420.maps.Re420MapUbw32Digital;
+
+public class Re420EndpointFabisch extends EndpointFabisch {
+
+	protected Re420MapFabischDigital mapDigital;
+	protected Re420MapFabischAnalog mapAnalog;
+	
+	public Re420EndpointFabisch(EnumSerialPorts enumSerialPort) {		
+		super(enumSerialPort);
+		
+		mapDigital = new Re420MapUbw32Digital();
+		mapAnalog = new Re420MapUbw32Analog();
+	}
+	
+	public Re420MapUbw32Analog getMapAnalog(){
+		return mapAnalog;
+	}
+	
+	public Re420MapUbw32Digital getMapDigital(){
+		return mapDigital;
+	}
+	
+	/**
+	 * test endpoint message handling
+	 * @param message
+	 */
+	public void emulateEndpointMessage(String message) {
+		onIncomingEndpointMessage(message);
+	}
+	
+
+}

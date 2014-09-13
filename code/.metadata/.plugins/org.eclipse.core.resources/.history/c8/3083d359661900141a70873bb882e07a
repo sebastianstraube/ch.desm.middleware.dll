@@ -1,0 +1,10 @@
+package ch.desm.middleware.modules.component.cabine.re420;
+
+import java.util.ArrayList;
+
+import ch.desm.middleware.modules.communication.endpoint.serial.ubw32.EndpointUbw32CacheBase;
+
+public class Re420EndpointUbw32Cache extends EndpointUbw32CacheBase {
+
+	
+}

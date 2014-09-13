@@ -1,0 +1,13 @@
+package ch.desm.middleware.modules.communication.message.type;
+
+public abstract class MessageUbw32Base extends MessageBase {
+
+	public static final String MESSAGE_CHAR_OUTPUT = "o";
+	public static final String MESSAGE_CHAR_INPUT = "i";
+	public static final String MESSAGE_CHAR_ONLYSOFTWARE = "os";
+		
+	public MessageUbw32Base(String payload, String topic){
+		super(payload, topic);
+	}
+		
+}

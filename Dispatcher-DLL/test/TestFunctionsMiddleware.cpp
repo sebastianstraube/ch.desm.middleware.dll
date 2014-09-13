@@ -348,12 +348,13 @@ bool TestFunctionsMiddleware::testGetWeiche(){
 	return isSuccess;
 }
 
+/*
 bool TestFunctionsMiddleware::testSetTrack(){
-	int gleisId = 138732;
-	double von = 3243.234;
-	double bis = 23423.234;
-	double abstand =2312.2;
-	std::string name = "testSetTrack";
+	int gleisId = 1;
+	double von = 0.000000000000000;
+	double bis = 97942.0000000000;
+	double abstand = 0.000000000000000;
+	std::string name = "";
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testSetTrack" << std::endl;
@@ -367,6 +368,28 @@ bool TestFunctionsMiddleware::testSetTrack(){
 
 	return true;
 }
+*/
+
+bool TestFunctionsMiddleware::testSetTrack(){
+	int gleisId = 2;
+	double von = 15738.9000000000;
+	double bis = 15988.1000000000;
+	double abstand = 5.00000000000000;
+	std::string name = "";
+
+	std::cout << "==================   START   ==================" << std::endl;
+	std::cout << "testSetTrack" << std::endl;
+	dll.setTrack(gleisId, von, bis, abstand, name);
+	std::cout << "gleisId: " << gleisId << std::endl;
+	std::cout << "von: " << von << std::endl;
+	std::cout << "bis: " << bis << std::endl;
+	std::cout << "abstand: " << abstand << std::endl;
+	std::cout << "name: " << name << std::endl;
+	std::cout << "==================   ENDE    ==================" << std::endl << std::endl;
+
+	return true;
+}
+
 
 bool TestFunctionsMiddleware::testGetTrack(){
 	int gleisId = 138732;

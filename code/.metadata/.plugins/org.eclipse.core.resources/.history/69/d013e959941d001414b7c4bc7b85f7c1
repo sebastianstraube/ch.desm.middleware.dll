@@ -1,0 +1,34 @@
+package ch.desm.middleware.modules.component.interlocking.obermattlangnau.maps;
+
+import java.util.Map;
+
+import ch.desm.middleware.modules.component.ComponentMapBase;
+
+public class OMLUbw32Digital extends ComponentMapBase {
+
+	public static final String PINBITMASK_CONFIGURATION_DIGITAL = "17943,65339,16,49152,768,12596,960";
+	
+	public OMLUbw32Digital() {
+		super();
+	}
+
+	public boolean isKeyAvailable(String id) {
+		return map.containsKey(id);
+	}
+
+	public boolean isValueAvailable(String id) {
+		return map.containsValue(id);
+	}
+
+	@Override
+	public Map<String, String> getMap() {
+		return map;
+	}
+
+	protected void initialize() {
+
+
+
+	}
+
+}

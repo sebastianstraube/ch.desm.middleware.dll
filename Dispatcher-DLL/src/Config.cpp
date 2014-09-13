@@ -39,11 +39,14 @@ namespace desm {
 
 	bool Config::loadConfig(const std::string& fname) {
 		std::ifstream ifs;
-		ifs.open(fname.c_str(), std::ifstream::in);
+		//TODO
+		ifs.open("C:/locsim/dll/stellwerk/locsim.json", std::ifstream::in);
+
 		if(!ifs.is_open()) {
 			std::cerr << "unable to open config file at path " << fname << std::endl;
 			return false;
 		}
+
 		Json::Value root;
 		Json::Reader reader;
 		if(!reader.parse(ifs, root)) {

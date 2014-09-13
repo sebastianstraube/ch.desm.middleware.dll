@@ -1,0 +1,67 @@
+1406718288536	Rename type 'MessageProcessor'
+1406718731864	Delete element
+1406718815994	Delete element
+1406719576974	Rename field 'messages'
+1406720049746	Rename local variable 'ubw32Message'
+1406724886626	Rename method 'getPositionMessage'
+1406726396604	Rename method 'getMessagePosition'
+1406726620514	Rename local variable 'id'
+1406726661748	Rename method 'bufferRelevantData'
+1406727281887	Rename enum constant 's150a'
+1406727297879	Rename enum constant 's150b'
+1406727301683	Rename enum constant 's150d'
+1406727307748	Rename enum constant 's150e'
+1406727311630	Rename enum constant 's150f'
+1406727314565	Rename enum constant 's150g'
+1406727317467	Rename enum constant 's150l'
+1406728040198	Rename field 'change'
+1406729610291	Rename type 'Re420MapDigital'
+1406729615923	Rename type 'Re420MapAnalog'
+1406731854261	Rename field 'S150a'
+1406731858835	Rename field 'S150b'
+1406731861001	Rename field 'S150d'
+1406731862856	Rename field 'S150e'
+1406731865223	Rename field 'S150f'
+1406731867401	Rename field 'S150g'
+1406731869401	Rename field 'S150l'
+1406732358553	Rename method 'setFunction'
+1406732422698	Rename method 'setOutput'
+1406732427082	Rename method 'getFunction'
+1406733974829	Rename type 'MessageUbw32Digital'
+1406735403313	Copy compilation unit
+1406735407993	Rename type 'CopyOfMessageUbw32DigitalSingle'
+1406735556075	Delete element
+1406735559664	Rename type 'MessageUbw32DigitalAll'
+1406739727753	Rename local variable 'inputState'
+1406741568257	Rename method 'initialize'
+1406743400527	Rename local variable 'port'
+1406743407444	Rename field 'port'
+1406746883068	Move compilation unit
+1406747138388	Rename type 'OMLMessages'
+1406797468307	Copy compilation unit
+1406797473831	Rename type 'CopyOfEndpointUbw32PortState'
+1406797680659	Rename type 'EndpointUbw32PortBase'
+1406797698650	Rename type 'EndpointUbw32PortAnalog'
+1406797704724	Rename type 'EndpointUbw32PortDigital'
+1406797712228	Rename type 'EndpointUbw32registerDigital'
+1406797723131	Rename type 'EndpointUbw32PortState'
+1406797916881	Rename local variable 'messageUbw32'
+1406798128825	Move compilation unit
+1406798157489	Rename type 'EndpointUbw32RegisterState'
+1406798707036	Rename field 'port'
+1406799774314	Rename method 'getport'
+1406800500784	Copy compilation unit
+1406800526759	Delete element
+1406800689250	Rename field 'POLLING_WAIT_TIME'
+1406806640152	Rename resource 'log4j.properties'
+1406806853547	Rename resource 'logging.properties'
+1406807086315	Delete element
+1406807223450	Move files
+1406807251095	Move files
+1406807272055	Move file
+1406807285543	Move file
+1406807296335	Move file
+1406807308418	Move file
+1406807325953	Move file
+1406807424677	Move file
+1406815334594	Delete element

@@ -47,12 +47,19 @@ namespace desm {
 		}
 	}
 	
+	//TODO
+	// at locsim initialization
+	// assert failure middleware:s_singleton != NULL
 	void Middleware::deinit() {
 		assert(Middleware::s_singleton != NULL);
 		delete Middleware::s_singleton;
 		Middleware::s_singleton = NULL;
 	}
 
+	
+	//TODO
+	// at locsim initialization
+	// assert failure middleware:s_singleton != NULL
 	Middleware& Middleware::get() {
 		assert(Middleware::s_singleton != NULL);
 		return *Middleware::s_singleton;

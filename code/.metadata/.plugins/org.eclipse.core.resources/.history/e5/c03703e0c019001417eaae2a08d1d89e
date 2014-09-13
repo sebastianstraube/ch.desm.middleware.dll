@@ -1,0 +1,30 @@
+package ch.desm.middleware.modules.communication.endpoint.serial.ubw32;
+
+
+public class EndpointUbw32RegisterDigital extends EndpointUbw32RegisterBase  {
+
+	private static final int ALL_PINS_ON = 65535;
+	
+	/**
+	 * 0 = output
+	 * 1 = input
+	 * 
+	 * Pin-Mask
+	 * default = 65535 = FF FF = 1111 1111  1111 1111 > all pins are configured for output
+	 */
+	private int pinBitMask;
+	
+	public EndpointUbw32RegisterDigital(String pinBitMask){
+		this.pinBitMask = Integer.parseInt(pinBitMask);
+	}
+	
+	public int getPinBitMask(){
+		return pinBitMask;
+	}
+
+	private boolean isPinMaskOk(){
+		if(pinBitMask < 0 || pinBitMask > ALL_PINS_ON) return false;
+		
+		return true;
+	}
+}

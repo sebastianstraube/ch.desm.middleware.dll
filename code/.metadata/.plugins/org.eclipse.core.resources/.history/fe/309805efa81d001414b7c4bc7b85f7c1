@@ -1,0 +1,44 @@
+package ch.desm.middleware.modules.component.interlocking.petrinet;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+/**
+ * wrapper class around the petri net class provided by
+ * the pnlm export that is caring about the event communication
+ * between enpoint and petri net.
+ */
+public class OMLPetriNetAdapter extends OMLPetriNetExport {
+
+	protected static Logger logger = Logger.getLogger(OMLPetriNetAdapter.class);
+	public List<String> firedTransitions = new ArrayList<String>();
+
+	public boolean canFire(String s) {
+		return super.canFire(s);
+	}
+	
+    public void fire(String s) {
+        firedTransitions.add(s);
+    }
+
+    public void setSensor(String name) {
+        setSensor(name, 1);
+    }
+
+    public void setSensor(String name, int value) {
+        try {
+            logger.trace("setting sensor " + name + " to " + value);
+            Class petriNetClass = super.getClass();
+            Field field = petriNetClass.getField(name);
+            field.setInt(this, value);
+        } catch (NoSuchFieldException e) {
+            logger.warn("unknown petrinet sensor " + name);
+        } catch (IllegalAccessException e) {
+            logger.error("unable to set sensor", e);
+        }
+    }
+	
+}

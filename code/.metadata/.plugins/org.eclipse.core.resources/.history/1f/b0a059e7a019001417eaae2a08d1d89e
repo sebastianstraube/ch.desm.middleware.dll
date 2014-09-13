@@ -1,0 +1,33 @@
+package ch.desm.middleware.modules.communication.endpoint.serial.ubw32;
+
+import ch.desm.middleware.modules.communication.endpoint.EndpointCommonListenerInterface;
+
+
+
+public interface EndpointUbw32ListenerInterface extends EndpointCommonListenerInterface{
+
+	/**
+	 * 
+	 * @param port
+	 * @param pin
+	 * @param value
+	 */
+	public void setPinDigital(String port, String pin, String value);
+
+	/**
+	 * 
+	 * @param port
+	 * @param pin
+	 * @param value
+	 */
+	public void getPinDigital(String port, String pin);
+	
+	/**
+	 * 
+	 * @param port
+	 * @param pin
+	 * @param value
+	 */
+	public void getPinAnalog(String pinBitMask);
+
+}

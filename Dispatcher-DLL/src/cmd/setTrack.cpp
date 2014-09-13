@@ -11,6 +11,12 @@
 extern "C" {
 	__declspec(dllexport) int stw_setTrack(int gleisId, double von, double bis, double abstand, char* name, int nameLen)
 	{
+		// NOTE: deprecated!
+		return desm::ERROR_OK;
+	}
+
+	__declspec(dllexport) int stw_setTrack2(int gleisId, double von, double bis, double abstand, char* name, int nameLen)
+	{
 		Json::Value v(Json::objectValue);
 		v["von"] = Json::Value(von);
 		v["bis"] = Json::Value(bis);

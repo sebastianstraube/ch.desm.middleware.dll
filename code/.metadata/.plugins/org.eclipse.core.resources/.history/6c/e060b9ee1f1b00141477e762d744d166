@@ -1,0 +1,6 @@
+package ch.desm.middleware.modules.component.simulation.locsim;
+
+public class LocsimConfig {
+
+	public static final int PRESSURE_CONVERSION = 100;
+}
