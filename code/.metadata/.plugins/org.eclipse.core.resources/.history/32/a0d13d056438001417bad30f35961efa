@@ -1,5 +1,0 @@
-package ch.desm.middleware.modules.communication.endpoint.serial.fabisch;
-
-
-public interface EndpointFabischListenerInterface {
-}

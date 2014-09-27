@@ -1,2 +1,0 @@
-"%java_home%\bin\jar" cfm pwm_test.jar manifest.txt ch
-pause

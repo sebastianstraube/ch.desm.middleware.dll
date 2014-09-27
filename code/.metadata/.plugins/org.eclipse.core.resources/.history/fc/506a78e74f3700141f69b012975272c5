@@ -1,5 +1,0 @@
-package ch.desm.middleware.modules.communication.endpoint.tcpip;
-
-public class EndpointTcpServerThread {
-
-}

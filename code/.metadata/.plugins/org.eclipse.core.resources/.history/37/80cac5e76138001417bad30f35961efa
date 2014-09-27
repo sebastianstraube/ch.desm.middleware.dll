@@ -1,7 +1,0 @@
-package ch.desm.middleware.modules.communication.endpoint.serial.fabisch;
-
-import ch.desm.middleware.modules.communication.endpoint.EndpointCommonListenerInterface;
-
-public interface EndpointFabischListenerInterface extends
-	EndpointCommonListenerInterface {
-}

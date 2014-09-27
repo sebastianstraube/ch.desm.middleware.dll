@@ -1,3 +1,0 @@
-eclipse.preferences.version=1
-module-start-timeout=300000
-runtimes=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<runtimes>\r\n  <runtime id\="Apache Tomcat v8.0" location\="C\:/Users/J\u00FCrg Sutter/Dropbox/DESM-Verein/Projekte/DESM-Middleware/ch.desm.middleware/Apache/apache-tomcat-8.0.12" name\="Apache Tomcat v8.0" runtime-type-id\="org.eclipse.jst.server.tomcat.runtime.80" timestamp\="0"/>\r\n  <runtime id\="Apache Tomcat v8.0 (Sebastian)" location\="C\:/svn.it-hotspot.de/share/Dropbox/Dropbox/DESM-Verein/Projekte/DESM-Middleware/ch.desm.middleware/Apache/apache-tomcat-8.0.12" name\="Apache Tomcat v8.0 (Sebastian)" runtime-type-id\="org.eclipse.jst.server.tomcat.runtime.80" timestamp\="0"/>\r\n</runtimes>\r\n

@@ -1,9 +1,0 @@
-INDEX VERSION 1.127+C:\svn.it-hotspot.de\share\Dropbox\Dropbox\DESM-Verein\Projekte\DESM-Middleware\ch.desm.middleware\code\.metadata\.plugins\org.eclipse.jdt.core
-2334254828.index
-1154424180.index
-1143220372.index
-1896386436.index
-3821060237.index
-996710422.index
-4121684669.index
-1466564618.index

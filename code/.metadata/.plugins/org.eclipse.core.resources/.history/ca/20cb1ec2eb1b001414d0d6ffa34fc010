@@ -1,8 +1,0 @@
-package ch.desm.middleware.modules.communication.endpoint.virtual;
-
-import org.apache.log4j.Logger;
-
-public class PetrinNetBase {
-
-	public static Logger log = Logger.getLogger(PetrinNetBase.class);
-}

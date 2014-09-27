@@ -1,7 +1,0 @@
-package ch.desm.middleware.modules.communication.endpoint.virtual;
-
-import ch.desm.middleware.modules.communication.endpoint.EndpointCommon;
-
-public class EndpointInterlockingLogicPolling extends EndpointCommon {
-
-}

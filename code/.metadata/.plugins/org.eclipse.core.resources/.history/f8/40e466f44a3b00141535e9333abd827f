@@ -1,8 +1,0 @@
-package ch.desm.middleware.handle;
-
-import java.util.EventObject;
-
- interface EventListenerInterface {
-
-	public void handleEvent(EventObject event);
-}
