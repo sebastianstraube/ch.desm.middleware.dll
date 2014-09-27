@@ -9,7 +9,7 @@
 #include "util/String.h"
 
 extern "C" {
-	__declspec(dllexport) int stw_getEvents(int* anzahlEvents, int** typeList, int*** paramList)
+	__declspec(dllexport) int stw_getEvents1(int* anzahlEvents, int** typeList, int*** paramList)
 	{
 		if(anzahlEvents) {
 			try {
@@ -22,7 +22,7 @@ extern "C" {
 		return desm::ERROR_OK;
 	}
 
-	__declspec(dllexport) int stw_getEvents2(int* anzahlEvents, int** typeList, int*** paramList)
+	__declspec(dllexport) int stw_getEvents(int* anzahlEvents, int** typeList, int*** paramList)
 	{
 		if(!anzahlEvents || !typeList || !paramList) {
 			return desm::ERROR_API_MISUSE;

@@ -132,7 +132,10 @@ namespace desm {
 				if(strcmp(PING_MESSAGE, str) == 0) {
 					m_connected = true;
 					m_lastPingTs = zclock_time();
+					// for conncetion testing purposes:
+					//fprintf(stdout, "got ping %d\n", m_lastPingTs);
 				} else {
+					std::cout << "received message: " << str << std::endl;
 					m_recvQueue.push(std::string(str));
 				}
 			}

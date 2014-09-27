@@ -11,7 +11,14 @@
 extern "C" {
 	__declspec(dllexport) int stw_setSignal(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int nameLen, int stellung)
 	{
-		// NOTE: deprecated!
+		Json::Value v(Json::objectValue);
+		v["stellung"] = Json::Value(stellung);
+		v["name"] = Json::Value(std::string(name));
+
+		if(!desm::Middleware::get().sendCommand(desm::ENUM_CMD_SIGNAL, signalId, v)) {
+			return desm::ERROR_FATAL;
+		}
+		
 		return desm::ERROR_OK;
 	}
 
@@ -27,7 +34,7 @@ extern "C" {
 		
 		return desm::ERROR_OK;
 	}
-	
+
 	JNIEXPORT void JNICALL Java_ch_desm_Dll_setSignal(JNIEnv* env, jobject obj, jint signalId, jstring name, jint stellung)
 	{
 		const char* nameStr = env->GetStringUTFChars(name, 0);

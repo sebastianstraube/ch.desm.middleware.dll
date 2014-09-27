@@ -29,7 +29,7 @@ struct MwDll::Impl {
 	typedef int (*t_stw_setTrackConnection)(int gleisBasisId, int gleis1Id, int gleis2Id, double von, double bis, char* name, int nameLen, int weiche1Id, int weiche2Id);
 	typedef int (*t_stw_getTrackConnection)(int* gleisBasisId, int gleis1Id, int gleis2Id, double* von, double* bis, char* nameBuf, int nameBufLen, int* nameStrLen, int* weiche1Id, int* weiche2Id);
 	
-	typedef int (*t_stw_setSignal)(int signalId, char* name, int nameLen, int stellung);
+	typedef int (*t_stw_setSignal)(int signalId, int gleisId, double position, int typ, double hoehe, double distanz, char* name, int nameLen, int stellung);
 	typedef int (*t_stw_getSignal)(int signalId, char* nameBuf, int nameBufLen, int* nameStrLen, int* stellung);
 
 	typedef int (*t_stw_setBalise)(int baliseId, int stellung, char* protokoll, int protokollLen);
@@ -282,10 +282,8 @@ bool MwDll::getTrackConnection(int& gleisBasisId, int gleis1Id, int gleis2Id, do
 
 bool MwDll::setSignal(int signalId, const std::string& name, int stellung) {
 	char* _name = _strdup(name.c_str());
-	bool success = checkErrorCode(m_pImpl->m_stw_setSignal(signalId, _name, name.size(), stellung));
-	
+	bool success = checkErrorCode(m_pImpl->m_stw_setSignal(signalId, 0, 0, 0, 0, 0, _name, name.size(), stellung));
 	free(_name);
-
 	return success;
 }
 

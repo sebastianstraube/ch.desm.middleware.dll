@@ -348,7 +348,7 @@ bool TestFunctionsMiddleware::testGetWeiche(){
 	return isSuccess;
 }
 
-/*
+#if 0
 bool TestFunctionsMiddleware::testSetTrack(){
 	int gleisId = 1;
 	double von = 0.000000000000000;
@@ -368,14 +368,13 @@ bool TestFunctionsMiddleware::testSetTrack(){
 
 	return true;
 }
-*/
-
+#else
 bool TestFunctionsMiddleware::testSetTrack(){
 	int gleisId = 2;
 	double von = 15738.9000000000;
 	double bis = 15988.1000000000;
 	double abstand = 5.00000000000000;
-	std::string name = "";
+	std::string name = "hans";
 
 	std::cout << "==================   START   ==================" << std::endl;
 	std::cout << "testSetTrack" << std::endl;
@@ -389,10 +388,10 @@ bool TestFunctionsMiddleware::testSetTrack(){
 
 	return true;
 }
-
+#endif
 
 bool TestFunctionsMiddleware::testGetTrack(){
-	int gleisId = 138732;
+	int gleisId = 2;
 	double von = -1.;
 	double bis = -1.;
 	double abstand = -1.;
